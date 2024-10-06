@@ -1,6 +1,6 @@
 " vim-plug settings
 call plug#begin()
-if has('win32') || has('win64')
+if has('win32')
   source $HOME/vimfiles/windows-plugin.vimelse
 endif
 Plug 'scrooloose/nerdtree'
@@ -74,15 +74,21 @@ endif
 " Put all temporary files under the same directory.
 " https://github.com/mhinz/vim-galore#temporary-files
 set backup
-set backupdir   =$HOME/.vim/files/backup/
+if has('win32')
+  set backupdir   =$HOME/vimfiles/backup/
+  set directory   =$HOME/vimfiles/swap/
+  set undodir     =$HOME/vimfiles/files/undo/
+  set viminfo     ='100,n$HOME/vimfiles/files/info/viminfo
+else
+  set backupdir   =$HOME/.vim/files/backup/
+  set directory   =$HOME/.vim/files/swap/
+  set undodir     =$HOME/.vim/files/undo/
+  set viminfo     ='100,n$HOME/.vim/files/info/viminfo
+endif
 set backupext   =-vimbackup
 set backupskip  =
-set directory   =$HOME/.vim/files/swap/
 set updatecount =100
 set undofile
-set undodir     =$HOME/.vim/files/undo/
-set viminfo     ='100,n$HOME/.vim/files/info/viminfo
-
 
 " My custom setting
 " Theme
@@ -93,6 +99,9 @@ colorscheme github
 " Line number and clipboard
 set number
 set clipboard=unnamed
+
+" Remove error bell
+set belloff=all
 
 " NERDTREE
 autocmd VimEnter * NERDTree
