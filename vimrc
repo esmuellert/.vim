@@ -75,8 +75,8 @@ endif
 " https://github.com/mhinz/vim-galore#temporary-files
 set backup
 if has('win32')
-  set backupdir   =$HOME/vimfiles/backup/
-  set directory   =$HOME/vimfiles/swap/
+  set backupdir   =$HOME/vimfiles/files/backup/
+  set directory   =$HOME/vimfiles/files/swap/
   set undodir     =$HOME/vimfiles/files/undo/
   set viminfo     ='100,n$HOME/vimfiles/files/info/viminfo
 else
