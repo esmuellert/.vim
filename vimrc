@@ -1,7 +1,7 @@
 " vim-plug settings
 call plug#begin()
 if has('win32')
-  source $HOME/vimfiles/windows-plugin.vimelse
+  source $HOME/vimfiles/windows-plugin.vim
 endif
 Plug 'scrooloose/nerdtree'
 "Plug 'endel/vim-github-colorscheme'
@@ -104,9 +104,9 @@ set clipboard=unnamed
 set belloff=all
 
 " NERDTREE
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
-autocmd BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
+"autocmd VimEnter * NERDTree
+"autocmd VimEnter * wincmd p
+"autocmd BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
 " Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 " Close the tab if NERDTree is the only window remaining in it.
