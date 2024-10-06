@@ -78,12 +78,12 @@ if has('win32')
   set backupdir   =$HOME/vimfiles/files/backup/
   set directory   =$HOME/vimfiles/files/swap/
   set undodir     =$HOME/vimfiles/files/undo/
-  set viminfo     ='100,n$HOME/vimfiles/files/info/viminfo
+  set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/vimfiles/files/info/viminfo
 else
   set backupdir   =$HOME/.vim/files/backup/
   set directory   =$HOME/.vim/files/swap/
   set undodir     =$HOME/.vim/files/undo/
-  set viminfo     ='100,n$HOME/.vim/files/info/viminfo
+  set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/.vim/files/info/viminfo
 endif
 set backupext   =-vimbackup
 set backupskip  =
@@ -103,6 +103,33 @@ set clipboard=unnamed
 " Remove error bell
 set belloff=all
 
+" Automatically change pwd
+set acd
+
+" Cursor restore to same place after reopen
+autocmd BufWinLeave * mkview
+autocmd BufWinEnter * silent! loadview 
+
+" Automatically reload file
+set autoread
+au CursorHold * checktime 
+
+" Capture the directory where Vim was invoked
+let g:initial_cwd = getcwd()
+
+" Function to save session when closing Vim
+function! SaveVimSession()
+    " Check if the .vscode directory exists in the initial directory
+    if isdirectory(g:initial_cwd . "/.vscode")
+        " Save the session to .vscode/session.vim in the initial directory
+        exe 'mksession! ' . g:initial_cwd . '/.vscode/session.vim'
+    endif
+endfunction
+" Automatically save session when exiting Vim
+autocmd VimLeavePre * call SaveVimSession()
+" Automatically load session when starting Vim if .vscode folder exists
+autocmd VimEnter * if isdirectory(g:initial_cwd . "/.vscode") && filereadable(g:initial_cwd . "/.vscode/session.vim") | exe 'source ' . g:initial_cwd . '/.vscode/session.vim' | endif
+
 " NERDTREE
 "autocmd VimEnter * NERDTree
 "autocmd VimEnter * wincmd p
@@ -111,10 +138,6 @@ set belloff=all
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 " Close the tab if NERDTree is the only window remaining in it.
 autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
-
-" Cursor restore to same place after reopen
-autocmd BufWinLeave *.* mkview
-autocmd BufWinEnter *.* silent loadview 
 
 " coc.nvim
 " Make <CR> to accept selected completion item or notify coc.nvim to format
