@@ -132,7 +132,9 @@ autocmd VimEnter * if isdirectory(g:initial_cwd . "/.vscode") && filereadable(g:
 
 " Path settings
 let &path = getcwd() . '/**'
-set wildignore+=*/node_modules/*,*/.git/*,*/.DS_Store,*/coverage/*,*/dist/*,*/build/*
+" set wildignore+=*/node_modules/*,*/.git/*,*/.DS_Store,*/coverage/*,*/dist/*,*/build/*
+let g:netrw_list_hide=netrw_gitignore#Hide()
+execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/*,','g')
 
 " NERDTREE
 "autocmd VimEnter * NERDTree
