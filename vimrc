@@ -130,6 +130,10 @@ autocmd VimLeavePre * call SaveVimSession()
 " Automatically load session when starting Vim if .vscode folder exists
 autocmd VimEnter * if isdirectory(g:initial_cwd . "/.vscode") && filereadable(g:initial_cwd . "/.vscode/session.vim") | exe 'source ' . g:initial_cwd . '/.vscode/session.vim' | endif
 
+" Path settings
+let &path = getcwd() . '/**'
+set wildignore+=*/node_modules/*,*/.git/*,*/.DS_Store,*/coverage/*,*/dist/*,*/build/*
+
 " NERDTREE
 "autocmd VimEnter * NERDTree
 "autocmd VimEnter * wincmd p
