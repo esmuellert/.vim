@@ -177,10 +177,13 @@ autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTa
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+            \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 " fzf
-nnoremap <C-p> :execute 'Files '.g:initial_cwd<CR>
-nnoremap <C-f> :Rg<CR>
+nnoremap <leader>p :execute 'Files '.g:initial_cwd<CR>
+nnoremap <leader>f :Rg<CR>
 nnoremap <leader>b :Buffers<CR>
-let g:fzf_vim = {}
-let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
+if has('win32')
+    let g:fzf_vim.preview_window = []
+    let g:fzf_vim = {}
+    let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
+endif
