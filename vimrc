@@ -92,7 +92,7 @@ else
 endif
 set backupext   =-vimbackup
 set backupskip  =
-set updatecount =100
+  set updatecount =100
 set undofile
 
 " My custom setting
@@ -133,11 +133,11 @@ augroup END
 let g:initial_cwd = getcwd()
 " Function to save session when closing Vim
 function! SaveVimSession()
-    " Check if the .vscode directory exists in the initial directory
-    if isdirectory(g:initial_cwd . "/.vscode")
-        " Save the session to .vscode/session.vim in the initial directory
-        exe 'mksession! ' . g:initial_cwd . '/.vscode/session.vim'
-    endif
+  " Check if the .vscode directory exists in the initial directory
+  if isdirectory(g:initial_cwd . "/.vscode")
+    " Save the session to .vscode/session.vim in the initial directory
+    exe 'mksession! ' . g:initial_cwd . '/.vscode/session.vim'
+  endif
 endfunction
 " Automatically save session when exiting Vim
 autocmd VimLeavePre * call SaveVimSession()
@@ -151,14 +151,15 @@ let g:netrw_list_hide=netrw_gitignore#Hide()
 execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/**,','g')
 
 " Use PowerShell as Windows shell
-"if has('win32')
-"  if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
-"    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
-"  else
-"    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
-"  endif
-"endif
-set shell=cmd
+if has('win32')
+  "  if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
+  "    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
+  "  else
+  "    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
+  "  endif
+
+  set shell=cmd
+endif
 
 " Bind leaders
 let mapleader = ' '
@@ -176,7 +177,7 @@ autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTa
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 " fzf
 nnoremap <C-p> :execute 'Files '.g:initial_cwd<CR>
 nnoremap <C-f> :Rg<CR>
