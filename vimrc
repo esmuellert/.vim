@@ -1,8 +1,11 @@
 " vim-plug settings
 call plug#begin()
 if has('win32')
-  source $HOME/vimfiles/windows-plugin.vim
+  source $HOME/vimfiles/plugin.vim
+else
+  source $HOME/.vim/plugin.vim
 endif
+
 Plug 'scrooloose/nerdtree'
 "Plug 'endel/vim-github-colorscheme'
 "Plug 'akiicat/vim-github-theme'
@@ -16,6 +19,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
@@ -107,16 +112,23 @@ set belloff=all
 set acd
 
 " Cursor restore to same place after reopen
-autocmd BufWinLeave * mkview
-autocmd BufWinEnter * silent! loadview 
+augroup AutoSaveGroup
+  autocmd!
+  " view files are about 500 bytes
+  " bufleave but not bufwinleave captures closing 2nd tab
+  " nested is needed by bufwrite* (if triggered via other autocmd)
+  " BufHidden for compatibility with `set hidden`
+  autocmd BufWinLeave,BufLeave,BufWritePost,BufHidden,QuitPre ?* nested silent! mkview!
+  autocmd BufWinEnter ?* silent! loadview
+augroup end
 
 " Automatically reload file
 set autoread
 au CursorHold * checktime 
 
+" Automatically save the session into .vscode
 " Capture the directory where Vim was invoked
 let g:initial_cwd = getcwd()
-
 " Function to save session when closing Vim
 function! SaveVimSession()
     " Check if the .vscode directory exists in the initial directory
@@ -128,13 +140,22 @@ endfunction
 " Automatically save session when exiting Vim
 autocmd VimLeavePre * call SaveVimSession()
 " Automatically load session when starting Vim if .vscode folder exists
-autocmd VimEnter * if isdirectory(g:initial_cwd . "/.vscode") && filereadable(g:initial_cwd . "/.vscode/session.vim") | exe 'source ' . g:initial_cwd . '/.vscode/session.vim' | endif
+autocmd VimEnter * nested if isdirectory(g:initial_cwd . "/.vscode") && filereadable(g:initial_cwd . "/.vscode/session.vim") | exe 'source ' . g:initial_cwd . '/.vscode/session.vim' | endif
 
 " Path settings
 let &path = getcwd() . '/**'
 " set wildignore+=*/node_modules/*,*/.git/*,*/.DS_Store,*/coverage/*,*/dist/*,*/build/*
 let g:netrw_list_hide=netrw_gitignore#Hide()
-execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/*,','g')
+execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/**,','g')
+
+" Use PowerShell as Windows shell
+if has('win32')
+  if filereadable('C:\\Program Files\\PowerShell\\7\\pwsh.exe')
+    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
+  else
+    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
+  endif
+endif
 
 " NERDTREE
 "autocmd VimEnter * NERDTree
