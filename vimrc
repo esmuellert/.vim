@@ -151,13 +151,14 @@ let g:netrw_list_hide=netrw_gitignore#Hide()
 execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/**,','g')
 
 " Use PowerShell as Windows shell
-if has('win32')
-  if filereadable('C:\\Program Files\\PowerShell\\7\\pwsh.exe')
-    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
-  else
-    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
-  endif
-endif
+"if has('win32')
+"  if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
+"    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
+"  else
+"    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
+"  endif
+"endif
+set shell=cmd
 
 " Bind leaders
 let mapleader = ' '
@@ -180,4 +181,5 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 nnoremap <C-p> :execute 'Files '.g:initial_cwd<CR>
 nnoremap <C-f> :Rg<CR>
 nnoremap <leader>b :Buffers<CR>
-
+let g:fzf_vim = {}
+let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
