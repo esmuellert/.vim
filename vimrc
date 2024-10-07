@@ -182,8 +182,8 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 nnoremap <leader>p :execute 'Files '.g:initial_cwd<CR>
 nnoremap <leader>f :Rg<CR>
 nnoremap <leader>b :Buffers<CR>
-if has('win32')
-    let g:fzf_vim.preview_window = []
-    let g:fzf_vim = {}
-    let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
-endif
+"if has('win32')
+"    let g:fzf_vim.preview_window = []
+"    let g:fzf_vim = {}
+"    let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
+"endif
