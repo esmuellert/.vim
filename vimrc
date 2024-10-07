@@ -109,7 +109,7 @@ set clipboard=unnamed
 set belloff=all
 
 " Automatically change pwd
-set acd
+"set acd
 
 " Cursor restore to same place after reopen
 augroup AutoSaveGroup
@@ -123,8 +123,10 @@ augroup AutoSaveGroup
 augroup end
 
 " Automatically reload file
-set autoread
-au CursorHold * checktime 
+augroup AutoRead
+  autocmd!
+  autocmd CursorHold * if getcmdwintype() == '' | checktime | endif
+augroup END
 
 " Automatically save the session into .vscode
 " Capture the directory where Vim was invoked
@@ -157,6 +159,9 @@ if has('win32')
   endif
 endif
 
+" Bind leaders
+let mapleader = ' '
+
 " NERDTREE
 "autocmd VimEnter * NERDTree
 "autocmd VimEnter * wincmd p
@@ -171,4 +176,8 @@ autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTa
 " <C-g>u breaks current undo, please make your own choice
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" fzf
+nnoremap <C-p> :execute 'Files '.g:initial_cwd<CR>
+nnoremap <C-f> :Rg<CR>
+nnoremap <leader>b :Buffers<CR>
 
