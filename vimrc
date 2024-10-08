@@ -6,13 +6,13 @@ else
   source $HOME/.vim/plugin.vim
 endif
 
-Plug 'scrooloose/nerdtree'
+"Plug 'scrooloose/nerdtree'
 "Plug 'endel/vim-github-colorscheme'
 "Plug 'akiicat/vim-github-theme'
 Plug 'cormacrelf/vim-colors-github'
 "Plug 'pangloss/vim-javascript'
 "Plug 'mxw/vim-jsx'
-Plug 'sheerun/vim-polyglot'
+"Plug 'sheerun/vim-polyglot'
 Plug 'neoclide/coc.nvim'
 Plug 'Raimondi/delimitMate'
 Plug 'airblade/vim-gitgutter'
@@ -112,15 +112,15 @@ set belloff=all
 "set acd
 
 " Cursor restore to same place after reopen
-augroup AutoSaveGroup
-  autocmd!
-  " view files are about 500 bytes
-  " bufleave but not bufwinleave captures closing 2nd tab
-  " nested is needed by bufwrite* (if triggered via other autocmd)
-  " BufHidden for compatibility with `set hidden`
-  autocmd BufWinLeave,BufLeave,BufWritePost,BufHidden,QuitPre ?* nested silent! mkview!
-  autocmd BufWinEnter ?* silent! loadview
-augroup end
+"augroup AutoSaveGroup
+"  autocmd!
+"  " view files are about 500 bytes
+"  " bufleave but not bufwinleave captures closing 2nd tab
+"  " nested is needed by bufwrite* (if triggered via other autocmd)
+"  " BufHidden for compatibility with `set hidden`
+"  autocmd BufWinLeave,BufLeave,BufWritePost,BufHidden,QuitPre ?* nested silent! mkview!
+"  autocmd BufWinEnter ?* silent! loadview
+"augroup end
 
 " Automatically reload file
 augroup AutoRead
@@ -169,9 +169,9 @@ let mapleader = ' '
 "autocmd VimEnter * wincmd p
 "autocmd BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
 " Exit Vim if NERDTree is the only window remaining in the only tab.
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
+"autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 " Close the tab if NERDTree is the only window remaining in it.
-autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
+"autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 
 " coc.nvim
 " Make <CR> to accept selected completion item or notify coc.nvim to format
