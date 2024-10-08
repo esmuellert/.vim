@@ -93,17 +93,26 @@ endif
 set backup
 if !has('nvim')
     if has('win32')
-        set backupdir   =$HOME/vimfiles/files/backup/
-        set directory   =$HOME/vimfiles/files/swap/
-        set undodir     =$HOME/vimfiles/files/undo/
-        set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/vimfiles/files/info/viminfo
+        set backupdir   =$HOME/vimfiles/tmp
+        set directory   =$HOME/vimfiles/tmp
+        set undodir     =$HOME/vimfiles/tmp
+        set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/vimfiles/viminfo
     else
-        set backupdir   =$HOME/.vim/files/backup/
-        set directory   =$HOME/.vim/files/swap/
-        set undodir     =$HOME/.vim/files/undo/
-        set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/.vim/files/info/viminfo
+        set backupdir   =$HOME/.vim/tmp
+        set directory   =$HOME/.vim/tmp
+        set undodir     =$HOME/.vim/tmp
+        set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/.vim/viminfo
     endif
 else
+    if has('win32')
+        set backupdir   =~/AppData/Local/nvim/tmp
+        set directory   =~/AppData/Local/nvim/tmp
+        set undodir     =~/AppData/Local/nvim/tmp
+    else
+        set backupdir=~/.config/nvim/tmp
+        set directory=~/.config/nvim/tmp
+        set undodir=~/.config/nvim/tmp
+    endif
     set shada=%,'10,<800,:100,/50,h,f0
 endif
 set backupext   =-vimbackup
