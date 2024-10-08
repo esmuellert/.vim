@@ -14,7 +14,7 @@ Plug 'cormacrelf/vim-colors-github'
 "Plug 'mxw/vim-jsx'
 "Plug 'sheerun/vim-polyglot'
 Plug 'neoclide/coc.nvim'
-Plug 'Raimondi/delimitMate'
+"Plug 'Raimondi/delimitMate'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
@@ -182,7 +182,7 @@ set ignorecase smartcase
 " --------------------------------------------------------------------------
 " 🌟 coc.nvim - Modern LSP for Vim
 " --------------------------------------------------------------------------
-" :CocInstall coc-tsserver coc-json coc-vimlsp coc-marketplace
+" :CocInstall coc-tsserver coc-json coc-vimlsp coc-marketplace coc-pairs coc-spell-checker coc-html coc-yaml coc-xml
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
 " delays and poor user experience
 set updatetime=300
