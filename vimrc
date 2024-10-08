@@ -1,28 +1,29 @@
 " vim-plug settings
 call plug#begin()
 if has('win32')
-  source $HOME/vimfiles/plugin.vim
+    source $HOME/vimfiles/plugin.vim
 else
-  source $HOME/.vim/plugin.vim
+    source $HOME/.vim/plugin.vim
 endif
 
 "Plug 'scrooloose/nerdtree'
 "Plug 'endel/vim-github-colorscheme'
 "Plug 'akiicat/vim-github-theme'
-Plug 'cormacrelf/vim-colors-github'
 "Plug 'pangloss/vim-javascript'
 "Plug 'mxw/vim-jsx'
 "Plug 'sheerun/vim-polyglot'
-Plug 'neoclide/coc.nvim'
 "Plug 'Raimondi/delimitMate'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-sleuth'
-Plug 'tpope/vim-surround'
+"Plug 'tpope/vim-sleuth'
 "Plug 'vim-airline/vim-airline'
 Plug 'itchyny/lightline.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-
+Plug 'neoclide/coc.nvim'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-surround'
+if !has('nvim')
+    Plug 'cormacrelf/vim-colors-github'
+endif
 call plug#end()
 
 "
@@ -66,42 +67,47 @@ set synmaxcol   =200       " Only highlight the first 200 columns.
 
 set list                   " Show non-printable characters.
 if has('multi_byte') && &encoding ==# 'utf-8'
-  let &listchars = 'tab:▸ ,extends:❯,precedes:❮,nbsp:±'
+    let &listchars = 'tab:▸ ,extends:❯,precedes:❮,nbsp:±'
 else
-  let &listchars = 'tab:> ,extends:>,precedes:<,nbsp:.'
+    let &listchars = 'tab:> ,extends:>,precedes:<,nbsp:.'
 endif
 
 " The fish shell is not very compatible to other shells and unexpectedly
 " breaks things that use 'shell'.
 if &shell =~# 'fish$'
-  set shell=/bin/bash
+    set shell=/bin/bash
 endif
 
 " Put all temporary files under the same directory.
 " https://github.com/mhinz/vim-galore#temporary-files
 set backup
-if has('win32')
-  set backupdir   =$HOME/vimfiles/files/backup/
-  set directory   =$HOME/vimfiles/files/swap/
-  set undodir     =$HOME/vimfiles/files/undo/
-  set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/vimfiles/files/info/viminfo
+if !has('nvim')
+    if has('win32')
+        set backupdir   =$HOME/vimfiles/files/backup/
+        set directory   =$HOME/vimfiles/files/swap/
+        set undodir     =$HOME/vimfiles/files/undo/
+        set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/vimfiles/files/info/viminfo
+    else
+        set backupdir   =$HOME/.vim/files/backup/
+        set directory   =$HOME/.vim/files/swap/
+        set undodir     =$HOME/.vim/files/undo/
+        set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/.vim/files/info/viminfo
+    endif
 else
-  set backupdir   =$HOME/.vim/files/backup/
-  set directory   =$HOME/.vim/files/swap/
-  set undodir     =$HOME/.vim/files/undo/
-  set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/.vim/files/info/viminfo
+    set shada=%,'10,<800,:100,/50,h,f0
 endif
 set backupext   =-vimbackup
 set backupskip  =
-  set updatecount =100
+set updatecount =100
 set undofile
 
 " My custom setting
 " Theme
 set termguicolors
 set background=light
-colorscheme github
-
+if !has('nvim')
+    colorscheme github
+endif
 " Line number and clipboard
 set number
 set clipboard=unnamed
@@ -125,8 +131,8 @@ set belloff=all
 
 " Automatically reload file
 augroup AutoRead
-  autocmd!
-  autocmd CursorHold * if getcmdwintype() == '' | checktime | endif
+    autocmd!
+    autocmd CursorHold * if getcmdwintype() == '' | checktime | endif
 augroup END
 
 " Automatically save the session into .vscode
@@ -134,11 +140,11 @@ augroup END
 let g:initial_cwd = getcwd()
 " Function to save session when closing Vim
 function! SaveVimSession()
-  " Check if the .vscode directory exists in the initial directory
-  if isdirectory(g:initial_cwd . "/.vscode")
-    " Save the session to .vscode/session.vim in the initial directory
-    exe 'mksession! ' . g:initial_cwd . '/.vscode/session.vim'
-  endif
+    " Check if the .vscode directory exists in the initial directory
+    if isdirectory(g:initial_cwd . "/.vscode")
+        " Save the session to .vscode/session.vim in the initial directory
+        exe 'mksession! ' . g:initial_cwd . '/.vscode/session.vim'
+    endif
 endfunction
 " Automatically save session when exiting Vim
 autocmd VimLeavePre * call SaveVimSession()
@@ -153,14 +159,14 @@ autocmd VimEnter * nested if isdirectory(g:initial_cwd . "/.vscode") && fileread
 
 " Use PowerShell as Windows shell
 if has('win32')
-  "  if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
-  "    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
-  "  else
-  "    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
-  "  endif
-  " Custom command to run PowerShell commands
-  command! -nargs=1 Pwsh execute ':!pwsh -command "& <args>"'
-  set shell=cmd
+    "  if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
+    "    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
+    "  else
+    "    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
+    "  endif
+    " Custom command to run PowerShell commands
+    command! -nargs=1 Pwsh execute ':!pwsh -command "& <args>"'
+    set shell=cmd
 endif
 
 " Bind leaders
@@ -191,7 +197,7 @@ set updatetime=300
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+            \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved
@@ -211,11 +217,11 @@ nmap <silent> gr <Plug>(coc-references)
 " Use K to show documentation in preview window
 nnoremap <silent> K :call ShowDocumentation()<CR>
 function! ShowDocumentation()
-if CocAction('hasProvider', 'hover')
-  call CocActionAsync('doHover')
-else
-  call feedkeys('K', 'in')
-endif
+    if CocAction('hasProvider', 'hover')
+        call CocActionAsync('doHover')
+    else
+        call feedkeys('K', 'in')
+    endif
 endfunction
 
 " Symbol renaming
@@ -281,5 +287,5 @@ nnoremap <leader>b :Buffers<CR>
 " 💡 lightline configuration 💡
 " --------------------------------------------------------------------------
 let g:lightline = {
-  \ 'colorscheme': 'ayu_light',
-  \ }
+            \ 'colorscheme': 'ayu_light',
+            \ }
