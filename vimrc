@@ -145,10 +145,10 @@ autocmd VimLeavePre * call SaveVimSession()
 autocmd VimEnter * nested if isdirectory(g:initial_cwd . "/.vscode") && filereadable(g:initial_cwd . "/.vscode/session.vim") | exe 'source ' . g:initial_cwd . '/.vscode/session.vim' | endif
 
 " Path settings
-let &path = getcwd() . '/**'
+"let &path = getcwd() . '/**'
 " set wildignore+=*/node_modules/*,*/.git/*,*/.DS_Store,*/coverage/*,*/dist/*,*/build/*
-let g:netrw_list_hide=netrw_gitignore#Hide()
-execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/**,','g')
+"let g:netrw_list_hide=netrw_gitignore#Hide()
+"execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/**,','g')
 
 " Use PowerShell as Windows shell
 if has('win32')
@@ -163,6 +163,9 @@ endif
 
 " Bind leaders
 let mapleader = ','
+
+" set ignorecase and smartcase
+set ignorecase smartcase
 
 " --------------------------------------------------------------------------
 " 🌟 NERDTree
