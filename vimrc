@@ -305,5 +305,9 @@ let g:lightline = {
 " 📖 lua configuration for nvim 📖
 " --------------------------------------------------------------------------
 if has('nvim')
-    lua require('nvim')
+    if has('win32')
+        luafile $HOME/AppData/Local/nvim/nvim.lua
+    else
+        luafile $HOME/.config/nvim/nvim.lua
+    endif
 endif
