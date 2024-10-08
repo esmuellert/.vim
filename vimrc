@@ -93,11 +93,13 @@ endif
 set backup
 if !has('nvim')
     if has('win32')
+        silent !mkdir -p $HOME/vimfiles/tmp
         set backupdir   =$HOME/vimfiles/tmp
         set directory   =$HOME/vimfiles/tmp
         set undodir     =$HOME/vimfiles/tmp
         set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/vimfiles/viminfo
     else
+        silent !mkdir -p $HOME/.vim/tmp
         set backupdir   =$HOME/.vim/tmp
         set directory   =$HOME/.vim/tmp
         set undodir     =$HOME/.vim/tmp
@@ -105,10 +107,12 @@ if !has('nvim')
     endif
 else
     if has('win32')
+        silent !mkdir -p ~/AppData/Local/nvim/tmp
         set backupdir   =~/AppData/Local/nvim/tmp
         set directory   =~/AppData/Local/nvim/tmp
         set undodir     =~/AppData/Local/nvim/tmp
     else
+        silent !mkdir -p ~/.config/nvim/tmp
         set backupdir=~/.config/nvim/tmp
         set directory=~/.config/nvim/tmp
         set undodir=~/.config/nvim/tmp
