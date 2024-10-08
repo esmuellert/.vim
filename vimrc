@@ -301,3 +301,9 @@ nnoremap <leader>b :Buffers<CR>
 let g:lightline = {
             \ 'colorscheme': 'ayu_light',
             \ }
+
+" 📖 lua configuration for nvim 📖
+" --------------------------------------------------------------------------
+if has('nvim')
+    lua require('nvim')
+endif
