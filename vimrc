@@ -275,3 +275,10 @@ nnoremap <leader>b :Buffers<CR>
 "    let g:fzf_vim = {}
 "    let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
 "endif
+
+" --------------------------------------------------------------------------
+" 💡 lightline configuration 💡
+" --------------------------------------------------------------------------
+let g:lightline = {
+  \ 'colorscheme': 'ayu_light',
+  \ }
