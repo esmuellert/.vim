@@ -1,11 +1,18 @@
 " vim-plug settings
 call plug#begin()
 if has('win32')
-    source $HOME/vimfiles/plugin.vim
+    if has('nvim')
+        source $HOME/AppData/Local/nvim/plugin.vim
+    else
+        source $HOME/vimfiles/plugin.vim
+    endif
 else
-    source $HOME/.vim/plugin.vim
+    if has('nvim')
+        source $HOME/.config/nvim/plugin.vim
+    else
+        source $HOME/.vim/plugin.vim
+    endif
 endif
-
 "Plug 'scrooloose/nerdtree'
 "Plug 'endel/vim-github-colorscheme'
 "Plug 'akiicat/vim-github-theme'
@@ -23,6 +30,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
 if !has('nvim')
     Plug 'cormacrelf/vim-colors-github'
+else
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'projekt0n/github-nvim-theme'
 endif
 call plug#end()
 
@@ -107,6 +117,8 @@ set termguicolors
 set background=light
 if !has('nvim')
     colorscheme github
+else
+    colorscheme github_light
 endif
 " Line number and clipboard
 set number
