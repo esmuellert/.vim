@@ -158,7 +158,8 @@ if has('win32')
   "  else
   "    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
   "  endif
-
+  " Custom command to run PowerShell commands
+  command! -nargs=1 pwsh execute ':!pwsh -command "& <args>"'
   set shell=cmd
 endif
 
