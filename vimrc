@@ -300,23 +300,6 @@ nnoremap <silent><nowait> ,p  :<C-u>CocListResume<CR>
 if executable('rg')
     " Ignore files in .gitignore and node_modules, .git for :Files default command
     let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --glob "!**/node_modules/**" --glob "!**/.git/**"'
-
-    " Ignore above patterns also for :Files input path
-    function! FzfRgWithExclusions(...)
-        let l:query = len(a:000) ? a:000[0] : ''
-        let l:cmd =  $FZF_DEFAULT_COMMAND
-
-        if l:query != ''
-            " Append the search query directly to the rg command
-            let l:cmd .= ' ' . shellescape(l:query)
-        endif
-
-        " Execute the final command with fzf
-        call fzf#run(fzf#wrap({'source': l:cmd, 'options': '--expect=ctrl-v,ctrl-x', 'sink': 'e'}))
-    endfunction
-
-    " Map :Files to call this function
-    command! -nargs=? Files call FzfRgWithExclusions(<q-args>)
 endif
 
 nnoremap <leader>p :Files<CR>
