@@ -33,11 +33,12 @@ Plug 'itchyny/lightline.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim'
-Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
 if !has('nvim')
+    Plug 'airblade/vim-gitgutter'
     Plug 'cormacrelf/vim-colors-github'
 else
+    Plug 'lewis6991/gitsigns.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'projekt0n/github-nvim-theme'
 endif
