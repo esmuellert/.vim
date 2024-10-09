@@ -2,15 +2,22 @@
 call plug#begin()
 if has('win32')
     if has('nvim')
-        source $HOME/AppData/Local/nvim/plugin.vim
+        if filereadable($HOME.'/AppData/Local/nvim/plugin.vim')
+            source $HOME/AppData/Local/nvim/plugin.vim
+        endif
     else
-        source $HOME/vimfiles/plugin.vim
+        if filereadable($HOME.'/vimfiles/plugin.vim')
+            source $HOME/vimfiles/plugin.vim
+        endif
     endif
-else
     if has('nvim')
-        source $HOME/.config/nvim/plugin.vim
+        if filereadable($HOME.'/.config/nvim/plugin.vim')
+            source $HOME/.config/nvim/plugin.vim
+        endif
     else
-        source $HOME/.vim/plugin.vim
+        if filereadable($HOME.'/.vim/plugin.vim')
+            source $HOME/.vim/plugin.vim
+        endif
     endif
 endif
 "Plug 'scrooloose/nerdtree'
@@ -93,13 +100,11 @@ endif
 set backup
 if !has('nvim')
     if has('win32')
-        silent !mkdir -p $HOME/vimfiles/tmp
         set backupdir   =$HOME/vimfiles/tmp
         set directory   =$HOME/vimfiles/tmp
         set undodir     =$HOME/vimfiles/tmp
         set viminfo     =%,<800,'10,/50,:100,h,f0,n$HOME/vimfiles/viminfo
     else
-        silent !mkdir -p $HOME/.vim/tmp
         set backupdir   =$HOME/.vim/tmp
         set directory   =$HOME/.vim/tmp
         set undodir     =$HOME/.vim/tmp
@@ -107,12 +112,10 @@ if !has('nvim')
     endif
 else
     if has('win32')
-        silent !mkdir -p ~/AppData/Local/nvim/tmp
         set backupdir   =~/AppData/Local/nvim/tmp
         set directory   =~/AppData/Local/nvim/tmp
         set undodir     =~/AppData/Local/nvim/tmp
     else
-        silent !mkdir -p ~/.config/nvim/tmp
         set backupdir=~/.config/nvim/tmp
         set directory=~/.config/nvim/tmp
         set undodir=~/.config/nvim/tmp
@@ -184,12 +187,6 @@ autocmd VimEnter * nested if isdirectory(g:initial_cwd . "/.vscode") && fileread
 
 " Use PowerShell as Windows shell
 if has('win32')
-    "  if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
-    "    set shell=C:\\Program Files\\PowerShell\\7\\pwsh.exe
-    "  else
-    "    set shell=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
-    "  endif
-    " Custom command to run PowerShell commands
     command! -nargs=1 Pwsh execute ':!pwsh -command "& <args>"'
     set shell=cmd
 endif
@@ -315,6 +312,7 @@ let g:lightline = {
             \ 'colorscheme': 'ayu_light',
             \ }
 
+" --------------------------------------------------------------------------
 " 📖 lua configuration for nvim 📖
 " --------------------------------------------------------------------------
 if has('nvim')
@@ -324,3 +322,4 @@ if has('nvim')
         luafile $HOME/.config/nvim/nvim.lua
     endif
 endif
+
