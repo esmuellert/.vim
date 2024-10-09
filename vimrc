@@ -296,7 +296,11 @@ nnoremap <silent><nowait> ,p  :<C-u>CocListResume<CR>
 " --------------------------------------------------------------------------
 " 🌟 fzf
 " --------------------------------------------------------------------------
-nnoremap <leader>p :execute 'Files '.g:initial_cwd<CR>
+" Use ripgrep as the default fzf commands
+if executable('rg')
+    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --glob "!node_modules/**" --glob "!.git/**"'
+endif
+nnoremap <leader>p :Files<CR>
 nnoremap <leader>f :Rg<CR>
 nnoremap <leader>b :Buffers<CR>
 "if has('win32')
