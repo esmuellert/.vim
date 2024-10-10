@@ -53,7 +53,7 @@ require('gitsigns').setup {
     signs = {
         add          = { text = '┃' },
         change       = { text = '┃' },
-        delete       = { text = '_' },
+        delete       = { text = '┃' },
         topdelete    = { text = '‾' },
         changedelete = { text = '~' },
         untracked    = { text = '┆' },
@@ -98,6 +98,33 @@ require('gitsigns').setup {
         row = 0,
         col = 1
     },
+    on_attach = function(bufnr)
+        local gitsigns = require('gitsigns')
+
+        local function map(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+            if vim.wo.diff then
+                vim.cmd.normal({']c', bang = true})
+            else
+                gitsigns.nav_hunk('next')
+            end
+        end)
+
+        map('n', '[c', function()
+            if vim.wo.diff then
+                vim.cmd.normal({'[c', bang = true})
+            else
+                gitsigns.nav_hunk('prev')
+            end
+        end)
+        map('n', '<leader>hk', gitsigns.preview_hunk_inline)
+    end
 }
 
 ------------------------------------------------------------------------
@@ -110,26 +137,62 @@ require("diffview").setup ({
 ------------------------------------------------------------------------
 -- 📏 indent-blankline.nvim: Visual indentation guides for Neovim
 ------------------------------------------------------------------------
-local highlight = {
-    "CursorColumn",
-    "Whitespace",
-}
 require("ibl").setup {
-    indent = { highlight = highlight, char = "" },
-    whitespace = {
-        highlight = highlight,
-        remove_blankline_trail = false,
+    indent = {
+        char = "│"
     },
-    scope = { enabled = false },
 }
 
 
 ------------------------------------------------------------------------
 -- 🎨 github-nvim-theme: GitHub-inspired colors for Neovim
 ------------------------------------------------------------------------
-require("github-theme").setup({
-    options = {
-        transparent = true,
-        dim_inactive = true,
+require("github-theme").setup()
+
+
+------------------------------------------------------------------------
+-- 🔭 telescope.nvim: Fuzzy finder and picker for Neovim
+------------------------------------------------------------------------
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>p', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>f', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>b', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>hp', builtin.help_tags, { desc = 'Telescope help tags' })
+
+-- Add devicons to telescope
+local devicons = require"nvim-web-devicons"
+-- Close telescope with <esc>
+local actions = require("telescope.actions")
+require("telescope").setup{
+    defaults = {
+        mappings = {
+            i = {
+                ["<esc>"] = actions.close
+            },
+        },
+    },
+    pickers = {
+        find_files = {
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/**', '--glob', '!**/node_modules/**' }
+        }
     }
+}
+
+------------------------------------------------------------------------
+-- 🖥️   toggleterm.nvim: Easily manage multiple terminal windows in Neovim
+------------------------------------------------------------------------
+local Terminal  = require('toggleterm.terminal').Terminal
+local lazygit = Terminal:new({
+    cmd = "lazygit",
+    dir = "git_dir",
+    direction = "float",
+    float_opts = {
+        border = "double",
+    },
 })
+
+function _lazygit_toggle()
+    lazygit:toggle()
+end
+
+vim.api.nvim_set_keymap("n", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})

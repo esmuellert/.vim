@@ -1,4 +1,5 @@
-" vim-plug settings
+" vim-plug setting
+"/* cSpell:disable */
 call plug#begin()
 if has('win32')
     if has('nvim')
@@ -30,12 +31,12 @@ endif
 "Plug 'tpope/vim-sleuth'
 "Plug 'vim-airline/vim-airline'
 Plug 'itchyny/lightline.vim'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim'
 Plug 'tpope/vim-surround'
 if !has('nvim')
     Plug 'airblade/vim-gitgutter'
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
     Plug 'cormacrelf/vim-colors-github'
 else
     Plug 'lewis6991/gitsigns.nvim'
@@ -43,6 +44,10 @@ else
     Plug 'projekt0n/github-nvim-theme'
     Plug 'sindrets/diffview.nvim'
     Plug 'lukas-reineke/indent-blankline.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }
+    Plug 'nvim-tree/nvim-web-devicons'
+    Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
 endif
 call plug#end()
 
@@ -190,8 +195,21 @@ autocmd VimEnter * nested if isdirectory(g:initial_cwd . "/.vscode") && fileread
 
 " Use PowerShell as Windows shell
 if has('win32')
-    command! -nargs=1 Pwsh execute ':!pwsh -command "& <args>"'
-    set shell=cmd
+    if has('nvim')
+        if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
+            set shell=pwsh
+        else
+            set shell=powershell
+        endif
+        set shellxquote=
+        let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
+        let &shellquote   = ''
+        let &shellpipe    = '| Out-File -Encoding UTF8 %s'
+        let &shellredir   = '| Out-File -Encoding UTF8 %s'
+    else
+        command! -nargs=1 Pwsh execute ':!pwsh -command "& <args>"'
+        set shell=cmd
+    endif
 endif
 
 " Bind leaders
@@ -297,24 +315,26 @@ nnoremap <silent><nowait> ,k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent><nowait> ,p  :<C-u>CocListResume<CR>
 
-" --------------------------------------------------------------------------
-" 🌟 fzf
-" --------------------------------------------------------------------------
-" Use ripgrep as the default fzf commands
-if executable('rg')
-    " Ignore files in .gitignore and node_modules, .git for :Files default command
-    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --glob "!**/node_modules/**" --glob "!**/.git/**"'
+if !has('nvim')
+    " --------------------------------------------------------------------------
+    " 🌟 fzf
+    " --------------------------------------------------------------------------
+    " Use ripgrep as the default fzf commands
+    if executable('rg')
+        " Ignore files in .gitignore and node_modules, .git for :Files default command
+        let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --glob "!**/node_modules/**" --glob "!**/.git/**"'
+    endif
+
+    nnoremap <leader>p :Files<CR>
+    nnoremap <leader>f :Rg<CR>
+    nnoremap <leader>b :Buffers<CR>
+
+    "if has('win32')
+    "    let g:fzf_vim.preview_window = []
+    "    let g:fzf_vim = {}
+    "    let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
+    "endif
 endif
-
-nnoremap <leader>p :Files<CR>
-nnoremap <leader>f :Rg<CR>
-nnoremap <leader>b :Buffers<CR>
-
-"if has('win32')
-"    let g:fzf_vim.preview_window = []
-"    let g:fzf_vim = {}
-"    let g:fzf_vim.preview_bash = 'C:\Program Files\Git\usr\bin\bash.exe'
-"endif
 
 " --------------------------------------------------------------------------
 " 💡 lightline configuration 💡
