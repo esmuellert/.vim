@@ -31,13 +31,14 @@ endif
 "Plug 'tpope/vim-sleuth'
 "Plug 'vim-airline/vim-airline'
 Plug 'itchyny/lightline.vim'
-Plug 'neoclide/coc.nvim'
 Plug 'tpope/vim-surround'
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug 'cormacrelf/vim-colors-github'
 if !has('nvim')
     Plug 'airblade/vim-gitgutter'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    Plug 'cormacrelf/vim-colors-github'
+    Plug 'neoclide/coc.nvim'
 else
     Plug 'lewis6991/gitsigns.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -49,6 +50,17 @@ else
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
     Plug 'numToStr/Comment.nvim'
+    " Start with LSP and autocompletion settings. Equivalent to coc
+    Plug 'williamboman/mason.nvim'
+    Plug 'williamboman/mason-lspconfig.nvim'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-cmdline'
+    Plug 'hrsh7th/nvim-cmp'
+    " End LSP settings
+
 endif
 call plug#end()
 
@@ -143,7 +155,9 @@ set background=light
 if !has('nvim')
     colorscheme github
 else
-    colorscheme github_light
+    " colorscheme catppuccin-latte
+    " colorscheme github_light_default
+    colorscheme github
 endif
 " Line number and clipboard
 set number
@@ -230,91 +244,93 @@ set ignorecase smartcase
 " Close the tab if NERDTree is the only window remaining in it.
 "autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 
-" --------------------------------------------------------------------------
-" 🌟 coc.nvim - Modern LSP for Vim
-" --------------------------------------------------------------------------
-" :CocInstall coc-tsserver coc-json coc-vimlsp coc-marketplace coc-pairs coc-spell-checker coc-html coc-yaml coc-xml coc-powershell coc-prettier coc-eslint
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-marketplace', 'coc-pairs', 'coc-spell-checker', 'coc-html', 'coc-yaml', 'coc-xml', 'coc-powershell', 'coc-css', 'coc-eslint']
-" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-" delays and poor user experience
-set updatetime=300
+if !has('nvim')
+    " --------------------------------------------------------------------------
+    " 🌟 coc.nvim - Modern LSP for Vim
+    " --------------------------------------------------------------------------
+    " :CocInstall coc-tsserver coc-json coc-vimlsp coc-marketplace coc-pairs coc-spell-checker coc-html coc-yaml coc-xml coc-powershell coc-prettier coc-eslint
+    let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-marketplace', 'coc-pairs', 'coc-spell-checker', 'coc-html', 'coc-yaml', 'coc-xml', 'coc-powershell', 'coc-css', 'coc-eslint']
+    " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+    " delays and poor user experience
+    set updatetime=300
 
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-            \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+    " Make <CR> to accept selected completion item or notify coc.nvim to format
+    " <C-g>u breaks current undo, please make your own choice
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved
-set signcolumn=yes           
+    " Always show the signcolumn, otherwise it would shift the text each time
+    " diagnostics appear/become resolved
+    set signcolumn=yes           
 
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+    " Use `[g` and `]g` to navigate diagnostics
+    " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+    nmap <silent> [g <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" GoTo code navigation
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+    " GoTo code navigation
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window
-nnoremap <silent> K :call ShowDocumentation()<CR>
-function! ShowDocumentation()
-    if CocAction('hasProvider', 'hover')
-        call CocActionAsync('doHover')
-    else
-        call feedkeys('K', 'in')
-    endif
-endfunction
+    " Use K to show documentation in preview window
+    nnoremap <silent> K :call ShowDocumentation()<CR>
+    function! ShowDocumentation()
+        if CocAction('hasProvider', 'hover')
+            call CocActionAsync('doHover')
+        else
+            call feedkeys('K', 'in')
+        endif
+    endfunction
 
-" Symbol renaming
-nmap <leader>rn <Plug>(coc-rename)
+    " Symbol renaming
+    nmap <leader>rn <Plug>(coc-rename)
 
-" Formatting selected code
-xmap <leader>fm  <Plug>(coc-format-selected)
-nmap <leader>fm  <Plug>(coc-format-selected)
+    " Formatting selected code
+    xmap <leader>fm  <Plug>(coc-format-selected)
+    nmap <leader>fm  <Plug>(coc-format-selected)
 
-" Remap keys for applying code actions at the cursor position
-nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+    " Remap keys for applying code actions at the cursor position
+    nmap <leader>ac  <Plug>(coc-codeaction-cursor)
 
-" Remap keys for apply code actions affect whole buffer
-nmap <leader>as  <Plug>(coc-codeaction-source)
+    " Remap keys for apply code actions affect whole buffer
+    nmap <leader>as  <Plug>(coc-codeaction-source)
 
-" Apply the most preferred quickfix action to fix diagnostic on the current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+    " Apply the most preferred quickfix action to fix diagnostic on the current line
+    nmap <leader>qf  <Plug>(coc-fix-current)
 
-" Remap keys for applying refactor code actions
-nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
-xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+    " Remap keys for applying refactor code actions
+    nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+    xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+    nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
 
-" Run the Code Lens action on the current line
-nmap <leader>cl  <Plug>(coc-codelens-action)
-" Add `:Format` command to format current buffer
-command! -nargs=0 Format :call CocActionAsync('format')
-" Add `:Fold` command to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-" Add `:OR` command for organize imports of the current buffer
-command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
-" Mappings for CoCList
-" Show all diagnostics
-nnoremap <silent><nowait> ,a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent><nowait> ,e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent><nowait> ,c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent><nowait> ,o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent><nowait> ,s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item
-nnoremap <silent><nowait> ,j  :<C-u>CocNext<CR>
-" Do default action for previous item
-nnoremap <silent><nowait> ,k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent><nowait> ,p  :<C-u>CocListResume<CR>
+    " Run the Code Lens action on the current line
+    nmap <leader>cl  <Plug>(coc-codelens-action)
+    " Add `:Format` command to format current buffer
+    command! -nargs=0 Format :call CocActionAsync('format')
+    " Add `:Fold` command to fold current buffer
+    command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+    " Add `:OR` command for organize imports of the current buffer
+    command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+    " Mappings for CoCList
+    " Show all diagnostics
+    nnoremap <silent><nowait> ,a  :<C-u>CocList diagnostics<cr>
+    " Manage extensions
+    nnoremap <silent><nowait> ,e  :<C-u>CocList extensions<cr>
+    " Show commands
+    nnoremap <silent><nowait> ,c  :<C-u>CocList commands<cr>
+    " Find symbol of current document
+    nnoremap <silent><nowait> ,o  :<C-u>CocList outline<cr>
+    " Search workspace symbols
+    nnoremap <silent><nowait> ,s  :<C-u>CocList -I symbols<cr>
+    " Do default action for next item
+    nnoremap <silent><nowait> ,j  :<C-u>CocNext<CR>
+    " Do default action for previous item
+    nnoremap <silent><nowait> ,k  :<C-u>CocPrev<CR>
+    " Resume latest coc list
+    nnoremap <silent><nowait> ,p  :<C-u>CocListResume<CR>
+endif
 
 if !has('nvim')
     " --------------------------------------------------------------------------
