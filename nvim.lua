@@ -1,9 +1,15 @@
 ------------------------------------------------------------------------
+-- ⌨️ Custom Shortcuts
+------------------------------------------------------------------------
+--- Prettier format current buffer
+vim.api.nvim_set_keymap('n', '<A-S-F>', ':w!<CR> :!pnpm exec prettier --write %<CR> :edit!<CR>', { noremap = true, silent = true })
+
+------------------------------------------------------------------------
 -- 🌲 treesitter configuration 🌲
 ------------------------------------------------------------------------
 require'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all" (the listed parsers MUST always be installed)
-    ensure_installed = { "c", "lua", "vim", "vimdoc", "markdown", "markdown_inline", "javascript", "typescript", "c_sharp", "powershell", "tsx", "html" },
+    ensure_installed = { "c", "lua", "vim", "vimdoc", "markdown", "markdown_inline", "javascript", "typescript", "c_sharp", "powershell", "tsx", "html", "json" },
 
     -- Install parsers synchronously (only applied to `ensure_installed`)
     sync_install = false,
@@ -179,7 +185,7 @@ require("telescope").setup{
 }
 
 ------------------------------------------------------------------------
--- 🖥️   toggleterm.nvim: Easily manage multiple terminal windows in Neovim
+-- 🖥️   toggleterm.nvim: Easily manage multiple termina
 ------------------------------------------------------------------------
 local Terminal  = require('toggleterm.terminal').Terminal
 local lazygit = Terminal:new({
@@ -196,3 +202,9 @@ function _lazygit_toggle()
 end
 
 vim.api.nvim_set_keymap("n", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
+
+
+------------------------------------------------------------------------
+-- 💬 Comment.nvim: Efficient code commenting for Neovim
+------------------------------------------------------------------------
+require('Comment').setup()

@@ -48,6 +48,7 @@ else
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
+    Plug 'numToStr/Comment.nvim'
 endif
 call plug#end()
 
@@ -233,7 +234,7 @@ set ignorecase smartcase
 " 🌟 coc.nvim - Modern LSP for Vim
 " --------------------------------------------------------------------------
 " :CocInstall coc-tsserver coc-json coc-vimlsp coc-marketplace coc-pairs coc-spell-checker coc-html coc-yaml coc-xml coc-powershell coc-prettier coc-eslint
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-marketplace', 'coc-pairs', 'coc-spell-checker', 'coc-html', 'coc-yaml', 'coc-xml', 'coc-powershell', 'coc-css']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-marketplace', 'coc-pairs', 'coc-spell-checker', 'coc-html', 'coc-yaml', 'coc-xml', 'coc-powershell', 'coc-css', 'coc-eslint']
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
 " delays and poor user experience
 set updatetime=300
