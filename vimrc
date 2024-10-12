@@ -59,7 +59,12 @@ else
     Plug 'hrsh7th/cmp-path'
     Plug 'hrsh7th/cmp-cmdline'
     Plug 'hrsh7th/nvim-cmp'
+    Plug 'Hoffs/omnisharp-extended-lsp.nvim'
     " End LSP settings
+    Plug 'folke/trouble.nvim'
+    Plug 'liuchengxu/vista.vim'
+    Plug 'windwp/nvim-autopairs'
+    " Insert plugin above
 
 endif
 call plug#end()
@@ -162,6 +167,12 @@ endif
 " Line number and clipboard
 set number
 set clipboard=unnamed
+" Map all normal mode delete operations to register 'a'
+nnoremap d "ad
+
+" Map all visual mode delete operations to register 'a'
+vnoremap d "ad
+
 
 " Remove error bell
 set belloff=all
@@ -232,6 +243,10 @@ let mapleader = ' '
 
 " set ignorecase and smartcase
 set ignorecase smartcase
+
+" set shiftwidth for languages
+" lua shiftwidth
+autocmd FileType lua setlocal shiftwidth=2
 
 " --------------------------------------------------------------------------
 " 🌟 NERDTree
