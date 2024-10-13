@@ -1,26 +1,23 @@
 " vim-plug setting
 "/* cSpell:disable */
 call plug#begin()
-if has('win32')
-    if has('nvim')
-        if filereadable($HOME.'/AppData/Local/nvim/plugin.vim')
-            source $HOME/AppData/Local/nvim/plugin.vim
-        endif
-    else
-        if filereadable($HOME.'/vimfiles/plugin.vim')
-            source $HOME/vimfiles/plugin.vim
-        endif
+
+if has('nvim')
+    if filereadable($HOME.'/AppData/Local/nvim/plugin.vim')
+        source $HOME/AppData/Local/nvim/plugin.vim
     endif
-    if has('nvim')
-        if filereadable($HOME.'/.config/nvim/plugin.vim')
-            source $HOME/.config/nvim/plugin.vim
-        endif
-    else
-        if filereadable($HOME.'/.vim/plugin.vim')
-            source $HOME/.vim/plugin.vim
-        endif
+    if filereadable($HOME.'/vimfiles/plugin.vim')
+        source $HOME/vimfiles/plugin.vim
+    endif
+else
+    if filereadable($HOME.'/.config/nvim/plugin.vim')
+        source $HOME/.config/nvim/plugin.vim
+    endif
+    if filereadable($HOME.'/.vim/plugin.vim')
+        source $HOME/.vim/plugin.vim
     endif
 endif
+
 "Plug 'scrooloose/nerdtree'
 "Plug 'endel/vim-github-colorscheme'
 "Plug 'akiicat/vim-github-theme'
@@ -64,6 +61,7 @@ else
     Plug 'folke/trouble.nvim'
     Plug 'liuchengxu/vista.vim'
     Plug 'windwp/nvim-autopairs'
+    Plug 'j-hui/fidget.nvim'
     " Insert plugin above
 
 endif
@@ -166,13 +164,7 @@ else
 endif
 " Line number and clipboard
 set number
-set clipboard=unnamed
-" Map all normal mode delete operations to register 'a'
-nnoremap d "ad
-
-" Map all visual mode delete operations to register 'a'
-vnoremap d "ad
-
+" set clipboard=unnamed
 
 " Remove error bell
 set belloff=all

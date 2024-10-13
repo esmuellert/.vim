@@ -1,11 +1,13 @@
 ------------------------------------------------------------------------
---- Custom utility functions
+--- Custom utility functions and configuration for NeoVim
 ------------------------------------------------------------------------
 --- Check if the current OS is Windows
 function is_windows()
   return vim.loop.os_uname().sysname == 'Windows'
 end
 
+--- Set spell check
+vim.cmd('setlocal spell spelllang=en_us')
 ------------------------------------------------------------------------
 -- ⌨️ Custom Shortcuts
 ------------------------------------------------------------------------
@@ -179,7 +181,10 @@ vim.keymap.set('n', '<leader>fd', [[:lua require('telescope.builtin').live_grep(
 local devicons = require"nvim-web-devicons"
 -- Close telescope with <esc>
 local actions = require("telescope.actions")
-require("telescope").setup{
+
+
+local telescope = require("telescope")
+telescope.setup{
   defaults = {
     mappings = {
       i = {
@@ -235,8 +240,8 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_implementations, bufopts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, bufopts)
+  vim.keymap.set('n', '<leader>ac', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 end
 --- nvim.cmp
 local cmp = require'cmp'
@@ -330,8 +335,9 @@ require('mason-lspconfig').setup({
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
-          workingDirectories = {
-            mode = 'auto'
+          packageManager = 'pnpm',
+          workingDirectory = {
+            mode = 'location'
           }
         }
       })
@@ -433,19 +439,23 @@ require('mason-lspconfig').setup({
 --- 🚨 Trouble.nvim: A pretty list for showing diagnostics
 ------------------------------------------------------------------------
 require("trouble").setup()
-local actions = require("telescope.actions")
-local open_with_trouble = require("trouble.sources.telescope").open
+-- local actions = require("telescope.actions")
+-- local open_with_trouble = require("trouble.sources.telescope").open
+--
+-- -- Use this to add more results without clearing the trouble list
+-- local add_to_trouble = require("trouble.sources.telescope").add
+--
+-- telescope.setup({
+--   defaults = {
+--     mappings = {
+--       i = { ["<c-t>"] = open_with_trouble },
+--       n = { ["<c-t>"] = open_with_trouble },
+--     },
+--   },
+-- })
+--
 
--- Use this to add more results without clearing the trouble list
-local add_to_trouble = require("trouble.sources.telescope").add
-
-local telescope = require("telescope")
-
-telescope.setup({
-  defaults = {
-    mappings = {
-      i = { ["<c-t>"] = open_with_trouble },
-      n = { ["<c-t>"] = open_with_trouble },
-    },
-  },
-})
+------------------------------------------------------------------------
+--- 📜 Fidget.nvim: A LSP status line for neovim
+------------------------------------------------------------------------
+require("fidget").setup({})
