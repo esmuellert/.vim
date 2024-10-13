@@ -3,16 +3,102 @@
 ------------------------------------------------------------------------
 --- Check if the current OS is Windows
 function is_windows()
-  return vim.loop.os_uname().sysname == 'Windows'
+  return vim.loop.os_uname().sysname == 'Windows_NT'
 end
 
 --- Set spell check
 vim.cmd('setlocal spell spelllang=en_us')
+
 ------------------------------------------------------------------------
 -- ⌨️ Custom Shortcuts
 ------------------------------------------------------------------------
 --- Prettier format current buffer
 vim.api.nvim_set_keymap('n', '<A-S-F>', ':w!<CR> :!pnpm exec prettier --write %<CR> :edit!<CR>', { noremap = true, silent = true })
+
+-- Function to toggle terminal buffer
+function ToggleTerminal()
+  -- Find the terminal buffer
+  local term_buf = vim.fn.bufnr('term://*')
+
+  -- If the terminal buffer exists
+  if term_buf ~= -1 then
+    -- Get the window number where the terminal buffer is currently displayed
+    local term_win = vim.fn.bufwinnr(term_buf)
+    
+    -- Check if there is more than one window and the terminal is visible
+    if vim.fn.winnr('$') > 1 then
+      -- Hide the window if the terminal buffer is visible
+      if term_win ~= -1 then
+        vim.api.nvim_win_hide(term_win)
+      else
+        -- If the terminal buffer exists but is not visible, switch to it
+        vim.cmd('buffer ' .. term_buf)
+      end
+    else
+      -- If there's only one window, just close the terminal buffer
+      if term_win ~= -1 then
+        vim.cmd('bd! ' .. term_buf)
+      else
+        -- If terminal is not open, switch to it
+        vim.cmd('buffer ' .. term_buf)
+      end
+    end
+  else
+    -- If no terminal exists, create one in the current window
+    vim.cmd('terminal')
+    -- Automatically enter insert mode and hide line numbers
+    vim.cmd('startinsert')
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+  end
+end
+
+-- Map <leader>T to toggle terminal
+vim.api.nvim_set_keymap('n', '<leader>t', ':lua ToggleTerminal()<CR>', { noremap = true, silent = true })
+
+-- Function to toggle LazyGit
+function ToggleLazyGit()
+  -- Find the terminal buffer running lazygit
+  local term_buf = vim.fn.bufnr('term://*lazygit')
+
+  -- If LazyGit is already running in a terminal
+  if term_buf ~= -1 then
+    local term_win = vim.fn.bufwinnr(term_buf)
+
+    -- If LazyGit terminal is visible, switch to the buffer
+    if term_win ~= -1 then
+      vim.cmd('buffer ' .. term_buf)
+      vim.cmd('startinsert') -- Re-enter terminal insert mode
+    else
+      -- If terminal is not visible, switch to it
+      vim.cmd('buffer ' .. term_buf)
+    end
+  else
+    -- If LazyGit is not running, check if LazyGit is installed
+    if vim.fn.executable('lazygit') == 1 then
+      -- Open LazyGit in the terminal
+      vim.cmd('terminal lazygit')
+      vim.cmd('startinsert') -- Automatically enter insert mode for terminal
+
+      -- Hide line numbers when entering LazyGit
+      vim.opt_local.number = false
+      vim.opt_local.relativenumber = false
+
+      -- Automatically send 'Esc' to exit terminal mode when LazyGit process exits
+      vim.api.nvim_create_autocmd("TermClose", {
+        buffer = 0, -- Current buffer
+        callback = function()
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+        end,
+      })
+    else
+      print("LazyGit is not installed or not found in PATH.")
+    end
+  end
+end
+
+-- Map <leader>g to toggle LazyGit
+vim.api.nvim_set_keymap('n', '<leader>G', ':lua ToggleLazyGit()<CR>', { noremap = true, silent = true })
 
 ------------------------------------------------------------------------
 -- 🌲 treesitter configuration 🌲
@@ -199,24 +285,24 @@ telescope.setup{
   }
 }
 
-------------------------------------------------------------------------
--- 🖥️   toggleterm.nvim: Easily manage multiple termina
-------------------------------------------------------------------------
-local Terminal  = require('toggleterm.terminal').Terminal
-local lazygit = Terminal:new({
-  cmd = "lazygit",
-  dir = "git_dir",
-  direction = "float",
-  float_opts = {
-    border = "double",
-  },
-})
-
-function _lazygit_toggle()
-  lazygit:toggle()
-end
-
-vim.api.nvim_set_keymap("n", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
+-- ------------------------------------------------------------------------
+-- -- 🖥️   toggleterm.nvim: Easily manage multiple termina
+-- ------------------------------------------------------------------------
+-- local Terminal  = require('toggleterm.terminal').Terminal
+-- local lazygit = Terminal:new({
+--   cmd = "lazygit",
+--   dir = "git_dir",
+--   direction = "float",
+--   float_opts = {
+--     border = "double",
+--   },
+-- })
+--
+-- function _lazygit_toggle()
+--   lazygit:toggle()
+-- end
+--
+-- vim.api.nvim_set_keymap("n", "<leader>g", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
 
 
 ------------------------------------------------------------------------

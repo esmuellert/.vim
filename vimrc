@@ -45,7 +45,7 @@ else
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }
     Plug 'nvim-tree/nvim-web-devicons'
-    Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
+    " Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
     Plug 'numToStr/Comment.nvim'
     " Start with LSP and autocompletion settings. Equivalent to coc
     Plug 'williamboman/mason.nvim'
@@ -214,7 +214,7 @@ autocmd VimEnter * nested if isdirectory(g:initial_cwd . "/.vscode") && fileread
 " Use PowerShell as Windows shell
 if has('win32')
     if has('nvim')
-        if filereadable('C:\\Program\ Files\\PowerShell\\7\\pwsh.exe')
+        if filereadable('C:\\Program Files\\PowerShell\\7\\pwsh.exe')
             set shell=pwsh
         else
             set shell=powershell
