@@ -98,7 +98,7 @@ function ToggleLazyGit()
 end
 
 -- Map <leader>g to toggle LazyGit
-vim.api.nvim_set_keymap('n', '<leader>G', ':lua ToggleLazyGit()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>g', ':lua ToggleLazyGit()<CR>', { noremap = true, silent = true })
 
 ------------------------------------------------------------------------
 -- 🌲 treesitter configuration 🌲
@@ -321,12 +321,12 @@ require('nvim-autopairs').setup()
 -- Key mappings on LSP attach
 local on_attach = function(client, bufnr)
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
-  vim.keymap.set('n', 'gd',require('telescope.builtin').lsp_definitions, bufopts)
-  vim.keymap.set('n', 'gr',require('telescope.builtin').lsp_references, bufopts)
-  vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_implementations, bufopts)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<leader>ac', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', 'gd','<cmd>Lspsaga goto_definition <cr>', bufopts)
+  vim.keymap.set('n', 'gr','<cmd>Lspsaga finder<cr>',  bufopts)
+  vim.keymap.set('n', 'gi','<cmd>Lspsaga finder imp<cr>' , bufopts)
+  vim.keymap.set('n', 'K', '<cmd>Lspsaga hover<cr>' , bufopts)
+  vim.keymap.set('n', '<leader>rn', '<cmd>Lspsaga rename<cr>', bufopts)
+  vim.keymap.set('n', '<leader>ac', '<cmd>Lspsaga code_action<cr>', bufopts)
   vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 end
 --- nvim.cmp
@@ -441,3 +441,8 @@ require("trouble").setup()
 --- 📜 Fidget.nvim: A LSP status line for neovim
 ------------------------------------------------------------------------
 require("fidget").setup({})
+
+------------------------------------------------------------------------
+--- 📜 Lspsaga: A LSP UI for Neovim
+------------------------------------------------------------------------
+require('lspsaga').setup({})

@@ -61,9 +61,10 @@ else
     Plug 'folke/trouble.nvim'
     Plug 'liuchengxu/vista.vim'
     Plug 'windwp/nvim-autopairs'
+    Plug 'mfussenegger/nvim-lint'
     Plug 'j-hui/fidget.nvim'
+    Plug 'glepnir/lspsaga.nvim'
     " Insert plugin above
-
 endif
 call plug#end()
 
