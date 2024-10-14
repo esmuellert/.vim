@@ -398,29 +398,20 @@ cmp.setup.cmdline(':', {
 -- Set up lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local lspconfig = require('lspconfig')
-
 require('mason').setup({})
 require('mason-lspconfig').setup({
   ensure_installed = {
     'ts_ls',
     'html',
-    'eslint',
     'cssls',
   },
   handlers = {
     function(server)
-      lspconfig[server].setup({
+      require("lspconfig")[server].setup({
         capabilities = capabilities,
         on_attach = on_attach
       })
     end,
-    ["eslint"] = function()
-      lspconfig.eslint.setup {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      }
-    end
   }
 })
 
@@ -453,3 +444,4 @@ require("fidget").setup({})
 --- 📜 Lspsaga: A LSP UI for Neovim
 ------------------------------------------------------------------------
 require('lspsaga').setup({})
+
