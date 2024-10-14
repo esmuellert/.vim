@@ -405,6 +405,7 @@ require('mason-lspconfig').setup({
   ensure_installed = {
     'ts_ls',
     'html',
+    'eslint',
     'cssls',
   },
   handlers = {
@@ -414,6 +415,12 @@ require('mason-lspconfig').setup({
         on_attach = on_attach
       })
     end,
+    ["eslint"] = function()
+      lspconfig.eslint.setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+      }
+    end
   }
 })
 

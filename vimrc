@@ -212,7 +212,7 @@ autocmd VimEnter * nested if isdirectory(g:initial_cwd . "/.vscode") && fileread
 "let g:netrw_list_hide=netrw_gitignore#Hide()
 "execute 'set wildignore+='.substitute(g:netrw_list_hide.',**/.git/*','/,','/**,','g')
 
-" Use PowerShell as Windows shell
+" Use PowerShell as Windows shell and other Windows settings
 if has('win32')
     if has('nvim')
         if filereadable('C:\\Program Files\\PowerShell\\7\\pwsh.exe')
