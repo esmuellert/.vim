@@ -29,8 +29,9 @@ endif
 "Plug 'vim-airline/vim-airline'
 Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-surround'
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+" Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'cormacrelf/vim-colors-github'
+Plug 'tpope/vim-fugitive'
 if !has('nvim')
     Plug 'airblade/vim-gitgutter'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -42,7 +43,7 @@ else
     Plug 'projekt0n/github-nvim-theme'
     Plug 'sindrets/diffview.nvim'
     Plug 'lukas-reineke/indent-blankline.nvim'
-    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-lua/plenary.nvim' 
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }
     Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
     Plug 'nvim-tree/nvim-web-devicons'
@@ -57,12 +58,12 @@ else
     Plug 'hrsh7th/cmp-path'
     Plug 'hrsh7th/cmp-cmdline'
     Plug 'hrsh7th/nvim-cmp'
-    Plug 'Hoffs/omnisharp-extended-lsp.nvim'
+    " Plug 'Hoffs/omnisharp-extended-lsp.nvim'
     " End LSP settings
     Plug 'folke/trouble.nvim'
-    Plug 'liuchengxu/vista.vim'
+    " Plug 'liuchengxu/vista.vim'
     Plug 'windwp/nvim-autopairs'
-    Plug 'mfussenegger/nvim-lint'
+    " Plug 'mfussenegger/nvim-lint'
     Plug 'j-hui/fidget.nvim'
     Plug 'glepnir/lspsaga.nvim'
     Plug 'nvim-tree/nvim-tree.lua'
@@ -161,7 +162,6 @@ set background=light
 if !has('nvim')
     colorscheme github
 else
-    " colorscheme catppuccin-latte
     " colorscheme github_light_default
     colorscheme github
 endif
@@ -368,8 +368,14 @@ endif
 " --------------------------------------------------------------------------
 let g:lightline = {
             \ 'colorscheme': 'ayu_light',
+            \ 'active': {
+            \   'left': [ [ 'mode', 'paste' ],
+            \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+            \ },
+            \ 'component_function': {
+            \   'gitbranch': 'FugitiveHead'
+            \ },
             \ }
-
 " --------------------------------------------------------------------------
 " 📖 lua configuration for nvim 📖
 " --------------------------------------------------------------------------

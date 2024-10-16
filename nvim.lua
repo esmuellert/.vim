@@ -13,7 +13,8 @@ vim.cmd('setlocal spell spelllang=en_us')
 -- ⌨️ Custom Shortcuts
 ------------------------------------------------------------------------
 --- Prettier format current buffer
-vim.api.nvim_set_keymap('n', '<A-S-F>', ':w!<CR> :!pnpm exec prettier --write %<CR> :edit!<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-S-F>', ':w!<CR> :!pnpm exec prettier --write %<CR> :edit!<CR>',
+  { noremap = true, silent = true })
 
 -- Function to toggle terminal buffer
 function ToggleTerminal()
@@ -24,7 +25,7 @@ function ToggleTerminal()
   if term_buf ~= -1 then
     -- Get the window number where the terminal buffer is currently displayed
     local term_win = vim.fn.bufwinnr(term_buf)
-    
+
     -- Check if there is more than one window and the terminal is visible
     if vim.fn.winnr('$') > 1 then
       -- Hide the window if the terminal buffer is visible
@@ -103,7 +104,7 @@ vim.api.nvim_set_keymap('n', '<leader>g', ':lua ToggleLazyGit()<CR>', { noremap 
 ------------------------------------------------------------------------
 -- 🌲 treesitter configuration 🌲
 ------------------------------------------------------------------------
-require'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   ensure_installed = { "c", "lua", "vim", "vimdoc", "markdown", "markdown_inline", "javascript", "typescript", "c_sharp", "powershell", "tsx", "html", "json" },
 
@@ -142,7 +143,7 @@ require'nvim-treesitter.configs'.setup {
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
-  },   
+  },
   indent = {
     enable = true
   }
@@ -152,7 +153,7 @@ require'nvim-treesitter.configs'.setup {
 -- 🔍 Gitsigns configuration: track git changes in the gutter
 ------------------------------------------------------------------------
 require('gitsigns').setup {
-  signs = {
+  signs                        = {
     add          = { text = '┃' },
     change       = { text = '┃' },
     delete       = { text = '┃' },
@@ -160,7 +161,7 @@ require('gitsigns').setup {
     changedelete = { text = '~' },
     untracked    = { text = '┆' },
   },
-  signs_staged = {
+  signs_staged                 = {
     add          = { text = '┃' },
     change       = { text = '┃' },
     delete       = { text = '_' },
@@ -168,18 +169,18 @@ require('gitsigns').setup {
     changedelete = { text = '~' },
     untracked    = { text = '┆' },
   },
-  signs_staged_enable = true,
-  signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
-  numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
-  linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
-  word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
-  watch_gitdir = {
+  signs_staged_enable          = true,
+  signcolumn                   = true,  -- Toggle with `:Gitsigns toggle_signs`
+  numhl                        = false, -- Toggle with `:Gitsigns toggle_numhl`
+  linehl                       = false, -- Toggle with `:Gitsigns toggle_linehl`
+  word_diff                    = false, -- Toggle with `:Gitsigns toggle_word_diff`
+  watch_gitdir                 = {
     follow_files = true
   },
-  auto_attach = true,
-  attach_to_untracked = false,
-  current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
-  current_line_blame_opts = {
+  auto_attach                  = true,
+  attach_to_untracked          = false,
+  current_line_blame           = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+  current_line_blame_opts      = {
     virt_text = true,
     virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
     delay = 1000,
@@ -188,11 +189,11 @@ require('gitsigns').setup {
     use_focus = true,
   },
   current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
-  sign_priority = 6,
-  update_debounce = 100,
-  status_formatter = nil, -- Use default
-  max_file_length = 40000, -- Disable if file is longer than this (in lines)
-  preview_config = {
+  sign_priority                = 6,
+  update_debounce              = 100,
+  status_formatter             = nil,   -- Use default
+  max_file_length              = 40000, -- Disable if file is longer than this (in lines)
+  preview_config               = {
     -- Options passed to nvim_open_win
     border = 'single',
     style = 'minimal',
@@ -200,7 +201,7 @@ require('gitsigns').setup {
     row = 0,
     col = 1
   },
-  on_attach = function(bufnr)
+  on_attach                    = function(bufnr)
     local gitsigns = require('gitsigns')
 
     local function map(mode, l, r, opts)
@@ -212,7 +213,7 @@ require('gitsigns').setup {
     -- Navigation
     map('n', ']c', function()
       if vim.wo.diff then
-        vim.cmd.normal({']c', bang = true})
+        vim.cmd.normal({ ']c', bang = true })
       else
         gitsigns.nav_hunk('next')
       end
@@ -220,7 +221,7 @@ require('gitsigns').setup {
 
     map('n', '[c', function()
       if vim.wo.diff then
-        vim.cmd.normal({'[c', bang = true})
+        vim.cmd.normal({ '[c', bang = true })
       else
         gitsigns.nav_hunk('prev')
       end
@@ -232,7 +233,7 @@ require('gitsigns').setup {
 ------------------------------------------------------------------------
 -- 🔄 Diffview configuration: visualize and manage git diffs
 ------------------------------------------------------------------------
-require("diffview").setup ({
+require("diffview").setup({
   enhanced_diff_hl = true
 })
 
@@ -245,12 +246,10 @@ require("ibl").setup {
   },
 }
 
-
 ------------------------------------------------------------------------
 -- 🎨 github-nvim-theme: GitHub-inspired colors for Neovim
 ------------------------------------------------------------------------
 require("github-theme").setup()
-
 
 ------------------------------------------------------------------------
 -- 🔭 telescope.nvim: Fuzzy finder and picker for Neovim
@@ -260,17 +259,20 @@ vim.keymap.set('n', '<leader>p', builtin.find_files, { desc = 'Telescope find fi
 vim.keymap.set('n', '<leader>f', builtin.live_grep, { desc = 'Telescope live grep' })
 vim.keymap.set('n', '<leader>b', builtin.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<leader>hp', builtin.help_tags, { desc = 'Telescope help tags' })
-vim.keymap.set('n', '<leader>pd', [[:lua require('telescope.builtin').find_files({ cwd = vim.fn.input("Enter directory: ", "", "dir") })<CR>]], { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>fd', [[:lua require('telescope.builtin').live_grep({ cwd = vim.fn.input("Enter directory: ", "", "dir") })<CR>]], { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>pd',
+  [[:lua require('telescope.builtin').find_files({ cwd = vim.fn.input("Enter directory: ", "", "dir") })<CR>]],
+  { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>fd',
+  [[:lua require('telescope.builtin').live_grep({ cwd = vim.fn.input("Enter directory: ", "", "dir") })<CR>]],
+  { noremap = true, silent = true })
 
 -- Add devicons to telescope
-local devicons = require"nvim-web-devicons"
 -- Close telescope with <esc>
 local actions = require("telescope.actions")
 
 
 local telescope = require("telescope")
-telescope.setup{
+telescope.setup {
   defaults = {
     mappings = {
       i = {
@@ -285,10 +287,10 @@ telescope.setup{
   },
   extensions = {
     fzf = {
-      fuzzy = true,                    -- false will only do exact matching
-      override_generic_sorter = true,  -- override the generic sorter
-      override_file_sorter = true,     -- override the file sorter
-      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+      fuzzy = true,                   -- false will only do exact matching
+      override_generic_sorter = true, -- override the generic sorter
+      override_file_sorter = true,    -- override the file sorter
+      case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
       -- the default case_mode is "smart_case"
     }
   }
@@ -327,31 +329,18 @@ require('Comment').setup()
 require('nvim-autopairs').setup()
 
 ------------------------------------------------------------------------
--- 🛠️ mason.nvim: Tool to manage LSPs, DAPs, linters, and formatters
+--- 📦 nvim-cmp: Autocompletion plugin for Neovim
 ------------------------------------------------------------------------
--- Key mappings on LSP attach
-local on_attach = function(client, bufnr)
-  local bufopts = { noremap = true, silent = true, buffer = bufnr }
-  vim.keymap.set('n', 'gd','<cmd>Lspsaga goto_definition <cr>', bufopts)
-  vim.keymap.set('n', 'gr','<cmd>Lspsaga finder<cr>',  bufopts)
-  vim.keymap.set('n', 'gi','<cmd>Lspsaga finder imp<cr>' , bufopts)
-  vim.keymap.set('n', 'K', '<cmd>Lspsaga hover<cr>' , bufopts)
-  vim.keymap.set('n', '<leader>rn', '<cmd>Lspsaga rename<cr>', bufopts)
-  vim.keymap.set('n', '<leader>ac', '<cmd>Lspsaga code_action<cr>', bufopts)
-  vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
-end
---- nvim.cmp
-local cmp = require'cmp'
-
+local cmp = require 'cmp'
 cmp.setup({
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
       -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
       -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
       -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-      -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+      vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
     end,
   },
   window = {
@@ -367,13 +356,13 @@ cmp.setup({
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-    { name = 'vsnip' }, -- For vsnip users.
+    -- { name = 'vsnip' }, -- For vsnip users.
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
   }, {
-      { name = 'buffer' },
-    })
+    { name = 'buffer' },
+  })
 })
 
 -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
@@ -385,7 +374,7 @@ cmp.setup({
       { name = 'buffer' },
     })
  })
- require("cmp_git").setup() ]]-- 
+ require("cmp_git").setup() ]] --
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline({ '/', '?' }, {
@@ -401,11 +390,14 @@ cmp.setup.cmdline(':', {
   sources = cmp.config.sources({
     { name = 'path' }
   }, {
-      { name = 'cmdline' }
-    }),
+    { name = 'cmdline' }
+  }),
   matching = { disallow_symbol_nonprefix_matching = false }
 })
 
+------------------------------------------------------------------------
+-- 🛠️ mason.nvim: Tool to manage LSPs, DAPs, linters, and formatters
+------------------------------------------------------------------------
 -- Set up lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
@@ -415,14 +407,26 @@ require('mason-lspconfig').setup({
     'ts_ls',
     'html',
     'cssls',
+    'lua_ls'
   },
   handlers = {
     function(server)
       require("lspconfig")[server].setup({
         capabilities = capabilities,
-        on_attach = on_attach
       })
     end,
+    ['lua_ls'] = function(server)
+      require("lspconfig")[server].setup({
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { 'vim' }
+            }
+          }
+        }
+      })
+    end
   }
 })
 
@@ -455,8 +459,19 @@ require("fidget").setup({})
 --- 📜 Lspsaga: A LSP UI for Neovim
 ------------------------------------------------------------------------
 require('lspsaga').setup({})
+local bufopts = { noremap = true, silent = true }
+vim.keymap.set('n', 'gd', '<cmd>Lspsaga goto_definition <cr>', bufopts)
+vim.keymap.set('n', 'gr', '<cmd>Lspsaga finder<cr>', bufopts)
+vim.keymap.set('n', 'gi', '<cmd>Lspsaga finder imp<cr>', bufopts)
+vim.keymap.set('n', 'K', '<cmd>Lspsaga hover_doc<cr>', bufopts)
+vim.keymap.set('n', 'rn', '<cmd>Lspsaga rename<cr>', bufopts)
+vim.keymap.set('n', '<leader>ac', '<cmd>Lspsaga code_action<cr>', bufopts)
+vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 
 ------------------------------------------------------------------------
 --- 🌲 nvim-tree.lua: A file explorer tree for neovim
 ------------------------------------------------------------------------
 require('nvim-tree').setup({})
+
+-- require('nvim-eslint').setup()
+-- vim.lsp.set_log_level("debug")
