@@ -44,6 +44,7 @@ else
     Plug 'lukas-reineke/indent-blankline.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }
+    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
     Plug 'nvim-tree/nvim-web-devicons'
     " Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
     Plug 'numToStr/Comment.nvim'
@@ -64,6 +65,7 @@ else
     Plug 'mfussenegger/nvim-lint'
     Plug 'j-hui/fidget.nvim'
     Plug 'glepnir/lspsaga.nvim'
+    Plug 'nvim-tree/nvim-tree.lua'
     " Insert plugin above
 endif
 call plug#end()
