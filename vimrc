@@ -6,12 +6,12 @@ if has('nvim')
     if filereadable($HOME.'/AppData/Local/nvim/plugin.vim')
         source $HOME/AppData/Local/nvim/plugin.vim
     endif
-    if filereadable($HOME.'/vimfiles/plugin.vim')
-        source $HOME/vimfiles/plugin.vim
-    endif
-else
     if filereadable($HOME.'/.config/nvim/plugin.vim')
         source $HOME/.config/nvim/plugin.vim
+    endif
+else
+    if filereadable($HOME.'/vimfiles/plugin.vim')
+        source $HOME/vimfiles/plugin.vim
     endif
     if filereadable($HOME.'/.vim/plugin.vim')
         source $HOME/.vim/plugin.vim
@@ -87,6 +87,8 @@ set expandtab              " Use spaces instead of tabs.
 set softtabstop =4         " Tab key indents by 4 spaces.
 set shiftwidth  =4         " >> indents by 4 spaces.
 set shiftround             " >> indents to next multiple of 'shiftwidth'.
+
+set tabstop     =4         " An indentation every four columns.
 
 set backspace   =indent,eol,start  " Make backspace work as you would expect.
 set hidden                 " Switch between buffers without having to save first.

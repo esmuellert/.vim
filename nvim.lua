@@ -242,7 +242,8 @@ require("diffview").setup({
 ------------------------------------------------------------------------
 require("ibl").setup {
   indent = {
-    char = "│"
+    char = "│",
+    tab_char = { "│"},
   },
 }
 
