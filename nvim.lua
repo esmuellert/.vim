@@ -362,8 +362,8 @@ cmp.setup({
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
   }, {
-    { name = 'buffer' },
-  })
+      { name = 'buffer' },
+    })
 })
 
 -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
@@ -391,8 +391,8 @@ cmp.setup.cmdline(':', {
   sources = cmp.config.sources({
     { name = 'path' }
   }, {
-    { name = 'cmdline' }
-  }),
+      { name = 'cmdline' }
+    }),
   matching = { disallow_symbol_nonprefix_matching = false }
 })
 
