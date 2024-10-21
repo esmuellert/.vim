@@ -389,3 +389,49 @@ if has('nvim')
     endif
 endif
 
+" --------------------------------------------------------------------------
+"  Github colorscheme tree-sitter configuration
+" --------------------------------------------------------------------------
+
+" Treesitter Typescript and Javascript
+hi link @variable.builtin.typescript ghBlue
+hi link @attribute.typescript ghPurple
+hi link @class_definition.typescript ghPurple
+hi link @class_inherited.typescript ghPurple
+" All languages
+hi link @variable.parameter ghOrange
+
+" Builtin Typescript
+hi link typescriptImport Keyword
+hi link typescriptExport Keyword
+hi link typescriptVariable Keyword
+
+hi link typescriptDecorator Special
+hi link typescriptClassname ghPurple
+hi link typescriptClassHeritage ghPurple
+hi link typescriptMember Variable
+hi link typescriptIdentifier Identifier
+
+" ts_ls semantic token
+hi link @lsp.type.class.typescript ghPurple
+hi link @lsp.type.interface.typescript ghPurple
+hi link @lsp.type.property.typescript Variable
+hi link @lsp.type.namespace.typescript ghPurple
+hi link @lsp.type.member.typescript ghPurple
+hi link @lsp.type.enum.typescript ghPurple
+hi link @lsp.mod.local.typescript Identifier
+hi link @lsp.mod.readonly.typescript Identifier
+hi link @lsp.typemod.function.readonly.typescript Function
+hi link @lsp.typemod.class.defaultLibrary.typescript Identifier
+
+" ts_ls tsx semantic token
+hi link @lsp.type.class.typescriptreact ghPurple
+hi link @lsp.type.interface.typescriptreact ghPurple
+hi link @lsp.type.property.typescriptreact Variable
+hi link @lsp.type.namespace.typescriptreact ghPurple
+hi link @lsp.type.member.typescriptreact ghPurple
+hi link @lsp.type.enum.typescriptreact ghPurple
+hi link @lsp.mod.local.typescriptreact Identifier
+hi link @lsp.mod.readonly.typescriptreact Identifier
+hi link @lsp.typemod.function.readonly.typescriptreact Function
+hi link @lsp.typemod.class.defaultLibrary.typescriptreact Identifier

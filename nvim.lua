@@ -128,7 +128,7 @@ require 'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    -- disable = { "c", "rust" },
+    disable = { "javascript", "typescript", "tsx" },
     -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
     -- disable = function(lang, buf)
     --    local max_filesize = 100 * 1024 -- 100 KB
@@ -243,7 +243,7 @@ require("diffview").setup({
 require("ibl").setup {
   indent = {
     char = "│",
-    tab_char = { "│"},
+    tab_char = { "│" },
   },
 }
 
@@ -362,8 +362,8 @@ cmp.setup({
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
   }, {
-      { name = 'buffer' },
-    })
+    { name = 'buffer' },
+  })
 })
 
 -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
@@ -391,8 +391,8 @@ cmp.setup.cmdline(':', {
   sources = cmp.config.sources({
     { name = 'path' }
   }, {
-      { name = 'cmdline' }
-    }),
+    { name = 'cmdline' }
+  }),
   matching = { disallow_symbol_nonprefix_matching = false }
 })
 
@@ -426,6 +426,14 @@ require('mason-lspconfig').setup({
             }
           }
         }
+      })
+    end,
+    ['ts_ls'] = function(server)
+      require("lspconfig")[server].setup({
+        capabilities = capabilities,
+        -- on_attach = function(client)
+        --   client.server_capabilities.semanticTokensProvider = nil -- Disable semantic tokens
+        -- end
       })
     end
   }
@@ -474,5 +482,5 @@ vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 ------------------------------------------------------------------------
 require('nvim-tree').setup({})
 
--- require('nvim-eslint').setup()
+require('nvim-eslint').setup()
 -- vim.lsp.set_log_level("debug")
