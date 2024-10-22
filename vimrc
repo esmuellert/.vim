@@ -67,6 +67,8 @@ else
     Plug 'j-hui/fidget.nvim'
     Plug 'glepnir/lspsaga.nvim'
     Plug 'nvim-tree/nvim-tree.lua'
+    Plug 'RRethy/vim-illuminate'
+    Plug 'folke/which-key.nvim'
     " Insert plugin above
 endif
 call plug#end()
