@@ -6,6 +6,21 @@ function is_windows()
   return vim.loop.os_uname().sysname == 'Windows_NT'
 end
 
+--- Check if path exists
+function file_exists(name)
+  local f = io.open(name, "r")
+  if f ~= nil then
+    io.close(f)
+    return true
+  else return false end
+end
+
+--- Import local only configuration
+local local_config_path = vim.fn.stdpath("config") .. "/lua/local.lua"
+if file_exists(local_config_path) then
+  require("local")
+end
+
 --- Set spell check
 vim.cmd('setlocal spell spelllang=en_us')
 
@@ -21,32 +36,20 @@ function ToggleTerminal()
   -- Find the terminal buffer
   local term_buf = vim.fn.bufnr('term://*')
 
-  -- If the terminal buffer exists
   if term_buf ~= -1 then
-    -- Get the window number where the terminal buffer is currently displayed
+    -- Get the window number where the terminal buffer is displayed
     local term_win = vim.fn.bufwinnr(term_buf)
 
-    -- Check if there is more than one window and the terminal is visible
-    if vim.fn.winnr('$') > 1 then
-      -- Hide the window if the terminal buffer is visible
-      if term_win ~= -1 then
-        vim.api.nvim_win_hide(term_win)
-      else
-        -- If the terminal buffer exists but is not visible, switch to it
-        vim.cmd('buffer ' .. term_buf)
-      end
+    if term_win ~= -1 then
+      -- If the terminal is visible, hide the tab (close the tab)
+      vim.cmd('tabclose')
     else
-      -- If there's only one window, just close the terminal buffer
-      if term_win ~= -1 then
-        vim.cmd('bd! ' .. term_buf)
-      else
-        -- If terminal is not open, switch to it
-        vim.cmd('buffer ' .. term_buf)
-      end
+      -- If the terminal exists but is not visible, switch to it in a new tab
+      vim.cmd('tabnew | buffer ' .. term_buf)
     end
   else
-    -- If no terminal exists, create one in the current window
-    vim.cmd('terminal')
+    -- If no terminal exists, open a new terminal in a new tab
+    vim.cmd('tabnew | terminal')
     -- Automatically enter insert mode and hide line numbers
     vim.cmd('startinsert')
     vim.wo.number = false
@@ -59,33 +62,34 @@ vim.api.nvim_set_keymap('n', '<leader>t', ':lua ToggleTerminal()<CR>', { noremap
 
 -- Function to toggle LazyGit
 function ToggleLazyGit()
-  -- Find the terminal buffer running lazygit
+  -- Find the terminal buffer running LazyGit
   local term_buf = vim.fn.bufnr('term://*lazygit')
 
-  -- If LazyGit is already running in a terminal
   if term_buf ~= -1 then
+    -- Get the window number of the terminal buffer
     local term_win = vim.fn.bufwinnr(term_buf)
 
-    -- If LazyGit terminal is visible, switch to the buffer
     if term_win ~= -1 then
-      vim.cmd('buffer ' .. term_buf)
-      vim.cmd('startinsert') -- Re-enter terminal insert mode
+      -- If the terminal is visible, switch to its tab
+      vim.cmd('tabnew | buffer ' .. term_buf)
+      vim.cmd('startinsert')
     else
-      -- If terminal is not visible, switch to it
-      vim.cmd('buffer ' .. term_buf)
+      -- If the terminal exists but isn't visible, open it in a new tab
+      vim.cmd('tabnew | buffer ' .. term_buf)
+      vim.cmd('startinsert')
     end
   else
-    -- If LazyGit is not running, check if LazyGit is installed
+    -- If LazyGit is not running, check if it's installed
     if vim.fn.executable('lazygit') == 1 then
-      -- Open LazyGit in the terminal
-      vim.cmd('terminal lazygit')
-      vim.cmd('startinsert') -- Automatically enter insert mode for terminal
+      -- Open LazyGit in a new tab
+      vim.cmd('tabnew | terminal lazygit')
+      vim.cmd('startinsert')
 
-      -- Hide line numbers when entering LazyGit
+      -- Hide line numbers for the terminal window
       vim.opt_local.number = false
       vim.opt_local.relativenumber = false
 
-      -- Automatically send 'Esc' to exit terminal mode when LazyGit process exits
+      -- Automatically exit insert mode when LazyGit closes
       vim.api.nvim_create_autocmd("TermClose", {
         buffer = 0, -- Current buffer
         callback = function()
@@ -97,7 +101,6 @@ function ToggleLazyGit()
     end
   end
 end
-
 -- Map <leader>g to toggle LazyGit
 vim.api.nvim_set_keymap('n', '<leader>g', ':lua ToggleLazyGit()<CR>', { noremap = true, silent = true })
 
@@ -277,7 +280,8 @@ telescope.setup {
   defaults = {
     mappings = {
       i = {
-        ["<esc>"] = actions.close
+        ["<esc>"] = actions.close,
+        ["<C-s>"] = actions.select_vertical,
       },
     },
   },
@@ -430,6 +434,9 @@ require('mason-lspconfig').setup({
     end,
     ['ts_ls'] = function(server)
       require("lspconfig")[server].setup({
+        root_dir = function(_, bufnr)
+          return vim.fs.root(bufnr, { '.git' })
+        end,
         capabilities = capabilities,
         -- on_attach = function(client)
         --   client.server_capabilities.semanticTokensProvider = nil -- Disable semantic tokens
@@ -482,5 +489,8 @@ vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 ------------------------------------------------------------------------
 require('nvim-tree').setup({})
 
+------------------------------------------------------------------------
+--- nvim-eslint: A Neovim plugin for eslint
+------------------------------------------------------------------------
 require('nvim-eslint').setup()
--- vim.lsp.set_log_level("debug")
+
