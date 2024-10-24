@@ -69,6 +69,7 @@ else
     Plug 'nvim-tree/nvim-tree.lua'
     Plug 'RRethy/vim-illuminate'
     Plug 'folke/which-key.nvim'
+    Plug 'esmuellert/nvim-eslint' 
     " Insert plugin above
 endif
 call plug#end()

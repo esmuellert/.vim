@@ -492,5 +492,5 @@ require('nvim-tree').setup({})
 ------------------------------------------------------------------------
 --- nvim-eslint: A Neovim plugin for eslint
 ------------------------------------------------------------------------
-require('nvim-eslint').setup()
+require('nvim-eslint').setup({})
 
