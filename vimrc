@@ -27,13 +27,13 @@ endif
 "Plug 'Raimondi/delimitMate'
 "Plug 'tpope/vim-sleuth'
 "Plug 'vim-airline/vim-airline'
-Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-surround'
 " Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'cormacrelf/vim-colors-github'
 Plug 'tpope/vim-fugitive'
 if !has('nvim')
     Plug 'airblade/vim-gitgutter'
+    Plug 'itchyny/lightline.vim'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'neoclide/coc.nvim'
@@ -70,6 +70,9 @@ else
     Plug 'RRethy/vim-illuminate'
     Plug 'folke/which-key.nvim'
     Plug 'esmuellert/nvim-eslint' 
+    Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+    Plug 'nvim-lualine/lualine.nvim'
+    Plug 'norcalli/nvim-colorizer.lua'
     " Insert plugin above
 endif
 call plug#end()
@@ -268,10 +271,10 @@ autocmd FileType lua setlocal shiftwidth=2
 " Close the tab if NERDTree is the only window remaining in it.
 "autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 
+" --------------------------------------------------------------------------
+" 🌟 coc.nvim - Modern LSP for Vim
+" --------------------------------------------------------------------------
 if !has('nvim')
-    " --------------------------------------------------------------------------
-    " 🌟 coc.nvim - Modern LSP for Vim
-    " --------------------------------------------------------------------------
     " :CocInstall coc-tsserver coc-json coc-vimlsp coc-marketplace coc-pairs coc-spell-checker coc-html coc-yaml coc-xml coc-powershell coc-prettier coc-eslint
     let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-marketplace', 'coc-pairs', 'coc-spell-checker', 'coc-html', 'coc-yaml', 'coc-xml', 'coc-powershell', 'coc-css', 'coc-eslint']
     " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
@@ -356,10 +359,10 @@ if !has('nvim')
     nnoremap <silent><nowait> ,p  :<C-u>CocListResume<CR>
 endif
 
+" --------------------------------------------------------------------------
+" 🌟 fzf
+" --------------------------------------------------------------------------
 if !has('nvim')
-    " --------------------------------------------------------------------------
-    " 🌟 fzf
-    " --------------------------------------------------------------------------
     " Use ripgrep as the default fzf commands
     if executable('rg')
         " Ignore files in .gitignore and node_modules, .git for :Files default command
@@ -380,16 +383,19 @@ endif
 " --------------------------------------------------------------------------
 " 💡 lightline configuration 💡
 " --------------------------------------------------------------------------
-let g:lightline = {
-            \ 'colorscheme': 'ayu_light',
-            \ 'active': {
-            \   'left': [ [ 'mode', 'paste' ],
-            \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-            \ },
-            \ 'component_function': {
-            \   'gitbranch': 'FugitiveHead'
-            \ },
-            \ }
+if !has('nvim')
+    let g:lightline = {
+                \ 'colorscheme': 'ayu_light',
+                \ 'active': {
+                \   'left': [ [ 'mode', 'paste' ],
+                \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+                \ },
+                \ 'component_function': {
+                \   'gitbranch': 'FugitiveHead'
+                \ },
+                \ }
+endif
+
 " --------------------------------------------------------------------------
 " 📖 lua configuration for nvim 📖
 " --------------------------------------------------------------------------

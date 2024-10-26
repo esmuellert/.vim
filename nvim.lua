@@ -12,13 +12,9 @@ function file_exists(name)
   if f ~= nil then
     io.close(f)
     return true
-  else return false end
-end
-
---- Import local only configuration
-local local_config_path = vim.fn.stdpath("config") .. "/lua/local.lua"
-if file_exists(local_config_path) then
-  require("local")
+  else
+    return false
+  end
 end
 
 --- Set spell check
@@ -101,6 +97,7 @@ function ToggleLazyGit()
     end
   end
 end
+
 -- Map <leader>g to toggle LazyGit
 vim.api.nvim_set_keymap('n', '<leader>g', ':lua ToggleLazyGit()<CR>', { noremap = true, silent = true })
 
@@ -467,12 +464,12 @@ require("trouble").setup()
 --
 
 ------------------------------------------------------------------------
---- 📜 Fidget.nvim: A LSP status line for neovim
+--- 🛞 fidget.nvim: Standalone UI for LSP progress notifications
 ------------------------------------------------------------------------
 require("fidget").setup({})
 
 ------------------------------------------------------------------------
---- 📜 Lspsaga: A LSP UI for Neovim
+--- 🌀 lspsaga.nvim: A light-weight LSP UI with handy features
 ------------------------------------------------------------------------
 require('lspsaga').setup({})
 local bufopts = { noremap = true, silent = true }
@@ -490,7 +487,90 @@ vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 require('nvim-tree').setup({})
 
 ------------------------------------------------------------------------
---- nvim-eslint: A Neovim plugin for eslint
+--- 🧹 nvim-eslint: A Neovim plugin for effortless ESLint integration
 ------------------------------------------------------------------------
 require('nvim-eslint').setup({})
 
+------------------------------------------------------------------------
+--- 📑 bufferline.nvim: A snazzy buffer line for Neovim
+------------------------------------------------------------------------
+require("bufferline").setup({
+  options = {
+    mode = "tabs", }
+})
+
+------------------------------------------------------------------------
+--- 🎨 nvim-colorizer.lua: A high-performance color highlighter for Neovim
+------------------------------------------------------------------------
+require'colorizer'.setup()
+
+------------------------------------------------------------------------
+--- 📊 lualine.nvim: A blazing fast and easy-to-configure statusline
+------------------------------------------------------------------------
+local github_colors = {
+    black = "#1b1f23",
+    white = "#fff",
+    gray = { "#fafbfc", "#f6f8fa", "#e1e4e8", "#d1d5da", "#959da5", "#6a737d", "#586069", "#444d56", "#2f363d", "#24292e" },
+    blue = { "#f1f8ff", "#dbedff", "#c8e1ff", "#79b8ff", "#2188ff", "#0366d6", "#005cc5", "#044289", "#032f62", "#05264c" },
+    green = { "#f0fff4", "#dcffe4", "#bef5cb", "#85e89d", "#34d058", "#28a745", "#22863a", "#176f2c", "#165c26", "#144620" },
+    yellow = { "#fffdef", "#fffbdd", "#fff5b1", "#ffea7f", "#ffdf5d", "#ffd33d", "#f9c513", "#dbab09", "#b08800", "#735c0f" },
+    orange = { "#fff8f2", "#ffebda", "#ffd1ac", "#ffab70", "#fb8532", "#f66a0a", "#e36209", "#d15704", "#c24e00", "#a04100" },
+    red = { "#ffeef0", "#ffdce0", "#fdaeb7", "#f97583", "#ea4a5a", "#d73a49", "#cb2431", "#b31d28", "#9e1c23", "#86181d" },
+    purple = { "#f5f0ff", "#e6dcfd", "#d1bcf9", "#b392f0", "#8a63d2", "#6f42c1", "#5a32a3", "#4c2889", "#3a1d6e", "#29134e" },
+    pink = { "#ffeef8", "#fedbf0", "#f9b3dd", "#f692ce", "#ec6cb9", "#ea4aaa", "#d03592", "#b93a86", "#99306f", "#6d224f" }
+}
+
+local bubbles_theme = {
+  normal = {
+    a = { fg = github_colors.gray[1], bg = github_colors.purple[3] },
+    b = { fg = github_colors.gray[6], bg = github_colors.gray[3] },
+    c = { fg = github_colors.gray[6], bg = github_colors.gray[2] },
+  },
+
+  insert = { a = { fg = github_colors.gray[1], bg = github_colors.blue[4] } },
+  visual = { a = { fg = github_colors.gray[1], bg = github_colors.green[5] } },
+  replace = { a = { fg = github_colors.gray[1], bg = github_colors.pink[4] } },
+
+  inactive = {
+    a = { fg = github_colors.gray[6], bg = github_colors.gray[3] },
+    b = { fg = github_colors.gray[6], bg = github_colors.gray[3] },
+    c = { fg = github_colors.gray[6], bg = github_colors.gray[1] },
+  },
+}
+
+require('lualine').setup {
+  options = {
+    theme = bubbles_theme,
+    component_separators = '',
+    section_separators = { left = '', right = '' },
+  },
+  sections = {
+    lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
+    lualine_b = { 'branch', 'name', 'diagnostics' },
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetpe'},
+    lualine_y = { 'progress' },
+    lualine_z = {
+      { 'location', separator = { right = '' }, left_padding = 2 },
+    },
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {},
+  },
+  tabline = {},
+  extensions = {},
+}
+
+
+
+--- Always last
+--- Import local only configuration
+local local_config_path = vim.fn.stdpath("config") .. "/lua/local.lua"
+if file_exists(local_config_path) then
+  require("local")
+end
