@@ -73,6 +73,7 @@ else
     Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
     Plug 'nvim-lualine/lualine.nvim'
     Plug 'norcalli/nvim-colorizer.lua'
+    Plug 'rktjmp/lush.nvim'
     " Insert plugin above
 endif
 call plug#end()

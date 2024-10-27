@@ -266,6 +266,7 @@ vim.keymap.set('n', '<leader>pd',
 vim.keymap.set('n', '<leader>fd',
   [[:lua require('telescope.builtin').live_grep({ cwd = vim.fn.input("Enter directory: ", "", "dir") })<CR>]],
   { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>d', builtin.diagnostics, { desc = 'Telescope diagnostics' })
 
 -- Add devicons to telescope
 -- Close telescope with <esc>
@@ -285,7 +286,11 @@ telescope.setup {
   pickers = {
     find_files = {
       find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/**', '--glob', '!**/node_modules/**' }
-    }
+    },
+    buffers = {
+      ignore_current_buffer = true,
+      sort_lastused = true,
+    },
   },
   extensions = {
     fzf = {
@@ -543,6 +548,13 @@ require('lualine').setup {
     theme = bubbles_theme,
     component_separators = '',
     section_separators = { left = '', right = '' },
+  },
+  sections = {
+    lualine_c = {
+      { 'filename',
+        path = 1
+      }
+    }
   }
 }
 
