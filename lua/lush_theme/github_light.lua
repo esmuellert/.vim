@@ -21,63 +21,63 @@ local theme = lush(function(injected_functions)
   local sym = injected_functions.sym
 
   return {
-    Normal { fg = palette.gray[9], bg = palette.white },         -- Normal text
-    Comment { fg = palette.gray[6] },                            -- Comments
-    Identifier { fg = palette.blue[7] },                         -- Variables and identifiers
-    Function { fg = palette.purple[6] },                         -- Functions and methods
-    Statement { fg = palette.red[6], },                          -- Statements like `if`, `for`, etc.
-    Keyword { fg = palette.red[6] },                             -- Keywords like `return`, `function`
-    Operator { fg = palette.red[6] },                            -- Operators like `+`, `-`, `*`, etc.
-    Constant { fg = palette.blue[7] },                           -- Constants like numbers, booleans
-    String { fg = palette.blue[9] },                             -- Strings
-    Type { fg = palette.red[6] },                                -- Types and classes
-    PreProc { fg = palette.red[6] },                             -- Preprocessor commands
-    Special { fg = palette.purple[6] },                          -- Special symbols
-    Visual { bg = palette.blue[1] },                             -- Visual selection
-    CursorLine { bg = palette.gray[2] },                         -- Cursor line
-    LineNr { fg = palette.gray[4] },                             -- Line numbers
-    CursorLineNr { fg = palette.black },                         -- Cursor line number
-    MatchParen { fg = palette.red[6], gui = 'bold,underline' },  -- Matching parenthesis
-    Pmenu { fg = palette.gray[8], bg = palette.gray[1] },        -- Popup menu
-    PmenuSel { bg = palette.blue[2] },                           -- Popup menu selection
-    VertSplit { fg = palette.gray[3] },                          -- Vertical split line
-    StatusLine { fg = palette.gray[8], bg = palette.gray[1] },   -- Status line
-    StatusLineNC { fg = palette.gray[5], bg = palette.gray[1] }, -- Non-current status line
-    Removed { fg = palette.red[6] },                             -- Removed text
-    Changed { fg = palette.blue[6] },                            -- Changed text
-    Added { fg = palette.green[6] },                             -- Added text
+    Normal { fg = palette.gray[9], bg = palette.white },                           -- Normal text
+    Variable { fg = palette.black },                                               -- Variables and identifiers
+    Comment { fg = palette.gray[6] },                                              -- Comments
+    Identifier { fg = palette.blue[7] },                                           -- Variables and identifiers
+    Function { fg = palette.purple[6] },                                           -- Functions and methods
+    Statement { fg = palette.red[6], },                                            -- Statements like `if`, `for`, etc.
+    Keyword { fg = palette.red[6] },                                               -- Keywords like `return`, `function`
+    Operator { fg = palette.red[6] },                                              -- Operators like `+`, `-`, `*`, etc.
+    Constant { fg = palette.blue[7] },                                             -- Constants like numbers, booleans
+    String { fg = palette.blue[9] },                                               -- Strings
+    Type { fg = palette.red[6] },                                                  -- Types and classes
+    PreProc { fg = palette.red[6] },                                               -- Preprocessor commands
+    Special { fg = palette.purple[6] },                                            -- Special symbols
+    Visual { bg = palette.blue[1] },                                               -- Visual selection
+    CursorLine { bg = palette.gray[2] },                                           -- Cursor line
+    LineNr { fg = palette.gray[4] },                                               -- Line numbers
+    CursorLineNr { fg = palette.black },                                           -- Cursor line number
+    MatchParen { fg = palette.red[6], gui = 'bold,underline' },                    -- Matching parenthesis
+    Pmenu { fg = palette.gray[8], bg = palette.gray[1] },                          -- Popup menu
+    PmenuSel { bg = palette.blue[2] },                                             -- Popup menu selection
+    VertSplit { fg = palette.gray[3] },                                            -- Vertical split line
+    StatusLine { fg = palette.gray[8], bg = palette.gray[1] },                     -- Status line
+    StatusLineNC { fg = palette.gray[5], bg = palette.gray[1] },                   -- Non-current status line
+    Removed { fg = palette.red[6] },                                               -- Removed text
+    Changed { fg = palette.blue[6] },                                              -- Changed text
+    Added { fg = palette.green[6] },                                               -- Added text
 
-    DiffAdd        { fg = palette.green[6], bg = palette.green[1] }, -- Diff mode: Added line
-    DiffChange     { fg = palette.green[6], bg = palette.green[1] },   -- Diff mode: Changed line
-    DiffDelete     { fg = palette.red[7], bg = palette.red[2] },     -- Diff mode: Deleted line
-    DiffText       { fg = palette.green[6], bg = palette.green[3], gui = 'bold' }, -- Diff mode: Changed text within a changed line
+    DiffAdd { fg = palette.green[6], bg = palette.green[1] },                      -- Diff mode: Added line
+    DiffChange { fg = palette.green[6], bg = palette.green[1] },                   -- Diff mode: Changed line
+    DiffDelete { fg = palette.red[7], bg = palette.red[2] },                       -- Diff mode: Deleted line
+    DiffText { fg = palette.green[6], bg = palette.green[3], gui = 'bold' },       -- Diff mode: Changed text within a changed line
 
-
-    DiagnosticError            { fg = palette.red[6] },
-    DiagnosticWarn             { fg = palette.yellow[6] },
-    DiagnosticInfo             { fg = palette.blue[6] },
-    DiagnosticHint             { fg = palette.green[6] },
-    DiagnosticOk               { fg = palette.green[5] },
+    DiagnosticError { fg = palette.red[6] },
+    DiagnosticWarn { fg = palette.yellow[6] },
+    DiagnosticInfo { fg = palette.blue[6] },
+    DiagnosticHint { fg = palette.green[6] },
+    DiagnosticOk { fg = palette.green[5] },
     DiagnosticVirtualTextError { fg = palette.red[5] },
-    DiagnosticVirtualTextWarn  { fg = palette.yellow[5] },
-    DiagnosticVirtualTextInfo  { fg = palette.blue[5] },
-    DiagnosticVirtualTextHint  { fg = palette.green[5] },
-    DiagnosticVirtualTextOk    { fg = palette.green[4] },
-    DiagnosticUnderlineError   { sp = palette.red[6], gui = 'underline' },
-    DiagnosticUnderlineWarn    { sp = palette.yellow[6], gui = 'underline' },
-    DiagnosticUnderlineInfo    { sp = palette.blue[6], gui = 'underline' },
-    DiagnosticUnderlineHint    { sp = palette.green[6], gui = 'underline' },
-    DiagnosticUnderlineOk      { sp = palette.green[5], gui = 'underline' },
-    DiagnosticFloatingError    { fg = palette.red[6] },
-    DiagnosticFloatingWarn     { fg = palette.yellow[6] },
-    DiagnosticFloatingInfo     { fg = palette.blue[6] },
-    DiagnosticFloatingHint     { fg = palette.green[6] },
-    DiagnosticFloatingOk       { fg = palette.green[5] },
-    DiagnosticSignError        { fg = palette.red[6] },
-    DiagnosticSignWarn         { fg = palette.yellow[6] },
-    DiagnosticSignInfo         { fg = palette.blue[6] },
-    DiagnosticSignHint         { fg = palette.green[6] },
-    DiagnosticSignOk           { fg = palette.green[5] },
+    DiagnosticVirtualTextWarn { fg = palette.yellow[5] },
+    DiagnosticVirtualTextInfo { fg = palette.blue[5] },
+    DiagnosticVirtualTextHint { fg = palette.green[5] },
+    DiagnosticVirtualTextOk { fg = palette.green[4] },
+    DiagnosticUnderlineError { sp = palette.red[6], gui = 'underline' },
+    DiagnosticUnderlineWarn { sp = palette.yellow[6], gui = 'underline' },
+    DiagnosticUnderlineInfo { sp = palette.blue[6], gui = 'underline' },
+    DiagnosticUnderlineHint { sp = palette.green[6], gui = 'underline' },
+    DiagnosticUnderlineOk { sp = palette.green[5], gui = 'underline' },
+    DiagnosticFloatingError { fg = palette.red[6] },
+    DiagnosticFloatingWarn { fg = palette.yellow[6] },
+    DiagnosticFloatingInfo { fg = palette.blue[6] },
+    DiagnosticFloatingHint { fg = palette.green[6] },
+    DiagnosticFloatingOk { fg = palette.green[5] },
+    DiagnosticSignError { fg = palette.red[6] },
+    DiagnosticSignWarn { fg = palette.yellow[6] },
+    DiagnosticSignInfo { fg = palette.blue[6] },
+    DiagnosticSignHint { fg = palette.green[6] },
+    DiagnosticSignOk { fg = palette.green[5] },
 
     -- Treesitter Typescript and Javascript
     sym('@variable.builtin.typescript') { fg = palette.blue[6] },
@@ -88,39 +88,44 @@ local theme = lush(function(injected_functions)
     sym('@variable.parameter') { fg = palette.orange[6] },
 
     -- Builtin Typescript
-    typescriptImport { fg = palette.red[6] },
-    typescriptExport { fg = palette.red[6] },
-    typescriptVariable { fg = palette.red[6] },
+    typescriptImport { Keyword },
+    typescriptExport { Keyword },
+    typescriptVariable { Keyword },
 
-    typescriptDecorator { fg = palette.orange[6] },
+    typescriptDecorator { Special },
     typescriptClassname { fg = palette.purple[6] },
     typescriptClassHeritage { fg = palette.purple[6] },
-    typescriptMember { fg = palette.blue[6] },
-    typescriptIdentifier { fg = palette.blue[6] },
+    typescriptMember { Variable },
+    typescriptIdentifier { Identifier },
 
     -- ts_ls semantic token
     sym('@lsp.type.class.typescript') { fg = palette.purple[6] },
     sym('@lsp.type.interface.typescript') { fg = palette.purple[6] },
-    sym('@lsp.type.property.typescript') { fg = palette.blue[6] },
+    sym('@lsp.type.property.typescript') { Variable },
     sym('@lsp.type.namespace.typescript') { fg = palette.purple[6] },
     sym('@lsp.type.member.typescript') { fg = palette.purple[6] },
     sym('@lsp.type.enum.typescript') { fg = palette.purple[6] },
-    sym('@lsp.mod.local.typescript') { fg = palette.blue[6] },
-    sym('@lsp.mod.readonly.typescript') { fg = palette.blue[6] },
-    sym('@lsp.typemod.function.readonly.typescript') { fg = palette.purple[6] },
-    sym('@lsp.typemod.class.defaultLibrary.typescript') { fg = palette.blue[6] },
+    sym('@lsp.mod.local.typescript') { Identifier },
+    sym('@lsp.mod.readonly.typescript') { Identifier },
+    sym('@lsp.typemod.function.readonly.typescript') { Function },
+    sym('@lsp.typemod.class.defaultLibrary.typescript') { Identifier },
 
     -- ts_ls tsx semantic token
     sym('@lsp.type.class.typescriptreact') { fg = palette.purple[6] },
     sym('@lsp.type.interface.typescriptreact') { fg = palette.purple[6] },
-    sym('@lsp.type.property.typescriptreact') { fg = palette.blue[6] },
+    sym('@lsp.type.property.typescriptreact') { Variable },
     sym('@lsp.type.namespace.typescriptreact') { fg = palette.purple[6] },
     sym('@lsp.type.member.typescriptreact') { fg = palette.purple[6] },
     sym('@lsp.type.enum.typescriptreact') { fg = palette.purple[6] },
-    sym('@lsp.mod.local.typescriptreact') { fg = palette.blue[6] },
-    sym('@lsp.mod.readonly.typescriptreact') { fg = palette.blue[6] },
-    sym('@lsp.typemod.function.readonly.typescriptreact') { fg = palette.purple[6] },
-    sym('@lsp.typemod.class.defaultLibrary.typescriptreact') { fg = palette.blue[6] },
+    sym('@lsp.mod.local.typescriptreact') { Identifier },
+    sym('@lsp.mod.readonly.typescriptreact') { Identifier },
+    sym('@lsp.typemod.function.readonly.typescriptreact') { Function },
+    sym('@lsp.typemod.class.defaultLibrary.typescriptreact') { Identifier },
+
+    -- Illuminate
+    IlluminatedWordRead { bg = palette.blue[2] },
+    IlluminatedWordWrite { bg = palette.green[1] },
+    IlluminatedWordText { bg = palette.red[1] },
   }
 end)
 

@@ -20,6 +20,9 @@ end
 --- Set spell check
 vim.cmd('setlocal spell spelllang=en_us')
 
+--- Set the sign column to always be visible
+vim.opt.signcolumn = 'yes'
+
 ------------------------------------------------------------------------
 -- ⌨️ Custom Shortcuts
 ------------------------------------------------------------------------
