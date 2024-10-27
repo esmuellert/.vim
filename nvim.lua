@@ -250,7 +250,7 @@ require("ibl").setup {
 ------------------------------------------------------------------------
 -- 🎨 github-nvim-theme: GitHub-inspired colors for Neovim
 ------------------------------------------------------------------------
-require("github-theme").setup()
+-- require("github-theme").setup()
 
 ------------------------------------------------------------------------
 -- 🔭 telescope.nvim: Fuzzy finder and picker for Neovim
@@ -558,10 +558,14 @@ require('lualine').setup {
   }
 }
 
+------------------------------------------------------------------------
+--- 🌞 github-light.nvim: made with lush.nvim 
+------------------------------------------------------------------------
+vim.cmd('colorscheme github_light')
 
-
---- Always last
---- Import local only configuration
+------------------------------------------------------------------------
+--- ⚙️ local.lua: User-specific configurations for fine-tuning Neovim
+------------------------------------------------------------------------
 local local_config_path = vim.fn.stdpath("config") .. "/lua/local.lua"
 if file_exists(local_config_path) then
   require("local")

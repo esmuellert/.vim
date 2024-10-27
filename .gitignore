@@ -4,3 +4,5 @@
 !/nvim.lua
 !/init.vim
 !/lua/
+/lua/local.lua
+!/colors/
