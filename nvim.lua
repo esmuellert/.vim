@@ -23,6 +23,19 @@ vim.cmd('setlocal spell spelllang=en_us')
 --- Set the sign column to always be visible
 vim.opt.signcolumn = 'yes'
 
+--- Github color palette
+local github_colors = {
+  black = "#24292e",
+  white = "#ffffff",
+  gray = { "#fafbfc", "#f6f8fa", "#e1e4e8", "#d1d5da", "#959da5", "#6a737d", "#586069", "#444d56", "#2f363d", "#24292e" },
+  blue = { "#f1f8ff", "#dbedff", "#c8e1ff", "#79b8ff", "#2188ff", "#0366d6", "#005cc5", "#044289", "#032f62", "#05264c" },
+  green = { "#f0fff4", "#dcffe4", "#bef5cb", "#85e89d", "#34d058", "#28a745", "#22863a", "#176f2c", "#165c26", "#144620" },
+  yellow = { "#fffdef", "#fffbdd", "#fff5b1", "#ffea7f", "#ffdf5d", "#ffd33d", "#f9c513", "#dbab09", "#b08800", "#735c0f" },
+  orange = { "#fff8f2", "#ffebda", "#ffd1ac", "#ffab70", "#fb8532", "#f66a0a", "#e36209", "#d15704", "#c24e00", "#a04100" },
+  red = { "#ffeef0", "#ffdce0", "#fdaeb7", "#f97583", "#ea4a5a", "#d73a49", "#cb2431", "#b31d28", "#9e1c23", "#86181d" },
+  purple = { "#f5f0ff", "#e6dcfd", "#d1bcf9", "#b392f0", "#8a63d2", "#6f42c1", "#5a32a3", "#4c2889", "#3a1d6e", "#29134e" },
+  pink = { "#ffeef8", "#fedbf0", "#f9b3dd", "#f692ce", "#ec6cb9", "#ea4aaa", "#d03592", "#b93a86", "#99306f", "#6d224f" }
+}
 ------------------------------------------------------------------------
 -- ⌨️ Custom Shortcuts
 ------------------------------------------------------------------------
@@ -479,7 +492,11 @@ require("fidget").setup({})
 ------------------------------------------------------------------------
 --- 🌀 lspsaga.nvim: A light-weight LSP UI with handy features
 ------------------------------------------------------------------------
-require('lspsaga').setup({})
+require('lspsaga').setup({
+  ui = {
+    code_action = '',
+  }
+})
 local bufopts = { noremap = true, silent = true }
 vim.keymap.set('n', 'gd', '<cmd>Lspsaga goto_definition <cr>', bufopts)
 vim.keymap.set('n', 'gr', '<cmd>Lspsaga finder<cr>', bufopts)
@@ -504,7 +521,41 @@ require('nvim-eslint').setup({})
 ------------------------------------------------------------------------
 require("bufferline").setup({
   options = {
-    mode = "tabs", }
+    mode = "tabs",
+    indicator = {
+      style = 'underline'
+    }
+  },
+  highlights = {
+    fill = {
+      fg = github_colors.gray[2],
+      bg = github_colors.gray[2],
+    },
+    background = {
+      fg = github_colors.gray[6],
+      bg = github_colors.gray[2],
+    },
+    buffer_selected = {
+      fg = github_colors.gray[9],
+      bg = github_colors.white,
+    },
+    tab_close = {
+      fg = github_colors.gray[6],
+      bg = github_colors.gray[2],
+    },
+    close_button = {
+      fg = github_colors.gray[6],
+      bg = github_colors.gray[2],
+    },
+    separator = {
+      fg = github_colors.gray[2],
+      bg = github_colors.gray[2],
+    },
+    modified = {
+      fg = github_colors.gray[9],
+      bg = github_colors.gray[2],
+    },
+  }
 })
 
 ------------------------------------------------------------------------
@@ -515,19 +566,6 @@ require 'colorizer'.setup()
 ------------------------------------------------------------------------
 --- 📊 lualine.nvim: A blazing fast and easy-to-configure statusline
 ------------------------------------------------------------------------
-local github_colors = {
-  black = "#1b1f23",
-  white = "#fff",
-  gray = { "#fafbfc", "#f6f8fa", "#e1e4e8", "#d1d5da", "#959da5", "#6a737d", "#586069", "#444d56", "#2f363d", "#24292e" },
-  blue = { "#f1f8ff", "#dbedff", "#c8e1ff", "#79b8ff", "#2188ff", "#0366d6", "#005cc5", "#044289", "#032f62", "#05264c" },
-  green = { "#f0fff4", "#dcffe4", "#bef5cb", "#85e89d", "#34d058", "#28a745", "#22863a", "#176f2c", "#165c26", "#144620" },
-  yellow = { "#fffdef", "#fffbdd", "#fff5b1", "#ffea7f", "#ffdf5d", "#ffd33d", "#f9c513", "#dbab09", "#b08800", "#735c0f" },
-  orange = { "#fff8f2", "#ffebda", "#ffd1ac", "#ffab70", "#fb8532", "#f66a0a", "#e36209", "#d15704", "#c24e00", "#a04100" },
-  red = { "#ffeef0", "#ffdce0", "#fdaeb7", "#f97583", "#ea4a5a", "#d73a49", "#cb2431", "#b31d28", "#9e1c23", "#86181d" },
-  purple = { "#f5f0ff", "#e6dcfd", "#d1bcf9", "#b392f0", "#8a63d2", "#6f42c1", "#5a32a3", "#4c2889", "#3a1d6e", "#29134e" },
-  pink = { "#ffeef8", "#fedbf0", "#f9b3dd", "#f692ce", "#ec6cb9", "#ea4aaa", "#d03592", "#b93a86", "#99306f", "#6d224f" }
-}
-
 local github_light_theme = {
   normal = {
     a = { fg = github_colors.gray[1], bg = github_colors.purple[3] },
