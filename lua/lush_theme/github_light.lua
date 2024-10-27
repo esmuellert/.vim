@@ -131,7 +131,7 @@ local theme = lush(function(injected_functions)
 
     -- Illuminate
     IlluminatedWordRead { bg = palette.blue[2] },
-    IlluminatedWordWrite { bg = palette.green[1] },
+    IlluminatedWordWrite { bg = palette.green[2] },
     IlluminatedWordText { bg = palette.blue[1] },
   }
 end)

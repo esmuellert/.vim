@@ -528,7 +528,7 @@ local github_colors = {
   pink = { "#ffeef8", "#fedbf0", "#f9b3dd", "#f692ce", "#ec6cb9", "#ea4aaa", "#d03592", "#b93a86", "#99306f", "#6d224f" }
 }
 
-local bubbles_theme = {
+local github_light_theme = {
   normal = {
     a = { fg = github_colors.gray[1], bg = github_colors.purple[3] },
     b = { fg = github_colors.gray[6], bg = github_colors.gray[3] },
@@ -548,21 +548,25 @@ local bubbles_theme = {
 
 require('lualine').setup {
   options = {
-    theme = bubbles_theme,
+    theme = github_light_theme,
     component_separators = '',
     section_separators = { left = '', right = '' },
   },
   sections = {
+    lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
     lualine_c = {
       { 'filename',
         path = 1
       }
-    }
+    },
+    lualine_z = {
+      { 'location', separator = { right = '' }, left_padding = 2 },
+    },
   }
 }
 
 ------------------------------------------------------------------------
---- 🌞 github-light.nvim: made with lush.nvim 
+--- 🌞 github-light.nvim: made with lush.nvim
 ------------------------------------------------------------------------
 vim.cmd('colorscheme github_light')
 
