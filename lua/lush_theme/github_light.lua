@@ -98,6 +98,10 @@ local theme = lush(function(injected_functions)
     typescriptMember { Variable },
     typescriptIdentifier { Identifier },
 
+    tsxIntrinsicTagName { fg = palette.green[7] },
+    tsxAttrib { fg = palette.purple[6] },
+    tsxTagName { fg = palette.blue[6] },
+
     -- ts_ls semantic token
     sym('@lsp.type.class.typescript') { fg = palette.purple[6] },
     sym('@lsp.type.interface.typescript') { fg = palette.purple[6] },
@@ -122,10 +126,13 @@ local theme = lush(function(injected_functions)
     sym('@lsp.typemod.function.readonly.typescriptreact') { Function },
     sym('@lsp.typemod.class.defaultLibrary.typescriptreact') { Identifier },
 
+    -- ts_ls html semantic token
+    sym('tag.html') { fg = palette.green[7] },
+
     -- Illuminate
     IlluminatedWordRead { bg = palette.blue[2] },
     IlluminatedWordWrite { bg = palette.green[1] },
-    IlluminatedWordText { bg = palette.red[1] },
+    IlluminatedWordText { bg = palette.blue[1] },
   }
 end)
 
