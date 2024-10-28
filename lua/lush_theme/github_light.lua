@@ -21,37 +21,38 @@ local theme = lush(function(injected_functions)
   local sym = injected_functions.sym
 
   return {
-    Normal { fg = palette.gray[9], bg = palette.white },                           -- Normal text
-    Variable { fg = palette.black },                                               -- Variables and identifiers
-    Comment { fg = palette.gray[6] },                                              -- Comments
-    Identifier { fg = palette.blue[7] },                                           -- Variables and identifiers
-    Function { fg = palette.purple[6] },                                           -- Functions and methods
-    Statement { fg = palette.red[6], },                                            -- Statements like `if`, `for`, etc.
-    Keyword { fg = palette.red[6] },                                               -- Keywords like `return`, `function`
-    Operator { fg = palette.red[6] },                                              -- Operators like `+`, `-`, `*`, etc.
-    Constant { fg = palette.blue[7] },                                             -- Constants like numbers, booleans
-    String { fg = palette.blue[9] },                                               -- Strings
-    Type { fg = palette.red[6] },                                                  -- Types and classes
-    PreProc { fg = palette.red[6] },                                               -- Preprocessor commands
-    Special { fg = palette.purple[6] },                                            -- Special symbols
-    Visual { bg = palette.blue[1] },                                               -- Visual selection
-    CursorLine { bg = palette.gray[2] },                                           -- Cursor line
-    LineNr { fg = palette.gray[4] },                                               -- Line numbers
-    CursorLineNr { fg = palette.black },                                           -- Cursor line number
-    MatchParen { fg = palette.red[6], gui = 'bold,underline' },                    -- Matching parenthesis
-    Pmenu { fg = palette.gray[8], bg = palette.gray[1] },                          -- Popup menu
-    PmenuSel { bg = palette.blue[2] },                                             -- Popup menu selection
-    VertSplit { fg = palette.gray[3] },                                            -- Vertical split line
-    StatusLine { fg = palette.gray[8], bg = palette.gray[1] },                     -- Status line
-    StatusLineNC { fg = palette.gray[5], bg = palette.gray[1] },                   -- Non-current status line
-    Removed { fg = palette.red[6] },                                               -- Removed text
-    Changed { fg = palette.blue[6] },                                              -- Changed text
-    Added { fg = palette.green[6] },                                               -- Added text
+    Normal { fg = palette.gray[9], bg = palette.white },                     -- Normal text
+    Variable { fg = palette.black },                                         -- Variables and identifiers
+    Comment { fg = palette.gray[6] },                                        -- Comments
+    Identifier { fg = palette.blue[7] },                                     -- Variables and identifiers
+    Function { fg = palette.purple[6] },                                     -- Functions and methods
+    Statement { fg = palette.red[6], },                                      -- Statements like `if`, `for`, etc.
+    Keyword { fg = palette.red[6] },                                         -- Keywords like `return`, `function`
+    Operator { fg = palette.red[6] },                                        -- Operators like `+`, `-`, `*`, etc.
+    Constant { fg = palette.blue[7] },                                       -- Constants like numbers, booleans
+    String { fg = palette.blue[9] },                                         -- Strings
+    Type { fg = palette.red[6] },                                            -- Types and classes
+    PreProc { fg = palette.red[6] },                                         -- Preprocessor commands
+    Special { fg = palette.purple[6] },                                      -- Special symbols
+    Visual { bg = palette.blue[1] },                                         -- Visual selection
+    CursorLine { bg = palette.gray[2] },                                     -- Cursor line
+    LineNr { fg = palette.gray[4] },                                         -- Line numbers
+    CursorLineNr { fg = palette.black },                                     -- Cursor line number
+    MatchParen { fg = palette.red[6], gui = 'bold,underline' },              -- Matching parenthesis
+    Pmenu { fg = palette.gray[8], bg = palette.gray[1] },                    -- Popup menu
+    PmenuSel { bg = palette.blue[2] },                                       -- Popup menu selection
+    VertSplit { fg = palette.gray[3] },                                      -- Vertical split line
+    StatusLine { fg = palette.gray[8], bg = palette.gray[1] },               -- Status line
+    StatusLineNC { fg = palette.gray[5], bg = palette.gray[1] },             -- Non-current status line
+    Removed { fg = palette.red[6] },                                         -- Removed text
+    Changed { fg = palette.blue[6] },                                        -- Changed text
+    Added { fg = palette.green[6] },                                         -- Added text
+    NonText { fg = palette.gray[3], bg = palette.white },                    -- Non-text characters
 
-    DiffAdd { fg = palette.green[6], bg = palette.green[1] },                      -- Diff mode: Added line
-    DiffChange { fg = palette.green[6], bg = palette.green[1] },                   -- Diff mode: Changed line
-    DiffDelete { fg = palette.red[7], bg = palette.red[2] },                       -- Diff mode: Deleted line
-    DiffText { fg = palette.green[6], bg = palette.green[3], gui = 'bold' },       -- Diff mode: Changed text within a changed line
+    DiffAdd { fg = palette.green[6], bg = palette.green[1] },                -- Diff mode: Added line
+    DiffChange { fg = palette.green[6], bg = palette.green[1] },             -- Diff mode: Changed line
+    DiffDelete { fg = palette.red[7], bg = palette.red[2] },                 -- Diff mode: Deleted line
+    DiffText { fg = palette.green[6], bg = palette.green[3], gui = 'bold' }, -- Diff mode: Changed text within a changed line
 
     DiagnosticError { fg = palette.red[7] },
     DiagnosticWarn { fg = palette.yellow[7] },
