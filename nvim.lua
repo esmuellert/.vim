@@ -1,3 +1,8 @@
+--- Install dependency for Windows
+--- winget install fzf
+--- winget install BurntSushi.ripgrep.MSVC
+--- Need to install MSVC and add to PATH for treesitter to work
+
 ------------------------------------------------------------------------
 --- Custom utility functions and configuration for NeoVim
 ------------------------------------------------------------------------
