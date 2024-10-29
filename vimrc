@@ -28,7 +28,7 @@ endif
 "Plug 'tpope/vim-sleuth'
 "Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-surround'
-" Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'cormacrelf/vim-colors-github'
 Plug 'tpope/vim-fugitive'
 if !has('nvim')

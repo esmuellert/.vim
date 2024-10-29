@@ -258,6 +258,14 @@ require("diffview").setup({
   enhanced_diff_hl = true
 })
 
+vim.keymap.set('n', '<leader>df', function()
+  if next(require('diffview.lib').views) == nil then
+    vim.cmd('DiffviewOpen')
+  else
+    vim.cmd('DiffviewClose')
+  end
+end)
+
 ------------------------------------------------------------------------
 -- 📏 indent-blankline.nvim: Visual indentation guides for Neovim
 ------------------------------------------------------------------------
@@ -281,24 +289,24 @@ vim.keymap.set('n', '<leader>p', builtin.find_files, { desc = 'Telescope find fi
 vim.keymap.set('n', '<leader>f', builtin.live_grep, { desc = 'Telescope live grep' })
 vim.keymap.set('n', '<leader>b', builtin.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<leader>hp', builtin.help_tags, { desc = 'Telescope help tags' })
-vim.keymap.set('n', '<leader>pd',
-  [[:lua require('telescope.builtin').find_files({ cwd = vim.fn.input("Enter directory: ", "", "dir") })<CR>]],
-  { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>fd',
-  [[:lua require('telescope.builtin').live_grep({ cwd = vim.fn.input("Enter directory: ", "", "dir") })<CR>]],
-  { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>pd', function()
+  vim.fn.feedkeys(":Telescope find_files cwd=", "n")
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>fd', function()
+  vim.fn.feedkeys(":Telescope live_grep cwd=", "n")
+end, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>d', builtin.diagnostics, { desc = 'Telescope diagnostics' })
+vim.keymap.set('n', '<leader>hl', builtin.highlights, { desc = 'Telescope highlights' })
 
 -- Add devicons to telescope
 -- Close telescope with <esc>
 local actions = require("telescope.actions")
-
-
 local telescope = require("telescope")
 telescope.setup {
   defaults = {
     mappings = {
       i = {
+        ["<C-e>"] = { "<esc>", type = "command" },
         ["<esc>"] = actions.close,
         ["<C-s>"] = actions.select_vertical,
       },
@@ -306,11 +314,30 @@ telescope.setup {
   },
   pickers = {
     find_files = {
-      find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/**', '--glob', '!**/node_modules/**' }
+      find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/**', '--glob', '!**/node_modules/**' },
+      mappings = {
+        n = {
+          ["cd"] = function(prompt_bufnr)
+            local selection = require("telescope.actions.state").get_selected_entry()
+            local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+            require("telescope.actions").close(prompt_bufnr)
+            -- Depending on what you want put `cd`, `lcd`, `tcd`
+            vim.cmd(string.format("silent lcd %s", dir))
+          end
+        }
+      }
     },
     buffers = {
       ignore_current_buffer = true,
       sort_lastused = true,
+      mappings = {
+        i = {
+          ["<c-d>"] = actions.delete_buffer,
+        },
+        n = {
+          ["<c-d>"] = actions.delete_buffer,
+        }
+      }
     },
   },
   extensions = {
@@ -488,6 +515,7 @@ require("trouble").setup()
 --   },
 -- })
 --
+vim.keymap.set('n', '<leader>tb', '<cmd>Trouble diagnostics toggle <cr>', { noremap = true, silent = true })
 
 ------------------------------------------------------------------------
 --- 🛞 fidget.nvim: Standalone UI for LSP progress notifications
@@ -515,6 +543,7 @@ vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 --- 🌲 nvim-tree.lua: A file explorer tree for neovim
 ------------------------------------------------------------------------
 require('nvim-tree').setup({})
+vim.keymap.set('n', '<leader>E', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 
 ------------------------------------------------------------------------
 --- 🧹 nvim-eslint: A Neovim plugin for effortless ESLint integration

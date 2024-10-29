@@ -52,20 +52,20 @@ local theme = lush(function(injected_functions)
     ColorColumn { bg = palette.gray[2] },                                      -- Columns set with 'colorcolumn'
     Conceal { fg = palette.gray[4] },                                          -- Placeholder characters for concealed text
     Cursor { fg = palette.black, bg = palette.blue[6] },                       -- Character under the cursor
-    CurSearch { fg = palette.white, bg = palette.yellow[5], gui = 'bold' },    -- Search pattern under the cursor
+    CurSearch { fg = palette.white, bg = palette.purple[3], gui = 'bold' },    -- Search pattern under the cursor
     lCursor { fg = palette.black, bg = palette.blue[6] },                      -- Character under the cursor with language mapping
     CursorIM { fg = palette.black, bg = palette.blue[6] },                     -- Like Cursor, but in IME mode
     CursorColumn { bg = palette.gray[1] },                                     -- Screen-column at the cursor
     Directory { fg = palette.blue[6] },                                        -- Directory names in listings
     EndOfBuffer { fg = palette.gray[4] },                                      -- Filler lines after the end of buffer
-    TermCursor { fg = palette.black, bg = palette.blue[6] },                   -- Cursor in a focused terminal
-    TermCursorNC { fg = palette.black, bg = palette.gray[5] },                 -- Cursor in an unfocused terminal
+    TermCursor { fg = palette.gray[6], bg = palette.blue[3] },                 -- Cursor in a focused terminal
+    TermCursorNC { fg = palette.gray[6], bg = palette.blue[3] },                 -- Cursor in an unfocused terminal
     ErrorMsg { fg = palette.red[6], gui = 'bold' },                            -- Error messages on the command line
     Folded { fg = palette.gray[6], bg = palette.gray[1] },                     -- Line used for closed folds
     FoldColumn { fg = palette.gray[4], bg = palette.gray[1] },                 -- 'foldcolumn'
     SignColumn { fg = palette.gray[5], bg = palette.white },                   -- Column where signs are displayed
     IncSearch { fg = palette.yellow[7], bg = palette.gray[3], gui = 'bold' },  -- 'incsearch' highlighting
-    Substitute { fg = palette.white, bg = palette.orange[5], gui = 'bold' },   -- Replacement text highlighting
+    Substitute { fg = palette.white, bg = palette.pink[3], gui = 'bold' },   -- Replacement text highlighting
     LineNrAbove { fg = palette.gray[4] },                                      -- Line number above the cursor line
     LineNrBelow { fg = palette.gray[4] },                                      -- Line number below the cursor line
     CursorLineFold { fg = palette.gray[6], bg = palette.gray[1] },             -- FoldColumn when 'cursorline' is set
@@ -86,7 +86,7 @@ local theme = lush(function(injected_functions)
     PmenuThumb { bg = palette.gray[4] },                                       -- Popup menu: Thumb of the scrollbar
     Question { fg = palette.green[6] },                                        -- Hit-enter prompt and yes/no questions
     QuickFixLine { fg = palette.blue[6], bg = palette.gray[1], gui = 'bold' }, -- Current quickfix item
-    Search { fg = palette.white, bg = palette.yellow[5], gui = 'bold' },       -- Last search pattern highlighting
+    Search { fg = palette.white, bg = palette.purple[3], gui = 'bold' },       -- Last search pattern highlighting
     SpecialKey { fg = palette.orange[5] },                                     -- Unprintable characters
     SpellBad { sp = palette.red[6], gui = 'undercurl' },                       -- Word not recognized by spellchecker
     SpellCap { sp = palette.blue[6], gui = 'undercurl' },                      -- Word that should start with a capital
@@ -95,7 +95,7 @@ local theme = lush(function(injected_functions)
     TabLine { fg = palette.gray[6], bg = palette.gray[2] },                    -- Tab pages line, not active tab
     TabLineFill { bg = palette.gray[2] },                                      -- Tab pages line, where there are no labels
     TabLineSel { fg = palette.blue[6], bg = palette.gray[1], gui = 'bold' },   -- Active tab page label
-    Title { fg = palette.gray[6], gui = 'bold' },                             -- Titles for output
+    Title { fg = palette.gray[6], gui = 'bold' },                              -- Titles for output
     VisualNOS { bg = palette.red[1] },                                         -- Visual mode selection when not owning selection
     WarningMsg { fg = palette.yellow[6], gui = 'bold' },                       -- Warning messages
     Whitespace { fg = palette.gray[3] },                                       -- Whitespace characters
@@ -105,9 +105,13 @@ local theme = lush(function(injected_functions)
     WinBarNC { fg = palette.gray[6], bg = palette.gray[2] },                   -- Window bar of not-current windows
 
     DiffAdd { fg = palette.green[6], bg = palette.green[1] },                  -- Diff mode: Added line
-    DiffChange { fg = palette.green[6], bg = palette.green[1] },               -- Diff mode: Changed line
+    DiffChange { fg = palette.blue[6], bg = palette.blue[1] },               -- Diff mode: Changed line
     DiffDelete { fg = palette.red[7], bg = palette.red[2] },                   -- Diff mode: Deleted line
-    DiffText { fg = palette.green[6], bg = palette.green[3], gui = 'bold' },   -- Diff mode: Changed text within a changed line
+    DiffText { fg = palette.blue[6], bg = palette.blue[3], gui = 'bold' },   -- Diff mode: Changed text within a changed line
+
+    diffAdded { fg = palette.green[6] },                                       -- diff mode: Added line 
+    diffRemoved { fg = palette.red[6] },                                       -- diff mode: Removed line
+    diffChanged { fg = palette.blue[6] },                                      -- diff mode: Changed line
 
     DiagnosticError { fg = palette.red[7] },
     DiagnosticWarn { fg = palette.yellow[7] },
@@ -189,6 +193,11 @@ local theme = lush(function(injected_functions)
     IlluminatedWordRead { bg = palette.blue[2] },
     IlluminatedWordWrite { bg = palette.green[2] },
     IlluminatedWordText { bg = palette.blue[1] },
+
+    -- GitSigns
+    GitSignsAddInline { bg = palette.green[3] },
+    GitSignsChangeInline {GitSignsAddInline},
+    GitSignsDeleteInline { bg = palette.red[3]},
   }
 end)
 
