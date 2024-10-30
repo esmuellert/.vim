@@ -542,9 +542,29 @@ vim.keymap.set('n', '<leader>fm', vim.lsp.buf.format, bufopts)
 ------------------------------------------------------------------------
 --- 🌲 nvim-tree.lua: A file explorer tree for neovim
 ------------------------------------------------------------------------
-require('nvim-tree').setup({})
+require('nvim-tree').setup({
+  renderer = {
+    icons = {
+      -- git_placement = 'signcolumn',
+      glyphs = {
+        git = {
+          unstaged = "󱧃",
+          staged = "󰸩",
+          untracked = ""
+        }
+      }
+    }
+  }
+})
 vim.keymap.set('n', '<leader>E', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
-
+vim.api.nvim_create_autocmd("BufEnter", {
+  nested = true,
+  callback = function()
+    if #vim.api.nvim_list_wins() == 1 and require("nvim-tree.utils").is_nvim_tree_buf() then
+      vim.cmd "quit"
+    end
+  end
+})
 ------------------------------------------------------------------------
 --- 🧹 nvim-eslint: A Neovim plugin for effortless ESLint integration
 ------------------------------------------------------------------------

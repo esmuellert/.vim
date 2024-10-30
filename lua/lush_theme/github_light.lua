@@ -203,6 +203,11 @@ local theme = lush(function(injected_functions)
     DiffviewFolderSign { fg = palette.blue[4] },
     DiffviewFilePanelTitle { fg = palette.gray[6] },
     DiffviewFilePanelSelected { fg = palette.black, bg = palette.gray[2] },
+
+    -- NvimTree
+    NvimTreeFolderIcon { fg = palette.blue[4] },
+    NvimTreeGitDirtyIcon { fg = palette.yellow[7] },
+    NvimTreeGitNewIcon { fg = palette.green[6] },
   }
 end)
 
