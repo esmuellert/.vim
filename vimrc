@@ -1,43 +1,44 @@
-" vim-plug setting
-"/* cSpell:disable */
-call plug#begin()
-
-if has('nvim')
-    if filereadable($HOME.'/AppData/Local/nvim/plugin.vim')
-        source $HOME/AppData/Local/nvim/plugin.vim
-    endif
-    if filereadable($HOME.'/.config/nvim/plugin.vim')
-        source $HOME/.config/nvim/plugin.vim
-    endif
-else
-    if filereadable($HOME.'/vimfiles/plugin.vim')
-        source $HOME/vimfiles/plugin.vim
-    endif
-    if filereadable($HOME.'/.vim/plugin.vim')
-        source $HOME/.vim/plugin.vim
-    endif
-endif
-
-"Plug 'scrooloose/nerdtree'
-"Plug 'endel/vim-github-colorscheme'
-"Plug 'akiicat/vim-github-theme'
-"Plug 'pangloss/vim-javascript'
-"Plug 'mxw/vim-jsx'
-"Plug 'sheerun/vim-polyglot'
-"Plug 'Raimondi/delimitMate'
-"Plug 'tpope/vim-sleuth'
-"Plug 'vim-airline/vim-airline'
-Plug 'tpope/vim-surround'
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-Plug 'cormacrelf/vim-colors-github'
-Plug 'tpope/vim-fugitive'
 if !has('nvim')
+    " vim-plug setting
+    "/* cSpell:disable */
+    call plug#begin()
+
+    if has('nvim')
+        if filereadable($HOME.'/AppData/Local/nvim/plugin.vim')
+            source $HOME/AppData/Local/nvim/plugin.vim
+        endif
+        if filereadable($HOME.'/.config/nvim/plugin.vim')
+            source $HOME/.config/nvim/plugin.vim
+        endif
+    else
+        if filereadable($HOME.'/vimfiles/plugin.vim')
+            source $HOME/vimfiles/plugin.vim
+        endif
+        if filereadable($HOME.'/.vim/plugin.vim')
+            source $HOME/.vim/plugin.vim
+        endif
+    endif
+
+    "Plug 'scrooloose/nerdtree'
+    "Plug 'endel/vim-github-colorscheme'
+    "Plug 'akiicat/vim-github-theme'
+    "Plug 'pangloss/vim-javascript'
+    "Plug 'mxw/vim-jsx'
+    "Plug 'sheerun/vim-polyglot'
+    "Plug 'Raimondi/delimitMate'
+    "Plug 'tpope/vim-sleuth'
+    "Plug 'vim-airline/vim-airline'
     Plug 'airblade/vim-gitgutter'
     Plug 'itchyny/lightline.vim'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'neoclide/coc.nvim'
-else
+    Plug 'tpope/vim-surround'
+    Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+    Plug 'cormacrelf/vim-colors-github'
+    Plug 'tpope/vim-fugitive'
+
+    " Neovim plugins
     Plug 'lewis6991/gitsigns.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     " Plug 'projekt0n/github-nvim-theme'
@@ -75,9 +76,8 @@ else
     Plug 'norcalli/nvim-colorizer.lua'
     Plug 'rktjmp/lush.nvim'
     " Insert plugin above
+    call plug#end()
 endif
-call plug#end()
-
 "
 " A (not so) minimal vimrc.
 "
@@ -395,15 +395,4 @@ if !has('nvim')
                 \   'gitbranch': 'FugitiveHead'
                 \ },
                 \ }
-endif
-
-" --------------------------------------------------------------------------
-" 📖 lua configuration for nvim 📖
-" --------------------------------------------------------------------------
-if has('nvim')
-    if has('win32')
-        luafile $HOME/AppData/Local/nvim/nvim.lua
-    else
-        luafile $HOME/.config/nvim/nvim.lua
-    endif
 endif
