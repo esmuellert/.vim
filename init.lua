@@ -605,7 +605,8 @@ require("lazy").setup({
     --- 🛞 fidget.nvim: Standalone UI for LSP progress notifications
     ------------------------------------------------------------------------
     {
-      "j-hui/fidget.nvim"
+      "j-hui/fidget.nvim",
+      opts = {}
     },
 
     ------------------------------------------------------------------------
