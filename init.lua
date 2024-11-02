@@ -433,6 +433,7 @@ require("lazy").setup({
         'hrsh7th/cmp-buffer',
         'hrsh7th/cmp-path',
         'hrsh7th/cmp-cmdline',
+        'onsails/lspkind.nvim'
         -- 'hrsh7th/cmp-vsnip', -- Uncomment if using vsnip
         -- 'L3MON4D3/LuaSnip', -- Uncomment if using luasnip
         -- 'quangnguyen30192/cmp-nvim-ultisnips', -- Uncomment if using ultisnips
@@ -440,6 +441,7 @@ require("lazy").setup({
       },
       opts = function()
         local cmp = require('cmp')
+        local lspkind = require('lspkind')
         return {
           snippet = {
             expand = function(args)
@@ -471,6 +473,20 @@ require("lazy").setup({
           }, {
             { name = 'buffer' },
           }),
+          formatting = {
+            format = lspkind.cmp_format({
+              mode = 'symbol_text', -- show only symbol annotations
+              maxwidth = {
+                -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+                -- can also be a function to dynamically calculate max width such as
+                -- menu = function() return math.floor(0.45 * vim.o.columns) end,
+                menu = 50,              -- leading text (labelDetails)
+                abbr = 50,              -- actual suggestion item
+              },
+              ellipsis_char = '...',    -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+              show_labelDetails = true, -- show labelDetails in menu. Disabled by default
+            })
+          }
         }
       end,
       config = function(_, opts)
@@ -523,17 +539,25 @@ require("lazy").setup({
       },
       opts = function()
         local capabilities = require('cmp_nvim_lsp').default_capabilities()
+        local lspconfig = require('lspconfig')
+        local default_on_attach = function(client, bufnr)
+          if client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+          end
+        end
         require('mason').setup({})
         return {
           ensure_installed = { 'ts_ls', 'html', 'cssls', 'lua_ls' },
           handlers = {
             function(server)
-              require("lspconfig")[server].setup({
+              lspconfig[server].setup({
                 capabilities = capabilities,
+                on_attach = default_on_attach,
               })
             end,
             ['lua_ls'] = function(server)
-              require("lspconfig")[server].setup({
+              lspconfig[server].setup({
+                on_attach = default_on_attach,
                 capabilities = capabilities,
                 settings = {
                   Lua = {
@@ -545,14 +569,38 @@ require("lazy").setup({
               })
             end,
             ['ts_ls'] = function(server)
-              require("lspconfig")[server].setup({
+              lspconfig[server].setup({
+                on_attach = default_on_attach,
                 root_dir = function(_, bufnr)
                   return vim.fs.root(bufnr, { '.git' })
                 end,
                 capabilities = capabilities,
-                -- on_attach = function(client)
-                --   client.server_capabilities.semanticTokensProvider = nil -- Disable semantic tokens
-                -- end
+                settings = {
+                  typescript = {
+                    inlayHints = {
+                      includeInlayParameterNameHints = 'all',
+                      includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                      includeInlayFunctionParameterTypeHints = true,
+                      includeInlayVariableTypeHints = true,
+                      includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                      includeInlayPropertyDeclarationTypeHints = true,
+                      -- includeInlayFunctionLikeReturnTypeHints = true,
+                      includeInlayEnumMemberValueHints = true,
+                    }
+                  },
+                  javascript = {
+                    inlayHints = {
+                      includeInlayParameterNameHints = 'all',
+                      includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                      includeInlayFunctionParameterTypeHints = true,
+                      includeInlayVariableTypeHints = true,
+                      includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                      includeInlayPropertyDeclarationTypeHints = true,
+                      -- includeInlayFunctionLikeReturnTypeHints = true,
+                      includeInlayEnumMemberValueHints = true,
+                    }
+                  }
+                }
               })
             end,
           },
@@ -797,10 +845,17 @@ require("lazy").setup({
     {
       'esmuellert/nvim-eslint',
       opts = {}
-    }
+    },
+
+    ------------------------------------------------------------------------
+    --- 🔍 guess-indent.nvim: Auto-detect and set indentation style
+    ------------------------------------------------------------------------
+    {
+      'NMAC427/guess-indent.nvim',
+      opts = {}
+    },
 
   }, local_plugin_specs),
-
 
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.

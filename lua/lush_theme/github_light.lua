@@ -48,6 +48,7 @@ local theme = lush(function(injected_functions)
     Changed { fg = palette.blue[6] },                                          -- Changed text
     Added { fg = palette.green[6] },                                           -- Added text
     NonText { fg = palette.gray[3], bg = palette.white },                      -- Non-text characters
+    LspInlayHint { Comment },               -- LSP inlay hint
 
     ColorColumn { bg = palette.gray[2] },                                      -- Columns set with 'colorcolumn'
     Conceal { fg = palette.gray[4] },                                          -- Placeholder characters for concealed text
