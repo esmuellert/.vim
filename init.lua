@@ -249,6 +249,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     {
       'nvim-treesitter/nvim-treesitter',
+      event = 'BufRead',
       build = ':TSUpdate',
       opts = function()
         return {
@@ -284,6 +285,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     {
       'lewis6991/gitsigns.nvim',
+      event = 'BufRead',
       opts = function()
         return {
           signs = {
@@ -401,6 +403,7 @@ require("lazy").setup({
     {
       'lukas-reineke/indent-blankline.nvim', -- Replace 'ibl' with the appropriate plugin name
       main = "ibl",
+      event = "BufRead",
       opts =
       {
         indent = {
@@ -440,6 +443,7 @@ require("lazy").setup({
         -- 'quangnguyen30192/cmp-nvim-ultisnips', -- Uncomment if using ultisnips
         -- 'dcampos/nvim-snippy', -- Uncomment if using snippy
       },
+      event = "BufRead",
       opts = function()
         local cmp = require('cmp')
         local lspkind = require('lspkind')
@@ -538,6 +542,7 @@ require("lazy").setup({
         'neovim/nvim-lspconfig',
         'hrsh7th/cmp-nvim-lsp', -- For LSP capabilities
       },
+      event = "BufRead",
       opts = function()
         local capabilities = require('cmp_nvim_lsp').default_capabilities()
         local lspconfig = require('lspconfig')
@@ -655,6 +660,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     {
       "j-hui/fidget.nvim",
+      event = "BufRead",
       opts = {}
     },
 
@@ -739,6 +745,7 @@ require("lazy").setup({
       'akinsho/bufferline.nvim',
       version = "*",
       dependencies = 'nvim-tree/nvim-web-devicons',
+      event = 'BufRead',
       opts = {
         options = {
           mode = "tabs",
@@ -785,6 +792,7 @@ require("lazy").setup({
     {
       'nvim-lualine/lualine.nvim',
       dependencies = { 'nvim-tree/nvim-web-devicons' },
+      event = 'BufRead',
       opts = function()
         local github_theme = {
           normal = {
