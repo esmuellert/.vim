@@ -1,9 +1,13 @@
 /*
 !/.gitignore
+
 !/vimrc
 !/nvim.lua
 !init.lua
-!/init.vim
+!lazy-lock.json
+
 !/lua/
-plugin/
+/lua/plugin/
+
 !/colors/
+

@@ -380,18 +380,19 @@ require("lazy").setup({
           enhanced_diff_hl = true,
         }
       end,
-      config = function(_, opts)
-        require("diffview").setup(opts)
-
-        -- Custom key mapping for toggling Diffview
-        vim.keymap.set('n', '<leader>df', function()
-          if next(require('diffview.lib').views) == nil then
-            vim.cmd('DiffviewOpen')
-          else
-            vim.cmd('DiffviewClose')
-          end
-        end, { desc = 'Toggle Diffview' })
-      end,
+      keys = {
+        {
+          '<leader>df',
+          function()
+            if next(require('diffview.lib').views) == nil then
+              vim.cmd('DiffviewOpen')
+            else
+              vim.cmd('DiffviewClose')
+            end
+          end,
+          desc = 'Toggle Diffview',
+        }
+      },
     },
 
     ------------------------------------------------------------------------
@@ -412,7 +413,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     -- 💬 Comment.nvim: Efficient code commenting for Neovim
     ------------------------------------------------------------------------
-    { 'numToStr/Comment.nvim', },
+    -- { 'numToStr/Comment.nvim' },
 
     ------------------------------------------------------------------------
     --- 📦 nvim-autopairs: Automatically insert pairs of delimiters
@@ -837,7 +838,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     --- 💡 vim-illuminate: highlighting matching words under the cursor
     ------------------------------------------------------------------------
-    { 'RRethy/vim-illuminate' },
+    { 'RRethy/vim-illuminate', event = 'InsertEnter' },
 
     ------------------------------------------------------------------------
     --- 🧹 nvim-eslint: A Neovim plugin for effortless ESLint integration
