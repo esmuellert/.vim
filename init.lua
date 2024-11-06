@@ -39,6 +39,20 @@ local github_colors = {
   purple = { "#f5f0ff", "#e6dcfd", "#d1bcf9", "#b392f0", "#8a63d2", "#6f42c1", "#5a32a3", "#4c2889", "#3a1d6e", "#29134e" },
   pink = { "#ffeef8", "#fedbf0", "#f9b3dd", "#f692ce", "#ec6cb9", "#ea4aaa", "#d03592", "#b93a86", "#99306f", "#6d224f" }
 }
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●",
+  },
+  severity_sort = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.INFO] = "",
+      [vim.diagnostic.severity.HINT] = "",
+    },
+  },
+})
 ------------------------------------------------------------------------
 -- ⌨️ Custom Shortcuts
 ------------------------------------------------------------------------
@@ -846,7 +860,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     --- 💡 vim-illuminate: highlighting matching words under the cursor
     ------------------------------------------------------------------------
-    { 'RRethy/vim-illuminate', event = 'InsertEnter' },
+    { 'RRethy/vim-illuminate',      event = 'InsertEnter' },
 
     ------------------------------------------------------------------------
     --- 🧹 nvim-eslint: A Neovim plugin for effortless ESLint integration
