@@ -207,6 +207,17 @@ require("lazy").setup({
         local actions = require('telescope.actions')
         return {
           defaults = {
+            vimgrep_arguments = {
+              'rg',
+              '--color=never',
+              '--no-heading',
+              '--with-filename',
+              '--line-number',
+              '--column',
+              '--smart-case',
+              '--hidden',                                      -- Include hidden files
+            },
+            file_ignore_patterns = { 'node_modules', '.git' }, -- Exclude specific directories
             mappings = {
               i = {
                 ["<C-e>"] = { "<esc>", type = "command" },
@@ -567,7 +578,7 @@ require("lazy").setup({
         end
         require('mason').setup({})
         return {
-          ensure_installed = { 'ts_ls', 'html', 'cssls', 'lua_ls' },
+          ensure_installed = { 'ts_ls', 'html', 'cssls', 'lua_ls', "lemminx", "powershell_es" },
           handlers = {
             function(server)
               lspconfig[server].setup({
@@ -721,6 +732,9 @@ require("lazy").setup({
       },
       opts = function()
         return {
+          git = {
+            timeout = 10000
+          },
           renderer = {
             icons = {
               glyphs = {
