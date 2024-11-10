@@ -567,7 +567,7 @@ require("lazy").setup({
         'neovim/nvim-lspconfig',
         'hrsh7th/cmp-nvim-lsp', -- For LSP capabilities
       },
-      event = "BufRead",
+      event = "BufEnter",
       opts = function()
         local capabilities = require('cmp_nvim_lsp').default_capabilities()
         local lspconfig = require('lspconfig')
@@ -685,7 +685,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     {
       "j-hui/fidget.nvim",
-      event = "BufRead",
+      event = "BufEnter",
       opts = {}
     },
 
