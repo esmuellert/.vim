@@ -874,7 +874,7 @@ require("lazy").setup({
     ------------------------------------------------------------------------
     --- 💡 vim-illuminate: highlighting matching words under the cursor
     ------------------------------------------------------------------------
-    { 'RRethy/vim-illuminate',      event = 'InsertEnter' },
+    { 'RRethy/vim-illuminate',      event = 'BufRead' },
 
     ------------------------------------------------------------------------
     --- 🧹 nvim-eslint: A Neovim plugin for effortless ESLint integration
