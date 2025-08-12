@@ -167,6 +167,8 @@ if vim.loop.fs_stat(local_plugin_path) then
   local_plugin_specs = require("plugin.local")
 end
 
+local writing_plugins = require("plugins.writing")
+
 -- Setup lazy.nvim
 require("lazy").setup({
   spec = vim.list_extend({
@@ -892,7 +894,7 @@ require("lazy").setup({
       opts = {}
     },
 
-  }, local_plugin_specs),
+  }, vim.list_extend(local_plugin_specs, writing_plugins)),
 
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
@@ -900,3 +902,6 @@ require("lazy").setup({
   -- automatically check for plugin updates
   checker = { enabled = true, notify = false },
 })
+
+-- Load writing mode configuration
+require("config.writing")
