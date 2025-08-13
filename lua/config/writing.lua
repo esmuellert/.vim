@@ -32,8 +32,8 @@ vim.api.nvim_create_autocmd("FileType", {
     -- Visuals
     o.wrap         = true
     o.linebreak    = true
-    o.breakindent  = true
-    o.showbreak    = "  … "
+    o.breakindent  = false
+    o.showbreak    = ""
     o.spell        = false
     o.spelllang    = "en_us"
     o.number       = false
