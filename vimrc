@@ -223,8 +223,8 @@ function! SaveVimSession()
 endfunction
 " Automatically save the session when exiting Vim
 autocmd VimLeavePre * call SaveVimSession()
-" Automatically load session when starting Vim if the session file exists
-autocmd VimEnter * nested if filereadable(g:session_file) | exe 'source ' . fnameescape(g:session_file) | endif
+" Automatically load session when starting Vim if no file arguments and session file exists
+autocmd VimEnter * nested if argc() == 0 && filereadable(g:session_file) | exe 'source ' . fnameescape(g:session_file) | endif
 
 " Path settings
 "let &path = getcwd() . '/**'
