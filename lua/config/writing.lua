@@ -42,6 +42,8 @@ vim.api.nvim_create_autocmd("FileType", {
     o.list         = false
     o.colorcolumn  = ""
     o.cursorline   = true
+    o.cmdheight    = 0
+    o.fillchars    = "eob: "
 
     -- Behaviors
     o.textwidth    = 0
@@ -71,22 +73,11 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.notify("Spell check " .. status, vim.log.levels.INFO, { title = "Spell Check" })
     end, "Toggle spell check")
 
-    -- Optional: raw-start LTeX language server for English grammar checking
-    -- Requires: ltex-ls executable in PATH
-    if vim.fn.executable("ltex-ls") == 1 then
-      vim.lsp.start({
-        name = "ltex",
-        cmd = { "ltex-ls" },
-        root_dir = vim.fn.getcwd(),
-        capabilities = vim.lsp.protocol.make_client_capabilities(),
-        settings = {
-          ltex = {
-            language = "en-US",
-            enabled = { "plaintext" },
-            diagnosticSeverity = "information",
-          },
-        },
-      })
-    end
+    -- Visual line navigation for wrapped text
+    local nav_opts = { expr = true, silent = true, buffer = bufnr }
+    vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", nav_opts)
+    vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", nav_opts)
+    vim.keymap.set("v", "j", "v:count == 0 ? 'gj' : 'j'", nav_opts)
+    vim.keymap.set("v", "k", "v:count == 0 ? 'gk' : 'k'", nav_opts)
   end,
 })
