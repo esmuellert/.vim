@@ -58,7 +58,7 @@ vim.diagnostic.config({
 ------------------------------------------------------------------------
 --- Prettier format current buffer
 vim.api.nvim_set_keymap('n', '<A-S-F>', ':w!<CR> :!pnpm exec prettier --write %<CR> :edit!<CR>',
-  { noremap = true, silent = true })
+{ noremap = true, silent = true })
 
 -- Function to toggle terminal buffer
 function ToggleTerminal()
@@ -528,15 +528,15 @@ require("lazy").setup({
         -- Set configuration for specific filetypes
         -- Uncomment if using cmp-git
         --[[
-      cmp.setup.filetype('gitcommit', {
-        sources = cmp.config.sources({
-          { name = 'git' },
-        }, {
-          { name = 'buffer' },
+        cmp.setup.filetype('gitcommit', {
+          sources = cmp.config.sources({
+            { name = 'git' },
+          }, {
+            { name = 'buffer' },
+          })
         })
-      })
-      require("cmp_git").setup()
-      ]]
+        require("cmp_git").setup()
+        ]]
 
         -- Use buffer source for `/` and `?` in the command line
         cmp.setup.cmdline({ '/', '?' }, {
@@ -667,6 +667,50 @@ require("lazy").setup({
       end,
     },
 
+    -------------------------------------------------------------------------
+    --- 🛠️ xcodebuild.nvim: A Neovim plugin for building and running Xcode projects
+    -------------------------------------------------------------------------
+    {
+      "wojciech-kulik/xcodebuild.nvim",
+      dependencies = {
+        "nvim-telescope/telescope.nvim",
+        "MunifTanjim/nui.nvim",
+        "folke/snacks.nvim", -- (optional) to show previews
+        "nvim-tree/nvim-tree.lua", -- (optional) to manage project files
+        "stevearc/oil.nvim", -- (optional) to manage project files
+        "nvim-treesitter/nvim-treesitter", -- (optional) for Quick tests support (required Swift parser)
+      },
+      config = function()
+        require("xcodebuild").setup({})
+
+        -- Xcodebuild keymaps (placed after setup)
+        vim.keymap.set("n", "<leader>X", "<cmd>XcodebuildPicker<cr>", { desc = "Show Xcodebuild Actions" })
+        vim.keymap.set("n", "<leader>xf", "<cmd>XcodebuildProjectManager<cr>", { desc = "Show Project Manager Actions" })
+
+        vim.keymap.set("n", "<leader>xb", "<cmd>XcodebuildBuild<cr>", { desc = "Build Project" })
+        vim.keymap.set("n", "<leader>xB", "<cmd>XcodebuildBuildForTesting<cr>", { desc = "Build For Testing" })
+        vim.keymap.set("n", "<leader>xr", "<cmd>XcodebuildBuildRun<cr>", { desc = "Build & Run Project" })
+
+        vim.keymap.set("n", "<leader>xt", "<cmd>XcodebuildTest<cr>", { desc = "Run Tests" })
+        vim.keymap.set("v", "<leader>xt", "<cmd>XcodebuildTestSelected<cr>", { desc = "Run Selected Tests" })
+        vim.keymap.set("n", "<leader>xT", "<cmd>XcodebuildTestClass<cr>", { desc = "Run Current Test Class" })
+        vim.keymap.set("n", "<leader>x.", "<cmd>XcodebuildTestRepeat<cr>", { desc = "Repeat Last Test Run" })
+
+        vim.keymap.set("n", "<leader>xl", "<cmd>XcodebuildToggleLogs<cr>", { desc = "Toggle Xcodebuild Logs" })
+        vim.keymap.set("n", "<leader>xc", "<cmd>XcodebuildToggleCodeCoverage<cr>", { desc = "Toggle Code Coverage" })
+        vim.keymap.set("n", "<leader>xC", "<cmd>XcodebuildShowCodeCoverageReport<cr>", { desc = "Show Code Coverage Report" })
+        vim.keymap.set("n", "<leader>xe", "<cmd>XcodebuildTestExplorerToggle<cr>", { desc = "Toggle Test Explorer" })
+        vim.keymap.set("n", "<leader>xs", "<cmd>XcodebuildFailingSnapshots<cr>", { desc = "Show Failing Snapshots" })
+
+        vim.keymap.set("n", "<leader>xp", "<cmd>XcodebuildPreviewGenerateAndShow<cr>", { desc = "Generate Preview" })
+        vim.keymap.set("n", "<leader>x<cr>", "<cmd>XcodebuildPreviewToggle<cr>", { desc = "Toggle Preview" })
+
+        vim.keymap.set("n", "<leader>xd", "<cmd>XcodebuildSelectDevice<cr>", { desc = "Select Device" })
+        vim.keymap.set("n", "<leader>xq", "<cmd>Telescope quickfix<cr>", { desc = "Show QuickFix List" })
+
+        vim.keymap.set("n", "<leader>xa", "<cmd>XcodebuildCodeActions<cr>", { desc = "Show Code Actions" })
+      end,
+    },
     ------------------------------------------------------------------------
     --- 🚨 Trouble.nvim: A pretty list for showing diagnostics
     ------------------------------------------------------------------------
@@ -867,6 +911,26 @@ require("lazy").setup({
             c = { fg = github_colors.gray[6], bg = github_colors.gray[1] },
           },
         }
+        local function xcodebuild_device()
+          if vim.g.xcodebuild_platform == "macOS" then
+            return " macOS"
+          end
+
+          local deviceIcon = ""
+          if vim.g.xcodebuild_platform:match("watch") then
+            deviceIcon = "􀟤"
+          elseif vim.g.xcodebuild_platform:match("tv") then
+            deviceIcon = "􀡴 "
+          elseif vim.g.xcodebuild_platform:match("vision") then
+            deviceIcon = "􁎖 "
+          end
+
+          if vim.g.xcodebuild_os then
+            return deviceIcon .. " " .. vim.g.xcodebuild_device_name .. " (" .. vim.g.xcodebuild_os .. ")"
+          end
+
+          return deviceIcon .. " " .. vim.g.xcodebuild_device_name
+        end
         return {
           options = {
             theme = github_theme,
@@ -882,7 +946,8 @@ require("lazy").setup({
               }
             },
             lualine_z = {
-              { 'location', separator = { right = '' }, left_padding = 2 },
+              { xcodebuild_device },
+              {'location', separator = { right = '' }, left_padding = 2 },
             },
           }
         }
