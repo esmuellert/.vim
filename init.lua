@@ -580,7 +580,7 @@ require("lazy").setup({
         end
         require('mason').setup({})
         return {
-          ensure_installed = { 'ts_ls', 'html', 'cssls', 'lua_ls', "lemminx", "powershell_es" },
+          ensure_installed = { 'ts_ls', 'html', 'cssls', 'lua_ls', 'lemminx', 'powershell_es' },
           handlers = {
             function(server)
               lspconfig[server].setup({
@@ -638,6 +638,32 @@ require("lazy").setup({
             end,
           },
         }
+      end,
+      config = function(_, opts)
+        -- Setup Mason LSP servers via handlers
+        require('mason-lspconfig').setup(opts)
+
+        -- Configure SourceKit directly (builtin, not installed by Mason)
+        local lspconfig = require('lspconfig')
+        local capabilities = require('cmp_nvim_lsp').default_capabilities()
+        local on_attach = function(client, bufnr)
+          if client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+          end
+        end
+        local resolved = vim.trim(vim.fn.system('xcrun -f sourcekit-lsp'))
+        if resolved == '' or vim.v.shell_error ~= 0 then
+          resolved = 'sourcekit-lsp'
+        end
+        lspconfig.sourcekit.setup({
+          cmd = { resolved },
+          filetypes = { 'swift' },
+          capabilities = capabilities,
+          on_attach = on_attach,
+          on_init = function(client)
+            client.offset_encoding = 'utf-8'
+          end,
+        })
       end,
     },
 
