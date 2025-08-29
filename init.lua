@@ -672,6 +672,7 @@ require("lazy").setup({
     -------------------------------------------------------------------------
     {
       "wojciech-kulik/xcodebuild.nvim",
+      ft = { "swift", "objc", "objc++", "xml", "plist" },
       dependencies = {
         "nvim-telescope/telescope.nvim",
         "MunifTanjim/nui.nvim",
