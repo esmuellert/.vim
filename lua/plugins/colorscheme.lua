@@ -130,7 +130,23 @@ return {
 
         --- You can override specific highlights to use other groups or a hex color
         --- function will be called with a Highlights and ColorScheme table
-        on_highlights = function(highlights, colors) end,
+        on_highlights = function(highlights, colors)
+          -- Diffview file panel customizations for better visibility
+          highlights.DiffviewFilePanelTitle = { fg = colors.blue, bg = colors.bg_dark, bold = true }
+          highlights.DiffviewFilePanelCounter = { fg = colors.fg_dark, bg = colors.bg_dark }
+          highlights.DiffviewFilePanelFileName = { fg = colors.fg, bg = "NONE" }
+          highlights.DiffviewFilePanelPath = { fg = colors.fg_dark, bg = "NONE" }
+          highlights.DiffviewFilePanelSelected = { fg = colors.blue, bg = colors.bg_highlight, bold = true }
+          highlights.DiffviewFilePanelInsertions = { fg = colors.green, bg = "NONE" }
+          highlights.DiffviewFilePanelDeletions = { fg = colors.red, bg = "NONE" }
+          highlights.DiffviewFolderName = { fg = colors.blue, bg = "NONE", bold = true }
+          highlights.DiffviewFolderSign = { fg = colors.blue, bg = "NONE" }
+          highlights.DiffviewStatusAdded = { fg = colors.green, bg = "NONE" }
+          highlights.DiffviewStatusModified = { fg = colors.blue, bg = "NONE" }
+          highlights.DiffviewStatusRenamed = { fg = colors.purple, bg = "NONE" }
+          highlights.DiffviewStatusDeleted = { fg = colors.red, bg = "NONE" }
+          highlights.DiffviewStatusUntracked = { fg = colors.fg_dark, bg = "NONE" }
+        end,
 
         -- Plugin integrations (all enabled for your setup)
         plugins = {

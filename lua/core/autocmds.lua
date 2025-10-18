@@ -28,3 +28,16 @@ vim.api.nvim_create_autocmd("BufEnter", {
   end,
   desc = "Disable treesitter for vim/lua buffers (Neovim 0.12 compatibility)"
 })
+
+------------------------------------------------------------------------
+--- Auto-reload files changed outside of Neovim
+------------------------------------------------------------------------
+vim.api.nvim_create_autocmd({'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI'}, {
+  callback = function()
+    if vim.fn.mode() ~= 'c' then
+      vim.cmd('checktime')
+    end
+  end,
+  desc = "Check if buffers changed outside of Neovim"
+})
+

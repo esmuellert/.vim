@@ -9,7 +9,7 @@
 --   lua/plugins/        - Plugin configurations (one file per category)
 --   lua/themes/         - Custom color themes
 --   lua/config/         - Additional configurations (like writing.lua)
---   vimrc              - Legacy vim configuration (only loaded in vim, not nvim)
+--   vimrc              - Legacy vim configuration (also contains auto-session save/load)
 -- ============================================================================
 
 -- Source the legacy vimrc (wrapped in `if !has('nvim')` so only for vim)

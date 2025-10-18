@@ -94,7 +94,7 @@ return {
   ------------------------------------------------------------------------
   {
     'sindrets/diffview.nvim',
-    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
+    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles', 'DiffviewFileHistory' },
     keys = {
       {
         '<leader>df',
@@ -106,10 +106,189 @@ return {
           end
         end,
         desc = 'Toggle Diffview'
-      }
+      },
+      {
+        '<leader>dh',
+        function()
+          if next(require('diffview.lib').views) == nil then
+            vim.cmd('DiffviewFileHistory %')
+          else
+            vim.cmd('DiffviewClose')
+          end
+        end,
+        desc = 'Toggle File History (current file)'
+      },
+      {
+        '<leader>dH',
+        function()
+          if next(require('diffview.lib').views) == nil then
+            vim.cmd('DiffviewFileHistory')
+          else
+            vim.cmd('DiffviewClose')
+          end
+        end,
+        desc = 'Toggle File History (all)'
+      },
     },
-    opts = {
-      enhanced_diff_hl = true
-    },
+    config = function()
+      local actions = require("diffview.actions")
+
+      require('diffview').setup({
+        -- Enhanced diff highlighting - makes additions/deletions more visible
+        enhanced_diff_hl = true,
+
+        -- Show icons for files (requires nvim-web-devicons)
+        use_icons = true,
+
+        -- Show helpful hints at the bottom
+        show_help_hints = true,
+
+        -- Icons configuration
+        icons = {
+          folder_closed = "",
+          folder_open = "",
+        },
+        signs = {
+          fold_closed = "",
+          fold_open = "",
+          done = "✓",
+        },
+
+        -- View configuration
+        view = {
+          default = {
+            layout = "diff2_horizontal",  -- Side-by-side diff
+            winbar_info = false,
+          },
+          merge_tool = {
+            layout = "diff3_horizontal",
+            disable_diagnostics = true,
+            winbar_info = true,
+          },
+          file_history = {
+            layout = "diff2_horizontal",
+            winbar_info = false,
+          },
+        },
+
+        -- File panel configuration
+        file_panel = {
+          listing_style = "tree",  -- Tree view like the example
+          tree_options = {
+            flatten_dirs = true,              -- Flatten dirs with single child
+            folder_statuses = "only_folded",  -- Show folder status only when folded
+          },
+          win_config = {
+            position = "left",
+            width = 35,
+            win_opts = {}
+          },
+        },
+
+        -- File history panel configuration
+        file_history_panel = {
+          log_options = {
+            git = {
+              single_file = {
+                diff_merges = "combined",
+              },
+              multi_file = {
+                diff_merges = "first-parent",
+              },
+            },
+          },
+          win_config = {
+            position = "bottom",
+            height = 16,
+            win_opts = {}
+          },
+        },
+
+        -- Keymaps
+        keymaps = {
+          disable_defaults = false,
+          view = {
+            -- Navigate between files
+            { "n", "<tab>",      actions.select_next_entry,         { desc = "Next file" } },
+            { "n", "<s-tab>",    actions.select_prev_entry,         { desc = "Previous file" } },
+            { "n", "[F",         actions.select_first_entry,        { desc = "First file" } },
+            { "n", "]F",         actions.select_last_entry,         { desc = "Last file" } },
+
+            -- File operations
+            { "n", "gf",         actions.goto_file_edit,            { desc = "Open file" } },
+            { "n", "<C-w>gf",    actions.goto_file_tab,             { desc = "Open file in new tab" } },
+
+            -- Panel operations
+            { "n", "<leader>e",  actions.focus_files,               { desc = "Focus file panel" } },
+            { "n", "<leader>b",  actions.toggle_files,              { desc = "Toggle file panel" } },
+
+            -- Layout
+            { "n", "g<C-x>",     actions.cycle_layout,              { desc = "Cycle layout" } },
+
+            -- Conflict resolution (for merge tool)
+            { "n", "[x",         actions.prev_conflict,             { desc = "Previous conflict" } },
+            { "n", "]x",         actions.next_conflict,             { desc = "Next conflict" } },
+            { "n", "<leader>co", actions.conflict_choose("ours"),   { desc = "Choose OURS" } },
+            { "n", "<leader>ct", actions.conflict_choose("theirs"), { desc = "Choose THEIRS" } },
+            { "n", "<leader>cb", actions.conflict_choose("base"),   { desc = "Choose BASE" } },
+            { "n", "<leader>ca", actions.conflict_choose("all"),    { desc = "Choose ALL" } },
+            { "n", "dx",         actions.conflict_choose("none"),   { desc = "Delete conflict" } },
+          },
+          file_panel = {
+            -- Navigation
+            { "n", "j",              actions.next_entry,           { desc = "Next entry" } },
+            { "n", "k",              actions.prev_entry,           { desc = "Previous entry" } },
+            { "n", "<cr>",           actions.select_entry,         { desc = "Open diff" } },
+            { "n", "o",              actions.select_entry,         { desc = "Open diff" } },
+            { "n", "l",              actions.select_entry,         { desc = "Open diff" } },
+            { "n", "<2-LeftMouse>",  actions.select_entry,         { desc = "Open diff" } },
+
+            -- Staging (works when comparing against index)
+            { "n", "-",              actions.toggle_stage_entry,   { desc = "Stage/unstage" } },
+            { "n", "s",              actions.toggle_stage_entry,   { desc = "Stage/unstage" } },
+            { "n", "S",              actions.stage_all,            { desc = "Stage all" } },
+            { "n", "U",              actions.unstage_all,          { desc = "Unstage all" } },
+
+            -- File operations
+            { "n", "X",              actions.restore_entry,        { desc = "Restore file" } },
+            { "n", "R",              actions.refresh_files,        { desc = "Refresh" } },
+
+            -- Tree operations
+            { "n", "zo",             actions.open_fold,            { desc = "Expand fold" } },
+            { "n", "zc",             actions.close_fold,           { desc = "Collapse fold" } },
+            { "n", "h",              actions.close_fold,           { desc = "Collapse fold" } },
+            { "n", "za",             actions.toggle_fold,          { desc = "Toggle fold" } },
+            { "n", "zR",             actions.open_all_folds,       { desc = "Expand all" } },
+            { "n", "zM",             actions.close_all_folds,      { desc = "Collapse all" } },
+
+            -- View switching
+            { "n", "i",              actions.listing_style,        { desc = "Toggle list/tree" } },
+            { "n", "f",              actions.toggle_flatten_dirs,  { desc = "Flatten dirs" } },
+
+            -- Help
+            { "n", "g?",             actions.help("file_panel"),   { desc = "Help" } },
+          },
+          file_history_panel = {
+            { "n", "g!",            actions.options,              { desc = "Options" } },
+            { "n", "y",             actions.copy_hash,            { desc = "Copy hash" } },
+            { "n", "L",             actions.open_commit_log,      { desc = "Commit details" } },
+            { "n", "X",             actions.restore_entry,        { desc = "Restore file" } },
+            { "n", "<cr>",          actions.select_entry,         { desc = "Open diff" } },
+            { "n", "o",             actions.select_entry,         { desc = "Open diff" } },
+            { "n", "g?",            actions.help("file_history_panel"), { desc = "Help" } },
+          },
+        },
+
+        -- Hooks for customization
+        hooks = {
+          diff_buf_read = function(bufnr)
+            -- Improve diff readability
+            vim.opt_local.wrap = false
+            vim.opt_local.list = false
+            vim.opt_local.relativenumber = false
+          end,
+        },
+      })
+    end,
   },
 }

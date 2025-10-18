@@ -21,3 +21,14 @@ vim.diagnostic.config({
     },
   },
 })
+
+-- Diff mode improvements
+-- Add diagonal lines for deleted lines in diff mode (makes diffs clearer)
+vim.opt.fillchars:append({
+  diff = "╱",  -- Diagonal lines for deleted sections
+  fold = " ",
+  eob = " ",  -- Suppress ~ on empty lines
+})
+
+-- Auto-reload files when changed outside of Neovim
+vim.o.autoread = true
