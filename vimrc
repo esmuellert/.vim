@@ -203,28 +203,31 @@ augroup END
 
 
 " Automatically save the session into a 'tmp' folder inside the config path
-" Capture the directory where Vim was invoked
-let g:initial_cwd = getcwd()
-" Convert the initial_cwd to a valid filename (replace invalid characters)
-let g:valid_session_name = substitute(g:initial_cwd, '[:\\/]', '_', 'g')
-" Get the config path using fnamemodify and expand
-let g:config_path = fnamemodify(expand('$MYVIMRC'), ':p:h')
-" Create the path to the tmp session folder inside the config directory
-let g:session_dir = g:config_path . '/tmp'
-let g:session_file = g:session_dir . '/' . g:valid_session_name . '.vim'
-" Ensure the tmp directory exists
-if !isdirectory(g:session_dir)
-    call mkdir(g:session_dir, 'p')
+" NOTE: Disabled for Neovim - using persistence.nvim plugin instead
+if !has('nvim')
+    " Capture the directory where Vim was invoked
+    let g:initial_cwd = getcwd()
+    " Convert the initial_cwd to a valid filename (replace invalid characters)
+    let g:valid_session_name = substitute(g:initial_cwd, '[:\\/]', '_', 'g')
+    " Get the config path using fnamemodify and expand
+    let g:config_path = fnamemodify(expand('$MYVIMRC'), ':p:h')
+    " Create the path to the tmp session folder inside the config directory
+    let g:session_dir = g:config_path . '/tmp'
+    let g:session_file = g:session_dir . '/' . g:valid_session_name . '.vim'
+    " Ensure the tmp directory exists
+    if !isdirectory(g:session_dir)
+        call mkdir(g:session_dir, 'p')
+    endif
+    " Function to save the session when closing Vim
+    function! SaveVimSession()
+        " Save the session to the generated session file path
+        exe 'mksession! ' . fnameescape(g:session_file)
+    endfunction
+    " Automatically save the session when exiting Vim
+    autocmd VimLeavePre * call SaveVimSession()
+    " Automatically load session when starting Vim if no file arguments and session file exists
+    autocmd VimEnter * nested if argc() == 0 && filereadable(g:session_file) | exe 'source ' . fnameescape(g:session_file) | endif
 endif
-" Function to save the session when closing Vim
-function! SaveVimSession()
-    " Save the session to the generated session file path
-    exe 'mksession! ' . fnameescape(g:session_file)
-endfunction
-" Automatically save the session when exiting Vim
-autocmd VimLeavePre * call SaveVimSession()
-" Automatically load session when starting Vim if no file arguments and session file exists
-autocmd VimEnter * nested if argc() == 0 && filereadable(g:session_file) | exe 'source ' . fnameescape(g:session_file) | endif
 
 " Path settings
 "let &path = getcwd() . '/**'

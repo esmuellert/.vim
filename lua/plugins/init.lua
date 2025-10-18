@@ -17,6 +17,7 @@ local plugin_modules = {
   require("plugins.eslint"),
   require("plugins.xcodebuild"),
   require("plugins.writing"),
+  require("plugins.session"),
 }
 
 -- Flatten the plugin list (since each module returns a table of plugins)
