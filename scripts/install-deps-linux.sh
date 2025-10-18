@@ -15,6 +15,26 @@ echo "Platform: Linux (Debian/Ubuntu with apt)"
 echo "========================================="
 echo ""
 
+# Install ZSH first
+echo "=== Installing ZSH and Oh My Zsh ==="
+echo ""
+
+# Download and run the ZSH installation script
+ZSH_INSTALL_SCRIPT="/tmp/install_zsh.sh"
+echo "Downloading ZSH installation script..."
+curl -fsSL https://raw.githubusercontent.com/esmuellert/material-deep-ocean-zsh/main/install_zsh.sh -o "$ZSH_INSTALL_SCRIPT"
+chmod +x "$ZSH_INSTALL_SCRIPT"
+
+echo "Running ZSH installation..."
+bash "$ZSH_INSTALL_SCRIPT"
+
+# Clean up
+rm -f "$ZSH_INSTALL_SCRIPT"
+
+echo ""
+echo "ZSH installation completed!"
+echo ""
+
 # Color codes for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -107,49 +127,85 @@ else
 fi
 
 echo ""
-echo "=== Language Runtimes (for LSP servers) ==="
+echo "=== Terminal Multiplexer ==="
 echo ""
 
-# Node.js and npm
-if ! command_exists "node"; then
-    echo -e "${YELLOW}→${NC} Installing Node.js and npm..."
-    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-    sudo apt-get install -y nodejs
-    echo -e "${GREEN}✓${NC} Node.js and npm installed"
-else
-    echo -e "${GREEN}✓${NC} Node.js is already installed ($(node --version))"
-    echo -e "${GREEN}✓${NC} npm is already installed ($(npm --version))"
-fi
+# tmux
+install_if_missing "tmux" "tmux"
 
-# Python and pip
-install_if_missing "python3" "python3"
-install_if_missing "python3-pip" "pip3"
-install_if_missing "python3-venv" "python3"
-
-# Cargo/Rust (for some LSP servers and tools)
-if ! command_exists "cargo"; then
-    echo -e "${YELLOW}→${NC} Installing Rust and Cargo..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
-    source "$HOME/.cargo/env" 2>/dev/null || true
-    echo -e "${GREEN}✓${NC} Rust and Cargo installed"
-else
-    echo -e "${GREEN}✓${NC} Cargo is already installed ($(cargo --version))"
+# Install tmux configuration
+if command_exists "tmux"; then
+    echo -e "${YELLOW}→${NC} Setting up tmux configuration..."
+    
+    # Backup existing tmux.conf if it exists
+    if [ -f "$HOME/.tmux.conf" ]; then
+        echo "Backing up existing .tmux.conf..."
+        cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
+    fi
+    
+    # Copy tmux config from nvim config directory
+    NVIM_TMUX_CONF="$HOME/.config/nvim/.tmux.conf"
+    if [ -f "$NVIM_TMUX_CONF" ]; then
+        cp "$NVIM_TMUX_CONF" "$HOME/.tmux.conf"
+        echo -e "${GREEN}✓${NC} tmux configuration installed from nvim config"
+    else
+        # If not in nvim config, check if it already exists in home
+        if [ -f "$HOME/.tmux.conf" ]; then
+            echo -e "${GREEN}✓${NC} tmux configuration already exists"
+        else
+            echo -e "${YELLOW}⚠${NC} No tmux configuration found to install"
+        fi
+    fi
+    
+    # Install TPM (Tmux Plugin Manager) if not already installed
+    if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+        echo -e "${YELLOW}→${NC} Installing TPM (Tmux Plugin Manager)..."
+        git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+        echo -e "${GREEN}✓${NC} TPM installed"
+    else
+        echo -e "${GREEN}✓${NC} TPM is already installed"
+    fi
+    
+    # Install catppuccin tmux plugin directory if needed
+    mkdir -p "$HOME/.config/tmux/plugins"
+    if [ ! -d "$HOME/.config/tmux/plugins/catppuccin" ]; then
+        echo -e "${YELLOW}→${NC} Installing Catppuccin tmux theme..."
+        git clone https://github.com/catppuccin/tmux.git "$HOME/.config/tmux/plugins/catppuccin"
+        echo -e "${GREEN}✓${NC} Catppuccin theme installed"
+    else
+        echo -e "${GREEN}✓${NC} Catppuccin theme is already installed"
+    fi
+    
+    # Install tmux-cpu plugin
+    if [ ! -d "$HOME/.config/tmux/plugins/tmux-plugins/tmux-cpu" ]; then
+        echo -e "${YELLOW}→${NC} Installing tmux-cpu plugin..."
+        mkdir -p "$HOME/.config/tmux/plugins/tmux-plugins"
+        git clone https://github.com/tmux-plugins/tmux-cpu.git "$HOME/.config/tmux/plugins/tmux-plugins/tmux-cpu"
+        echo -e "${GREEN}✓${NC} tmux-cpu plugin installed"
+    else
+        echo -e "${GREEN}✓${NC} tmux-cpu plugin is already installed"
+    fi
+    
+    # Install tmux-battery plugin
+    if [ ! -d "$HOME/.config/tmux/plugins/tmux-plugins/tmux-battery" ]; then
+        echo -e "${YELLOW}→${NC} Installing tmux-battery plugin..."
+        mkdir -p "$HOME/.config/tmux/plugins/tmux-plugins"
+        git clone https://github.com/tmux-plugins/tmux-battery.git "$HOME/.config/tmux/plugins/tmux-plugins/tmux-battery"
+        echo -e "${GREEN}✓${NC} tmux-battery plugin installed"
+    else
+        echo -e "${GREEN}✓${NC} tmux-battery plugin is already installed"
+    fi
+    
+    echo -e "${GREEN}✓${NC} tmux setup completed"
+    echo ""
+    echo "Note: To activate the tmux configuration:"
+    echo "  • If tmux is running: run 'tmux source-file ~/.tmux.conf'"
+    echo "  • For colored undercurls: restart tmux completely with 'tmux kill-server && tmux'"
 fi
 
 echo ""
 echo "=== Additional Development Tools ==="
 echo ""
-
-# Tree-sitter CLI (optional but useful for parser development)
-if ! command_exists "tree-sitter"; then
-    echo -e "${YELLOW}→${NC} Installing tree-sitter CLI via npm..."
-    sudo npm install -g tree-sitter-cli 2>/dev/null || npm install -g tree-sitter-cli --prefix="$HOME/.local"
-    if command_exists "tree-sitter"; then
-        echo -e "${GREEN}✓${NC} tree-sitter CLI installed"
-    fi
-else
-    echo -e "${GREEN}✓${NC} tree-sitter CLI is already installed"
-fi
 
 # Lazygit (optional but very useful)
 if ! command_exists "lazygit"; then
@@ -173,15 +229,13 @@ echo "Summary of installed tools:"
 echo "  • Build tools: gcc, make, cmake"
 echo "  • VCS: git"
 echo "  • Search: ripgrep (rg), fd"
-echo "  • Languages: Node.js, Python, Rust"
+echo "  • Terminal: tmux"
 echo "  • Utilities: curl, wget, unzip, tar, gzip"
-echo "  • Optional: tree-sitter CLI, lazygit"
+echo "  • Optional: lazygit"
 echo ""
 echo "Next steps:"
 echo "  1. Restart your shell or run: source ~/.bashrc (or ~/.zshrc)"
 echo "  2. Add ~/.local/bin to PATH if not already (for fd and other tools)"
 echo "  3. Open Neovim and run: :checkhealth"
 echo "  4. Install LSP servers with: :Mason"
-echo ""
-echo "Note: If you installed Rust/Cargo, run: source \$HOME/.cargo/env"
 echo ""

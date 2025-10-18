@@ -1,5 +1,6 @@
 /*
 !/.gitignore
+!/.luarc.json
 
 !/vimrc
 !/nvim.lua

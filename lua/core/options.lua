@@ -1,5 +1,8 @@
 -- Vim options and settings
 
+-- Enable true color support
+vim.opt.termguicolors = true
+
 -- Set spell check
 vim.cmd('setlocal spell spelllang=en_us')
 
@@ -9,15 +12,22 @@ vim.opt.signcolumn = 'yes'
 -- Diagnostic configuration
 vim.diagnostic.config({
   virtual_text = {
-    prefix = "●",
+    prefix = "",
   },
   severity_sort = true,
+  underline = true,
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = "",
       [vim.diagnostic.severity.WARN] = "",
       [vim.diagnostic.severity.HINT] = "",
       [vim.diagnostic.severity.INFO] = "",
+    },
+    linehl = {
+      [vim.diagnostic.severity.ERROR] = "DiagnosticLineError",
+      [vim.diagnostic.severity.WARN] = "DiagnosticLineWarn",
+      [vim.diagnostic.severity.HINT] = "DiagnosticLineHint",
+      [vim.diagnostic.severity.INFO] = "DiagnosticLineInfo",
     },
   },
 })
