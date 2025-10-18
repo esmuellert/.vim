@@ -204,6 +204,50 @@ if command_exists "tmux"; then
 fi
 
 echo ""
+echo "=== Treesitter Parsers ==="
+echo ""
+
+# Install updated treesitter parsers for Neovim 0.12-dev compatibility
+PARSER_DIR="$HOME/.local/share/nvim/site/parser"
+mkdir -p "$PARSER_DIR"
+
+echo "Installing updated treesitter parsers for Neovim 0.12-dev..."
+
+# Install Lua parser
+if [ ! -f "$PARSER_DIR/lua.so" ] || [ /usr/share/nvim/runtime/parser/lua.so -nt "$PARSER_DIR/lua.so" ]; then
+    echo -e "${YELLOW}→${NC} Installing Lua treesitter parser..."
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+    git clone https://github.com/MunifTanjim/tree-sitter-lua.git --depth 1 --quiet
+    cd tree-sitter-lua
+    gcc -o lua.so -shared src/parser.c src/scanner.c -I./src -Os -fPIC -lstdc++ 2>/dev/null
+    cp lua.so "$PARSER_DIR/"
+    cd /
+    rm -rf "$TEMP_DIR"
+    echo -e "${GREEN}✓${NC} Lua parser installed"
+else
+    echo -e "${GREEN}✓${NC} Lua parser is already installed"
+fi
+
+# Install Vim parser
+if [ ! -f "$PARSER_DIR/vim.so" ] || [ /usr/share/nvim/runtime/parser/vim.so -nt "$PARSER_DIR/vim.so" ]; then
+    echo -e "${YELLOW}→${NC} Installing Vim treesitter parser..."
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+    git clone https://github.com/neovim/tree-sitter-vim.git --depth 1 --quiet
+    cd tree-sitter-vim
+    gcc -o vim.so -shared src/parser.c src/scanner.c -I./src -Os -fPIC -lstdc++ 2>/dev/null
+    cp vim.so "$PARSER_DIR/"
+    cd /
+    rm -rf "$TEMP_DIR"
+    echo -e "${GREEN}✓${NC} Vim parser installed"
+else
+    echo -e "${GREEN}✓${NC} Vim parser is already installed"
+fi
+
+echo -e "${GREEN}✓${NC} Treesitter parsers setup completed"
+
+echo ""
 echo "=== Additional Development Tools ==="
 echo ""
 

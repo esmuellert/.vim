@@ -1,42 +1,40 @@
--- Treesitter configuration (currently disabled due to Neovim 0.12-dev compatibility issues)
+-- Treesitter configuration
+-- Note: Neovim 0.12-dev has built-in treesitter support
+-- Updated parsers are installed via install-deps-linux.sh to ~/.local/share/nvim/site/parser/
 
 return {
   ------------------------------------------------------------------------
   -- 🌲 nvim-treesitter: Advanced syntax highlighting
   ------------------------------------------------------------------------
-  -- DISABLED: Uncomment to re-enable treesitter plugin
-  -- Note: Neovim 0.12-dev has built-in treesitter, but there are compatibility issues
-  -- {
-  --   'nvim-treesitter/nvim-treesitter',
-  --   event = 'BufRead',
-  --   build = ':TSUpdate',
-  --   opts = function()
-  --     return {
-  --       -- A list of parser names, or "all"
-  --       ensure_installed = { "c", "lua", "vim", "vimdoc", "markdown", "markdown_inline", "javascript", "typescript", "c_sharp", "powershell", "tsx", "html", "json" },
-  --
-  --       -- Install parsers synchronously (only applied to `ensure_installed`)
-  --       sync_install = false,
-  --
-  --       -- Automatically install missing parsers when entering buffer
-  --       auto_install = true,
-  --
-  --       -- List of parsers to ignore installing (or "all")
-  --       -- ignore_install = { "javascript" },
-  --
-  --       highlight = {
-  --         enable = true,
-  --
-  --         -- List of languages that will be disabled
-  --         disable = { "javascript", "typescript", "tsx" },
-  --
-  --         -- Additional regex-based highlighting
-  --         additional_vim_regex_highlighting = false,
-  --       },
-  --       indent = {
-  --         enable = true,
-  --       },
-  --     }
-  --   end,
-  -- },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    event = 'BufRead',
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter.configs').setup({
+        -- A list of parser names, or "all"
+        ensure_installed = { 
+          "c", "lua", "vim", "vimdoc", "markdown", "markdown_inline", 
+          "javascript", "typescript", "c_sharp", "powershell", "tsx", 
+          "html", "json", "python", "bash"
+        },
+
+        -- Install parsers synchronously (only applied to `ensure_installed`)
+        sync_install = false,
+
+        -- Automatically install missing parsers when entering buffer
+        auto_install = true,
+
+        highlight = {
+          enable = true,
+
+          -- Additional regex-based highlighting
+          additional_vim_regex_highlighting = false,
+        },
+        indent = {
+          enable = true,
+        },
+      })
+    end,
+  },
 }
