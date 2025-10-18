@@ -9,25 +9,7 @@ return {
     event = 'BufRead',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      local github_colors = _G.github_colors or {}
-
-      local github_light_theme = {
-        normal = {
-          a = { fg = github_colors.gray and github_colors.gray[1] or "#fafbfc", bg = github_colors.purple and github_colors.purple[3] or "#d1bcf9" },
-          b = { fg = github_colors.gray and github_colors.gray[6] or "#6a737d", bg = github_colors.gray and github_colors.gray[3] or "#e1e4e8" },
-          c = { fg = github_colors.gray and github_colors.gray[6] or "#6a737d", bg = github_colors.gray and github_colors.gray[2] or "#f6f8fa" },
-        },
-
-        insert = { a = { fg = github_colors.gray and github_colors.gray[1] or "#fafbfc", bg = github_colors.blue and github_colors.blue[4] or "#79b8ff" } },
-        visual = { a = { fg = github_colors.gray and github_colors.gray[1] or "#fafbfc", bg = github_colors.green and github_colors.green[5] or "#34d058" } },
-        replace = { a = { fg = github_colors.gray and github_colors.gray[1] or "#fafbfc", bg = github_colors.pink and github_colors.pink[4] or "#f692ce" } },
-
-        inactive = {
-          a = { fg = github_colors.gray and github_colors.gray[6] or "#6a737d", bg = github_colors.gray and github_colors.gray[3] or "#e1e4e8" },
-          b = { fg = github_colors.gray and github_colors.gray[6] or "#6a737d", bg = github_colors.gray and github_colors.gray[3] or "#e1e4e8" },
-          c = { fg = github_colors.gray and github_colors.gray[6] or "#6a737d", bg = github_colors.gray and github_colors.gray[1] or "#fafbfc" },
-        },
-      }
+      local theme_config = require("config.theme")
 
       local function xcodebuild_device()
         if vim.g.xcodebuild_platform == "macOS" then
@@ -56,7 +38,7 @@ return {
 
       require('lualine').setup({
         options = {
-          theme = github_light_theme,
+          theme = theme_config.get_lualine_theme(),
           component_separators = '',
           section_separators = { left = '', right = '' },
         },
@@ -86,7 +68,7 @@ return {
     version = "*",
     dependencies = 'nvim-tree/nvim-web-devicons',
     config = function()
-      local github_colors = _G.github_colors or {}
+      local theme_config = require("config.theme")
 
       require("bufferline").setup({
         options = {
@@ -95,36 +77,7 @@ return {
             style = 'underline'
           }
         },
-        highlights = {
-          fill = {
-            fg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-            bg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-          },
-          background = {
-            fg = github_colors.gray and github_colors.gray[6] or "#6a737d",
-            bg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-          },
-          buffer_selected = {
-            fg = github_colors.gray and github_colors.gray[9] or "#2f363d",
-            bg = github_colors.white or "#ffffff",
-          },
-          tab_close = {
-            fg = github_colors.gray and github_colors.gray[6] or "#6a737d",
-            bg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-          },
-          close_button = {
-            fg = github_colors.gray and github_colors.gray[6] or "#6a737d",
-            bg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-          },
-          separator = {
-            fg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-            bg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-          },
-          modified = {
-            fg = github_colors.gray and github_colors.gray[9] or "#2f363d",
-            bg = github_colors.gray and github_colors.gray[2] or "#f6f8fa",
-          },
-        }
+        highlights = theme_config.get_bufferline_highlights()
       })
     end,
   },

@@ -87,26 +87,53 @@ return {
       require('mason-lspconfig').setup(opts)
 
       -- Configure SourceKit directly (builtin, not installed by Mason)
-      local lspconfig = require('lspconfig')
+      -- Using new vim.lsp.config API for Neovim 0.11+
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
       local on_attach = function(client, bufnr)
         if client.server_capabilities.inlayHintProvider then
           vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
         end
       end
+      
       local resolved = vim.trim(vim.fn.system('xcrun -f sourcekit-lsp'))
       if resolved == '' or vim.v.shell_error ~= 0 then
         resolved = 'sourcekit-lsp'
       end
-      lspconfig.sourcekit.setup({
-        cmd = { resolved },
-        filetypes = { 'swift' },
-        capabilities = capabilities,
-        on_attach = on_attach,
-        on_init = function(client)
-          client.offset_encoding = 'utf-8'
-        end,
-      })
+      
+      -- Use new vim.lsp.config API for Neovim 0.11+
+      if vim.lsp.config then
+        vim.lsp.config.sourcekit = {
+          cmd = { resolved },
+          filetypes = { 'swift' },
+          root_dir = vim.fs.root,
+          capabilities = capabilities,
+        }
+        
+        -- Register the on_attach handler
+        vim.api.nvim_create_autocmd('LspAttach', {
+          callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client and client.name == 'sourcekit' then
+              on_attach(client, args.buf)
+              if client.server_capabilities then
+                client.offset_encoding = 'utf-8'
+              end
+            end
+          end,
+        })
+      else
+        -- Fallback to old API for older Neovim versions
+        local lspconfig = require('lspconfig')
+        lspconfig.sourcekit.setup({
+          cmd = { resolved },
+          filetypes = { 'swift' },
+          capabilities = capabilities,
+          on_attach = on_attach,
+          on_init = function(client)
+            client.offset_encoding = 'utf-8'
+          end,
+        })
+      end
     end,
   },
 

@@ -1,20 +1,8 @@
 -- Colorscheme configuration
--- Custom lush theme and related color settings
+-- All theme-specific settings are now in lua/config/theme.lua
 
--- GitHub color palette (exported for use in other configs)
--- These colors are used in lualine and bufferline
-_G.github_colors = {
-  black = "#24292e",
-  white = "#ffffff",
-  gray = { "#fafbfc", "#f6f8fa", "#e1e4e8", "#d1d5da", "#959da5", "#6a737d", "#586069", "#444d56", "#2f363d", "#24292e" },
-  blue = { "#f1f8ff", "#dbedff", "#c8e1ff", "#79b8ff", "#2188ff", "#0366d6", "#005cc5", "#044289", "#032f62", "#05264c" },
-  green = { "#f0fff4", "#dcffe4", "#bef5cb", "#85e89d", "#34d058", "#28a745", "#22863a", "#176f2c", "#165c26", "#144620" },
-  yellow = { "#fffdef", "#fffbdd", "#fff5b1", "#ffea7f", "#ffdf5d", "#ffd33d", "#f9c513", "#dbab09", "#b08800", "#735c0f" },
-  orange = { "#fff8f2", "#ffebda", "#ffd1ac", "#ffab70", "#fb8532", "#f66a0a", "#e36209", "#d15704", "#c24e00", "#a04100" },
-  red = { "#ffeef0", "#ffdce0", "#fdaeb7", "#f97583", "#ea4a5a", "#d73a49", "#cb2431", "#b31d28", "#9e1c23", "#86181d" },
-  purple = { "#f5f0ff", "#e6dcfd", "#d1bcf9", "#b392f0", "#8a63d2", "#6f42c1", "#5a32a3", "#4c2889", "#3a1d6e", "#29134e" },
-  pink = { "#ffeef8", "#fedbf0", "#f9b3dd", "#f692ce", "#ec6cb9", "#ea4aaa", "#d03592", "#b93a86", "#99306f", "#6d224f" }
-}
+-- Export github colors for backward compatibility
+_G.github_colors = require("config.theme").github_colors
 
 return {
   ------------------------------------------------------------------------
@@ -35,46 +23,123 @@ return {
   ------------------------------------------------------------------------
   --- 🎨 Catppuccin: Soothing pastel theme for Neovim
   ------------------------------------------------------------------------
+  -- DISABLED: Trying Tokyo Night instead
+  -- {
+  --   'catppuccin/nvim',
+  --   name = 'catppuccin',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require("catppuccin").setup({
+  --       flavour = "mocha", -- latte, frappe, macchiato, mocha
+  --       background = {
+  --         light = "latte",
+  --         dark = "mocha",
+  --       },
+  --       transparent_background = false,
+  --       show_end_of_buffer = false,
+  --       term_colors = false,
+  --       dim_inactive = {
+  --         enabled = false,
+  --         shade = "dark",
+  --         percentage = 0.15,
+  --       },
+  --       no_italic = false,
+  --       no_bold = false,
+  --       no_underline = false,
+  --       styles = {
+  --         comments = { "italic" },
+  --         conditionals = { "italic" },
+  --       },
+  --       integrations = {
+  --         cmp = true,
+  --         gitsigns = true,
+  --         nvimtree = true,
+  --         treesitter = true,
+  --         telescope = {
+  --           enabled = true,
+  --         },
+  --         mason = true,
+  --         which_key = true,
+  --         bufferline = true,
+  --         diffview = true,
+  --         native_lsp = {
+  --           enabled = true,
+  --           virtual_text = {
+  --             errors = { "italic" },
+  --             hints = { "italic" },
+  --             warnings = { "italic" },
+  --             information = { "italic" },
+  --           },
+  --           underlines = {
+  --             errors = { "underline" },
+  --             hints = { "underline" },
+  --             warnings = { "underline" },
+  --             information = { "underline" },
+  --           },
+  --         },
+  --       },
+  --       custom_highlights = function(colors)
+  --         return {
+  --           -- Additional custom highlights if needed
+  --         }
+  --       end,
+  --     })
+  --     vim.cmd('colorscheme catppuccin')
+  --     
+  --     -- Trigger UI refresh after theme loads
+  --     vim.defer_fn(function()
+  --       vim.cmd('redraw')
+  --     end, 100)
+  --   end,
+  -- },
+
+  ------------------------------------------------------------------------
+  --- 🏙️ Tokyo Night: A clean, dark Neovim theme
+  ------------------------------------------------------------------------
   {
-    'catppuccin/nvim',
-    name = 'catppuccin',
+    'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000,
     config = function()
-      require("catppuccin").setup({
-        flavour = "mocha", -- latte, frappe, macchiato, mocha
-        background = {
-          light = "latte",
-          dark = "mocha",
-        },
-        transparent_background = false,
-        show_end_of_buffer = false,
-        term_colors = false,
-        dim_inactive = {
-          enabled = false,
-          shade = "dark",
-          percentage = 0.15,
-        },
-        no_italic = false,
-        no_bold = false,
-        no_underline = false,
+      -- Set background to dark BEFORE loading the theme
+      vim.o.background = "dark"
+      
+      require("tokyonight").setup({
+        style = "moon", -- storm, moon, night, day
+        light_style = "day",
+        transparent = false,
+        terminal_colors = true,
         styles = {
-          comments = { "italic" },
-          conditionals = { "italic" },
+          comments = { italic = true },
+          keywords = { italic = true },
+          functions = {},
+          variables = {},
+          sidebars = "dark",
+          floats = "dark",
         },
-        integrations = {
-          cmp = true,
-          gitsigns = true,
-          nvimtree = true,
-          treesitter = true,
-          telescope = {
-            enabled = true,
-          },
-          mason = true,
-          which_key = true,
+        sidebars = { "qf", "help", "vista_kind", "terminal", "packer" },
+        day_brightness = 0.3,
+        hide_inactive_statusline = false,
+        dim_inactive = false,
+        lualine_bold = false,
+
+        --- You can override specific color groups to use other groups or a hex color
+        --- function will be called with a ColorScheme table
+        on_colors = function(colors) end,
+
+        --- You can override specific highlights to use other groups or a hex color
+        --- function will be called with a Highlights and ColorScheme table
+        on_highlights = function(highlights, colors) end,
+
+        -- Plugin integrations (all enabled for your setup)
+        plugins = {
+          -- Enable all the plugins you have installed
+          auto = true, -- Automatically enable all available integrations
         },
       })
-      vim.cmd('colorscheme catppuccin')
+
+      vim.cmd('colorscheme tokyonight-moon')
     end,
   },
 
