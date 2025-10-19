@@ -1,11 +1,14 @@
 -- Telescope fuzzy finder
 
+local enabled = require('config.plugins-enabled')
+
 return {
   ------------------------------------------------------------------------
   -- 🔭 telescope.nvim: Fuzzy finder and picker for Neovim
   ------------------------------------------------------------------------
   {
     'nvim-telescope/telescope.nvim',
+    enabled = enabled.telescope,
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-tree/nvim-web-devicons',

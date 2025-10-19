@@ -1,11 +1,14 @@
 -- Session management plugin
 
+local enabled = require('config.plugins-enabled')
+
 return {
   ------------------------------------------------------------------------
   -- 💾 persistence.nvim: Simple session management
   ------------------------------------------------------------------------
   {
     'folke/persistence.nvim',
+    enabled = enabled.session,
     event = 'VimEnter',
     opts = {
       dir = vim.fn.stdpath('state') .. '/sessions/', -- directory where session files are saved

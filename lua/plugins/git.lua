@@ -1,11 +1,14 @@
 -- Git-related plugins
 
+local enabled = require('config.plugins-enabled')
+
 return {
   ------------------------------------------------------------------------
   -- 🔍 Gitsigns: Track git changes in the gutter
   ------------------------------------------------------------------------
   {
     'lewis6991/gitsigns.nvim',
+    enabled = enabled.gitsigns,
     event = 'BufRead',
     opts = function()
       return {
@@ -94,6 +97,7 @@ return {
   ------------------------------------------------------------------------
   {
     'sindrets/diffview.nvim',
+    enabled = enabled.diffview,
     cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles', 'DiffviewFileHistory' },
     keys = {
       {

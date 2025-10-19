@@ -1,11 +1,15 @@
 -- Editor enhancement plugins
 
+local enabled = require('config.plugins-enabled')
+
+
 return {
   ------------------------------------------------------------------------
   -- 💬 Comment.nvim: Efficient code commenting
   ------------------------------------------------------------------------
   {
     'numToStr/Comment.nvim',
+    enabled = enabled.comment,
     event = 'BufRead',
     config = function()
       require('Comment').setup()
@@ -17,6 +21,7 @@ return {
   ------------------------------------------------------------------------
   {
     'windwp/nvim-autopairs',
+    enabled = enabled.autopairs,
     event = 'InsertEnter',
     config = function()
       require('nvim-autopairs').setup()
@@ -28,6 +33,7 @@ return {
   ------------------------------------------------------------------------
   {
     'RRethy/vim-illuminate',
+    enabled = enabled.illuminate,
     event = 'BufRead',
   },
 

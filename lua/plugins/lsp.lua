@@ -1,11 +1,14 @@
 -- LSP configuration
 
+local enabled = require('config.plugins-enabled')
+
 return {
   ------------------------------------------------------------------------
   -- 🛠️ mason.nvim: Tool to manage LSPs, DAPs, linters, and formatters
   ------------------------------------------------------------------------
   {
     'williamboman/mason-lspconfig.nvim',
+    enabled = enabled.lsp and enabled.mason,
     dependencies = {
       'williamboman/mason.nvim',
       'neovim/nvim-lspconfig',
@@ -152,6 +155,7 @@ return {
   ------------------------------------------------------------------------
   {
     'j-hui/fidget.nvim',
+    enabled = enabled.fidget,
     event = 'BufEnter',
     config = function()
       require("fidget").setup({})
@@ -163,6 +167,7 @@ return {
   ------------------------------------------------------------------------
   {
     'nvimdev/lspsaga.nvim',
+    enabled = enabled.lspsaga,
     dependencies = {
       'neovim/nvim-lspconfig',
     },

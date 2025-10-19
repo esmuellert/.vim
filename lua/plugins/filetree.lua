@@ -1,10 +1,14 @@
 -- File tree explorer
 
+local enabled = require('config.plugins-enabled')
+
+
 return {
   ------------------------------------------------------------------------
   --- 🌲 nvim-tree.lua: File explorer tree
   ------------------------------------------------------------------------
   {
+    enabled = enabled.nvim_tree,
     'nvim-tree/nvim-tree.lua',
     cmd = { 'NvimTreeToggle', 'NvimTreeFocus', 'NvimTreeFindFile' },
     keys = {

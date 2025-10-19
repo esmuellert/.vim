@@ -1,11 +1,15 @@
 -- Xcodebuild integration (optional, only for macOS/iOS development)
 
+local enabled = require('config.plugins-enabled')
+
+
 return {
   ------------------------------------------------------------------------
   --- 🛠️ xcodebuild.nvim: Build and run Xcode projects
   ------------------------------------------------------------------------
   {
     "wojciech-kulik/xcodebuild.nvim",
+    enabled = enabled.xcodebuild,
     ft = { "swift", "objc", "objc++", "xml", "plist" },
     dependencies = {
       "nvim-telescope/telescope.nvim",

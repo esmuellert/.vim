@@ -1,6 +1,11 @@
 -- Treesitter configuration
+
+local enabled = require('config.plugins-enabled')
 -- Note: Neovim 0.12-dev has built-in treesitter support
+
 -- Updated parsers are installed via install-deps-linux.sh to ~/.local/share/nvim/site/parser/
+
+
 
 return {
   ------------------------------------------------------------------------
@@ -8,6 +13,7 @@ return {
   ------------------------------------------------------------------------
   {
     'nvim-treesitter/nvim-treesitter',
+    enabled = enabled.treesitter,
     event = 'BufRead',
     build = ':TSUpdate',
     config = function()

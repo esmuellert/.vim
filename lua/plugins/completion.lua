@@ -1,11 +1,15 @@
 -- Completion configuration
 
+local enabled = require('config.plugins-enabled')
+
+
 return {
   ------------------------------------------------------------------------
   --- 📦 nvim-cmp: Autocompletion plugin
   ------------------------------------------------------------------------
   {
     'hrsh7th/nvim-cmp',
+    enabled = enabled.cmp,
     event = 'BufRead',
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',

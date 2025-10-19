@@ -1,10 +1,14 @@
 -- UI plugins: statusline, bufferline, indent guides
 
+local enabled = require('config.plugins-enabled')
+
+
 return {
   ------------------------------------------------------------------------
   --- 📊 lualine.nvim: Blazing fast statusline
   ------------------------------------------------------------------------
   {
+    enabled = enabled.lualine,
     'nvim-lualine/lualine.nvim',
     event = 'BufRead',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -63,6 +67,7 @@ return {
   --- 📑 bufferline.nvim: Snazzy buffer line
   ------------------------------------------------------------------------
   {
+    enabled = enabled.bufferline,
     'akinsho/bufferline.nvim',
     event = 'BufRead',
     version = "*",
@@ -86,6 +91,7 @@ return {
   -- 📏 indent-blankline.nvim: Visual indentation guides
   ------------------------------------------------------------------------
   {
+    enabled = enabled.indent_blankline,
     'lukas-reineke/indent-blankline.nvim',
     event = 'BufRead',
     main = "ibl",

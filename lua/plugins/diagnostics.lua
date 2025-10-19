@@ -1,11 +1,15 @@
 -- Diagnostics and trouble shooting
 
+local enabled = require('config.plugins-enabled')
+
+
 return {
   ------------------------------------------------------------------------
   --- 🚨 Trouble.nvim: Pretty list for diagnostics
   ------------------------------------------------------------------------
   {
     'folke/trouble.nvim',
+    enabled = enabled.trouble,
     cmd = { 'Trouble', 'TroubleToggle' },
     keys = {
       {
