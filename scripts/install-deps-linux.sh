@@ -15,32 +15,6 @@ echo "Platform: Linux (Debian/Ubuntu with apt)"
 echo "========================================="
 echo ""
 
-# Install ZSH first
-if ! command_exists "zsh"; then
-    echo "=== Installing ZSH and Oh My Zsh ==="
-    echo ""
-
-    # Download and run the ZSH installation script
-    ZSH_INSTALL_SCRIPT="/tmp/install_zsh.sh"
-    echo "Downloading ZSH installation script..."
-    curl -fsSL https://raw.githubusercontent.com/esmuellert/material-deep-ocean-zsh/main/install_zsh.sh -o "$ZSH_INSTALL_SCRIPT"
-    chmod +x "$ZSH_INSTALL_SCRIPT"
-
-    echo "Running ZSH installation..."
-    bash "$ZSH_INSTALL_SCRIPT"
-
-    # Clean up
-    rm -f "$ZSH_INSTALL_SCRIPT"
-
-    echo ""
-    echo "ZSH installation completed!"
-    echo ""
-else
-    echo "=== ZSH ==="
-    echo -e "${GREEN}✓${NC} ZSH is already installed ($(zsh --version))"
-    echo ""
-fi
-
 # Color codes for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -70,6 +44,32 @@ install_if_missing() {
         fi
     fi
 }
+
+# Install ZSH first
+if ! command_exists "zsh"; then
+    echo "=== Installing ZSH and Oh My Zsh ==="
+    echo ""
+
+    # Download and run the ZSH installation script
+    ZSH_INSTALL_SCRIPT="/tmp/install_zsh.sh"
+    echo "Downloading ZSH installation script..."
+    curl -fsSL https://raw.githubusercontent.com/esmuellert/material-deep-ocean-zsh/main/install_zsh.sh -o "$ZSH_INSTALL_SCRIPT"
+    chmod +x "$ZSH_INSTALL_SCRIPT"
+
+    echo "Running ZSH installation..."
+    bash "$ZSH_INSTALL_SCRIPT"
+
+    # Clean up
+    rm -f "$ZSH_INSTALL_SCRIPT"
+
+    echo ""
+    echo "ZSH installation completed!"
+    echo ""
+else
+    echo "=== ZSH ==="
+    echo -e "${GREEN}✓${NC} ZSH is already installed ($(zsh --version))"
+    echo ""
+fi
 
 # Update package list
 echo "Updating package lists..."
