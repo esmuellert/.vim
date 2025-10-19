@@ -69,7 +69,7 @@ M.github_light_bufferline = {
 -- Get lualine theme based on current colorscheme
 function M.get_lualine_theme()
   local colorscheme = vim.g.colors_name or ""
-  
+
   if colorscheme:match("tokyonight") then
     return "tokyonight"
   elseif colorscheme:match("catppuccin") then
@@ -84,7 +84,7 @@ end
 -- Get bufferline highlights based on current colorscheme
 function M.get_bufferline_highlights()
   local colorscheme = vim.g.colors_name or ""
-  
+
   if colorscheme:match("tokyonight") then
     -- Tokyo Night automatically applies bufferline highlights
     return {}
