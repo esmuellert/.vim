@@ -6,6 +6,7 @@
 !/vimrc
 !/nvim.lua
 !init.lua
+!init.lua.*
 !lazy-lock.json
 
 !/lua/
