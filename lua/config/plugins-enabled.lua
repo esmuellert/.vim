@@ -9,7 +9,7 @@ return {
 
   -- Editor plugins
   telescope = true,
-  treesitter = true,
+  treesitter = false,
   nvim_tree = true,
   comment = true,
   autopairs = true,
