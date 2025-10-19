@@ -1,6 +1,7 @@
 /*
 !/.gitignore
 !/.luarc.json
+!/.tmux.conf
 
 !/vimrc
 !/nvim.lua

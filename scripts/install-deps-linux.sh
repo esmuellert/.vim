@@ -70,6 +70,26 @@ echo "Updating package lists..."
 sudo apt-get update -qq
 
 echo ""
+echo "=== Neovim ==="
+echo ""
+
+# Install latest stable Neovim from PPA
+if ! command_exists "nvim"; then
+    echo -e "${YELLOW}→${NC} Installing Neovim from official PPA..."
+    sudo add-apt-repository -y ppa:neovim-ppa/stable
+    sudo apt-get update -qq
+    sudo apt-get install -y neovim
+    if command_exists "nvim"; then
+        echo -e "${GREEN}✓${NC} Neovim installed successfully ($(nvim --version | head -1))"
+    else
+        echo -e "${RED}✗${NC} Failed to install Neovim"
+        return 1
+    fi
+else
+    echo -e "${GREEN}✓${NC} Neovim is already installed ($(nvim --version | head -1))"
+fi
+
+echo ""
 echo "=== Core Build Tools ==="
 echo ""
 
@@ -108,7 +128,17 @@ echo "=== Search Tools (for Telescope) ==="
 echo ""
 
 # Ripgrep - required for telescope live_grep
-install_if_missing "ripgrep" "rg"
+if ! command_exists "rg"; then
+    echo -e "${YELLOW}→${NC} Installing ripgrep..."
+    sudo apt-get install -y ripgrep
+    if command_exists "rg"; then
+        echo -e "${GREEN}✓${NC} ripgrep installed successfully"
+    else
+        echo -e "${RED}✗${NC} Failed to install ripgrep"
+    fi
+else
+    echo -e "${GREEN}✓${NC} ripgrep is already installed"
+fi
 
 # fd-find - better file finder (optional but recommended)
 if ! command_exists "fd"; then
@@ -124,6 +154,20 @@ if ! command_exists "fd"; then
     fi
 else
     echo -e "${GREEN}✓${NC} fd is already installed"
+fi
+
+# fzf - fuzzy finder
+if ! command_exists "fzf"; then
+    echo -e "${YELLOW}→${NC} Installing fzf..."
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install --key-bindings --completion --no-update-rc
+    if command_exists "fzf"; then
+        echo -e "${GREEN}✓${NC} fzf installed successfully"
+    else
+        echo -e "${RED}✗${NC} Failed to install fzf"
+    fi
+else
+    echo -e "${GREEN}✓${NC} fzf is already installed"
 fi
 
 echo ""
@@ -144,16 +188,16 @@ if command_exists "tmux"; then
     fi
     
     # Copy tmux config from nvim config directory
-    NVIM_TMUX_CONF="$HOME/.config/nvim/.tmux.conf"
+    NVIM_TMUX_CONF="$(dirname "$(readlink -f "$0")")/../.tmux.conf"
     if [ -f "$NVIM_TMUX_CONF" ]; then
         cp "$NVIM_TMUX_CONF" "$HOME/.tmux.conf"
         echo -e "${GREEN}✓${NC} tmux configuration installed from nvim config"
     else
-        # If not in nvim config, check if it already exists in home
-        if [ -f "$HOME/.tmux.conf" ]; then
-            echo -e "${GREEN}✓${NC} tmux configuration already exists"
+        echo -e "${YELLOW}⚠${NC} tmux config not found at $NVIM_TMUX_CONF"
+        if [ ! -f "$HOME/.tmux.conf" ]; then
+            echo -e "${RED}✗${NC} No tmux configuration available"
         else
-            echo -e "${YELLOW}⚠${NC} No tmux configuration found to install"
+            echo -e "${GREEN}✓${NC} Existing tmux configuration preserved"
         fi
     fi
     
@@ -270,9 +314,10 @@ echo "Installation Complete! ✨"
 echo "========================================="
 echo ""
 echo "Summary of installed tools:"
+echo "  • Neovim: $(command_exists nvim && nvim --version | head -1 | cut -d' ' -f2 || echo 'not installed')"
 echo "  • Build tools: gcc, make, cmake"
 echo "  • VCS: git"
-echo "  • Search: ripgrep (rg), fd"
+echo "  • Search: ripgrep (rg), fd, fzf"
 echo "  • Terminal: tmux"
 echo "  • Utilities: curl, wget, unzip, tar, gzip"
 echo "  • Optional: lazygit"
