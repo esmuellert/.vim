@@ -202,7 +202,10 @@ if command_exists "tmux"; then
         git clone https://github.com/catppuccin/tmux.git "$HOME/.config/tmux/plugins/catppuccin"
         echo -e "${GREEN}✓${NC} Catppuccin theme installed"
     else
-        echo -e "${GREEN}✓${NC} Catppuccin theme is already installed"
+        echo -e "${YELLOW}→${NC} Updating Catppuccin tmux theme..."
+        cd "$HOME/.config/tmux/plugins/catppuccin"
+        git pull --quiet
+        echo -e "${GREEN}✓${NC} Catppuccin theme is up to date"
     fi
     
     # Install tmux-cpu plugin
