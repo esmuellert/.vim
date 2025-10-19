@@ -16,24 +16,30 @@ echo "========================================="
 echo ""
 
 # Install ZSH first
-echo "=== Installing ZSH and Oh My Zsh ==="
-echo ""
+if ! command_exists "zsh"; then
+    echo "=== Installing ZSH and Oh My Zsh ==="
+    echo ""
 
-# Download and run the ZSH installation script
-ZSH_INSTALL_SCRIPT="/tmp/install_zsh.sh"
-echo "Downloading ZSH installation script..."
-curl -fsSL https://raw.githubusercontent.com/esmuellert/material-deep-ocean-zsh/main/install_zsh.sh -o "$ZSH_INSTALL_SCRIPT"
-chmod +x "$ZSH_INSTALL_SCRIPT"
+    # Download and run the ZSH installation script
+    ZSH_INSTALL_SCRIPT="/tmp/install_zsh.sh"
+    echo "Downloading ZSH installation script..."
+    curl -fsSL https://raw.githubusercontent.com/esmuellert/material-deep-ocean-zsh/main/install_zsh.sh -o "$ZSH_INSTALL_SCRIPT"
+    chmod +x "$ZSH_INSTALL_SCRIPT"
 
-echo "Running ZSH installation..."
-bash "$ZSH_INSTALL_SCRIPT"
+    echo "Running ZSH installation..."
+    bash "$ZSH_INSTALL_SCRIPT"
 
-# Clean up
-rm -f "$ZSH_INSTALL_SCRIPT"
+    # Clean up
+    rm -f "$ZSH_INSTALL_SCRIPT"
 
-echo ""
-echo "ZSH installation completed!"
-echo ""
+    echo ""
+    echo "ZSH installation completed!"
+    echo ""
+else
+    echo "=== ZSH ==="
+    echo -e "${GREEN}✓${NC} ZSH is already installed ($(zsh --version))"
+    echo ""
+fi
 
 # Color codes for output
 RED='\033[0;31m'
@@ -128,17 +134,7 @@ echo "=== Search Tools (for Telescope) ==="
 echo ""
 
 # Ripgrep - required for telescope live_grep
-if ! command_exists "rg"; then
-    echo -e "${YELLOW}→${NC} Installing ripgrep..."
-    sudo apt-get install -y ripgrep
-    if command_exists "rg"; then
-        echo -e "${GREEN}✓${NC} ripgrep installed successfully"
-    else
-        echo -e "${RED}✗${NC} Failed to install ripgrep"
-    fi
-else
-    echo -e "${GREEN}✓${NC} ripgrep is already installed"
-fi
+install_if_missing "ripgrep" "rg"
 
 # fd-find - better file finder (optional but recommended)
 if ! command_exists "fd"; then
@@ -157,18 +153,7 @@ else
 fi
 
 # fzf - fuzzy finder
-if ! command_exists "fzf"; then
-    echo -e "${YELLOW}→${NC} Installing fzf..."
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install --key-bindings --completion --no-update-rc
-    if command_exists "fzf"; then
-        echo -e "${GREEN}✓${NC} fzf installed successfully"
-    else
-        echo -e "${RED}✗${NC} Failed to install fzf"
-    fi
-else
-    echo -e "${GREEN}✓${NC} fzf is already installed"
-fi
+install_if_missing "fzf" "fzf"
 
 echo ""
 echo "=== Terminal Multiplexer ==="
