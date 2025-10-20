@@ -99,6 +99,14 @@ return {
           path_display = { "truncate" },
           dynamic_preview_title = true,
 
+          -- Speed optimizations
+          cache_picker = {
+            num_pickers = 10,  -- Cache last 10 pickers for instant re-open
+          },
+          file_previewer = require('telescope.previewers').vim_buffer_cat.new,
+          grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
+          qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
+
           mappings = {
             i = {
               ["<C-e>"] = { "<esc>", type = "command" },
@@ -125,8 +133,11 @@ return {
         pickers = {
           find_files = {
             hidden = true,
-            -- Use fd if available (faster than rg for file finding)
-            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
+            -- Use fd if available (2-3x faster than rg for file finding)
+            -- Falls back to rg if fd is not installed
+            find_command = vim.fn.executable('fd') == 1
+              and { 'fd', '--type', 'f', '--hidden', '--exclude', '.git' }
+              or { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
             mappings = {
               n = {
                 ["cd"] = function(prompt_bufnr)
@@ -140,9 +151,12 @@ return {
           },
 
           live_grep = {
+            -- Optimized for speed: ripgrep is already the fastest
             additional_args = function()
               return { "--hidden", "--glob", "!**/.git/*" }
             end,
+            -- Reduce initial file count for faster startup
+            max_results = 10000,
           },
 
           buffers = {
