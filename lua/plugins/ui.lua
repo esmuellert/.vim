@@ -80,7 +80,15 @@ return {
           mode = "tabs",
           indicator = {
             style = 'underline'
-          }
+          },
+          offsets = {
+            {
+              filetype = "neo-tree",
+              text = "File Explorer",
+              text_align = "center",
+              separator = true,
+            }
+          },
         },
         highlights = theme_config.get_bufferline_highlights()
       })
