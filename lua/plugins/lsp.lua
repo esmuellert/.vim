@@ -56,7 +56,17 @@ local function setup_tsgo()
     filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
     root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
     capabilities = capabilities,
-    init_options = { hostInfo = 'neovim' },
+    init_options = {
+      hostInfo = 'neovim',
+      preferences = {
+        includePackageJsonAutoImports = 'auto',
+        includeAutomaticOptionalChainCompletions = true,
+        includeCompletionsForImportStatements = true,
+        allowIncompleteCompletions = true,
+        disableSuggestions = false,
+      },
+      maxTsServerMemory = 8192,
+    },
     on_attach = function(client, bufnr)
       -- Enable inlay hints if supported
       if client.server_capabilities.inlayHintProvider then
