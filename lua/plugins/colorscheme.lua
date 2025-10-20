@@ -102,11 +102,14 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
+      -- ⚙️ CHANGE THEME STYLE HERE: storm, moon, night, day
+      local theme_style = "moon"
+
       -- Set background to dark BEFORE loading the theme
       vim.o.background = "dark"
-      
+
       require("tokyonight").setup({
-        style = "moon", -- storm, moon, night, day
+        style = theme_style,
         light_style = "day",
         transparent = false,
         terminal_colors = true,
@@ -155,7 +158,7 @@ return {
         },
       })
 
-      vim.cmd('colorscheme tokyonight-moon')
+      vim.cmd('colorscheme tokyonight-' .. theme_style)
     end,
   },
 

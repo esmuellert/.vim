@@ -9,6 +9,12 @@ vim.cmd('setlocal spell spelllang=en_us')
 -- Set the sign column to always be visible
 vim.opt.signcolumn = 'yes'
 
+-- Enable responsive mouse interactions (needed for hover-driven UIs)
+vim.opt.mousemoveevent = true
+
+-- Hint that the terminal can keep up with rapid screen updates
+vim.opt.ttyfast = true
+
 -- Diagnostic configuration
 vim.diagnostic.config({
   virtual_text = {
