@@ -13,6 +13,34 @@ vim.api.nvim_create_autocmd({'FocusGained', 'BufEnter', 'CursorHold', 'CursorHol
 })
 
 ------------------------------------------------------------------------
+--- Performance: Disable features for problematic files
+------------------------------------------------------------------------
+-- Automatically disable heavy features for minified/large files
+vim.api.nvim_create_autocmd("BufReadPost", {
+  callback = function(args)
+    local buf = args.buf
+    local filename = vim.api.nvim_buf_get_name(buf)
+    
+    -- Detect minified files (very long lines)
+    local first_line = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ""
+    if #first_line > 1000 then
+      -- Disable expensive features for minified files
+      vim.bo[buf].syntax = ""  -- Disable syntax
+      vim.notify("Large line detected - syntax disabled for performance", vim.log.levels.WARN)
+      return
+    end
+    
+    -- Disable features for known large file types
+    if filename:match("%.min%.js$") or filename:match("%.min%.css$") then
+      vim.bo[buf].syntax = ""
+      vim.treesitter.stop(buf)
+      vim.notify("Minified file detected - highlighting disabled", vim.log.levels.INFO)
+    end
+  end,
+  desc = "Disable features for problematic files to prevent freezing"
+})
+
+------------------------------------------------------------------------
 --- Diagnostic line highlighting setup
 ------------------------------------------------------------------------
 -- Setup diagnostic line highlights with only background color from theme

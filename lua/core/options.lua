@@ -15,6 +15,27 @@ vim.opt.mousemoveevent = true
 -- Hint that the terminal can keep up with rapid screen updates
 vim.opt.ttyfast = true
 
+-- ============================================================================
+-- Performance Settings - Prevent "redrawtime exceeded" errors
+-- ============================================================================
+-- Increase redrawtime to prevent syntax highlighting timeouts
+-- Default is 2000ms which is too low for large files with treesitter
+vim.opt.redrawtime = 10000  -- 10 seconds (prevents timeout on large/complex files)
+
+-- Increase pattern matching memory for complex syntax
+vim.opt.maxmempattern = 5000  -- Default is 1000
+
+-- Set a reasonable timeout for mapping delays
+vim.opt.timeoutlen = 500  -- Faster than default 1000ms
+
+-- Update time for better responsiveness (also affects swap file writing)
+vim.opt.updatetime = 250  -- Default is 4000ms
+
+-- Sync time for file change detection
+vim.opt.synmaxcol = 500  -- Don't highlight lines longer than 500 chars (prevents slowdown)
+
+-- ============================================================================
+
 -- Diagnostic configuration
 vim.diagnostic.config({
   virtual_text = {
