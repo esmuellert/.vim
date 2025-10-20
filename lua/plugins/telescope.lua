@@ -25,6 +25,8 @@ return {
       { '<leader>hp', '<cmd>Telescope help_tags<cr>',                                  desc = 'Help tags' },
       { '<leader>d',  '<cmd>Telescope diagnostics<cr>',                                desc = 'Diagnostics' },
       { '<leader>hl', '<cmd>Telescope highlights<cr>',                                 desc = 'Highlights' },
+      { '<leader>/',  '<cmd>Telescope current_buffer_fuzzy_find<cr>',                  desc = 'Fuzzy find in buffer' },
+      { '<leader>r',  '<cmd>Telescope oldfiles<cr>',                                   desc = 'Recent files' },
       { '<leader>pd', function() vim.fn.feedkeys(":Telescope find_files cwd=", "n") end, desc = 'Find files in directory' },
       { '<leader>fd', function() vim.fn.feedkeys(":Telescope live_grep cwd=", "n") end,  desc = 'Live grep in directory' },
     },
@@ -34,6 +36,7 @@ return {
 
       telescope.setup({
         defaults = {
+          -- Better performance with ripgrep
           vimgrep_arguments = {
             'rg',
             '--color=never',
@@ -43,19 +46,87 @@ return {
             '--column',
             '--smart-case',
             '--hidden',
+            '--glob=!**/.git/*',  -- Exclude .git directory specifically
           },
-          file_ignore_patterns = { 'node_modules', '.git' },
+
+          -- Improved file ignore patterns (Lua patterns, not shell globs)
+          file_ignore_patterns = {
+            "%.git/",           -- Ignore .git/ directory but not git.lua files
+            "node_modules/",
+            "%.npm/",
+            "%.cache/",
+            "%.vscode/",
+            "%.idea/",
+            "__pycache__/",
+            "%.py[cod]",
+            "%.dll",
+            "%.exe",
+            "%.so",
+            "%.dylib",
+            "%.zip",
+            "%.tar%.gz",
+            "%.jpg",
+            "%.jpeg",
+            "%.png",
+            "%.svg",
+            "%.otf",
+            "%.ttf",
+          },
+
+          -- Better layout
+          layout_strategy = 'horizontal',
+          layout_config = {
+            horizontal = {
+              prompt_position = "top",
+              preview_width = 0.55,
+              results_width = 0.8,
+            },
+            vertical = {
+              mirror = false,
+            },
+            width = 0.87,
+            height = 0.80,
+            preview_cutoff = 120,
+          },
+
+          -- Better sorting
+          sorting_strategy = "ascending",
+
+          -- Better UI
+          borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+
+          -- Performance improvements
+          path_display = { "truncate" },
+          dynamic_preview_title = true,
+
           mappings = {
             i = {
               ["<C-e>"] = { "<esc>", type = "command" },
               ["<esc>"] = actions.close,
               ["<C-s>"] = actions.select_vertical,
+              ["<C-x>"] = actions.select_horizontal,
+              ["<C-n>"] = actions.cycle_history_next,
+              ["<C-p>"] = actions.cycle_history_prev,
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-k>"] = actions.move_selection_previous,
+              ["<C-u>"] = actions.preview_scrolling_up,
+              ["<C-d>"] = actions.preview_scrolling_down,
+              ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
+            },
+            n = {
+              ["q"] = actions.close,
+              ["<C-s>"] = actions.select_vertical,
+              ["<C-x>"] = actions.select_horizontal,
+              ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
             },
           },
         },
+
         pickers = {
           find_files = {
-            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/**', '--glob', '!**/node_modules/**' },
+            hidden = true,
+            -- Use fd if available (faster than rg for file finding)
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
             mappings = {
               n = {
                 ["cd"] = function(prompt_bufnr)
@@ -67,19 +138,39 @@ return {
               }
             }
           },
+
+          live_grep = {
+            additional_args = function()
+              return { "--hidden", "--glob", "!**/.git/*" }
+            end,
+          },
+
           buffers = {
             ignore_current_buffer = true,
             sort_lastused = true,
+            sort_mru = true,
+            theme = "dropdown",
+            previewer = false,
             mappings = {
               i = {
                 ["<c-d>"] = actions.delete_buffer,
               },
               n = {
-                ["<c-d>"] = actions.delete_buffer,
+                ["dd"] = actions.delete_buffer,
               }
             }
           },
+
+          oldfiles = {
+            only_cwd = true,
+          },
+
+          current_buffer_fuzzy_find = {
+            theme = "dropdown",
+            previewer = false,
+          },
         },
+
         extensions = {
           fzf = {
             fuzzy = true,
@@ -90,6 +181,7 @@ return {
         }
       })
 
+      -- Load fzf extension for better performance
       pcall(telescope.load_extension, 'fzf')
     end,
   },

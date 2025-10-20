@@ -54,8 +54,7 @@ return {
     branch = "v3.x",
     cmd = { 'Neotree' },
     keys = {
-      { '<leader>E', '<cmd>Neotree toggle<CR>', desc = 'Toggle Neo-tree' },
-      { '<leader>e', '<cmd>Neotree reveal<CR>', desc = 'Reveal current file in Neo-tree' },
+      { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Toggle Neo-tree' },
     },
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -68,7 +67,7 @@ return {
         popup_border_style = "rounded",
         enable_git_status = true,
         enable_diagnostics = true,
-        
+
         default_component_configs = {
           indent = {
             padding = 0,
@@ -94,7 +93,7 @@ return {
             }
           },
         },
-        
+
         window = {
           position = "left",
           width = 30,
@@ -116,7 +115,7 @@ return {
             ["?"] = "show_help",
           },
         },
-        
+
         filesystem = {
           filtered_items = {
             visible = false,
@@ -129,7 +128,7 @@ return {
           },
           use_libuv_file_watcher = true,
         },
-        
+
         git_status = {
           window = {
             position = "float",
