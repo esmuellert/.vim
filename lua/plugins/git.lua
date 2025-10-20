@@ -228,7 +228,7 @@ return {
 
             -- Layout
             { "n", "g<C-x>",     actions.cycle_layout,              { desc = "Cycle layout" } },
-            
+
             -- Revert/Obtain changes (use vim's diff commands)
             { "n", "do",         "<cmd>diffget<cr>",                { desc = "Obtain diff (revert line)" } },
             { "n", "dp",         "<cmd>diffput<cr>",                { desc = "Put diff (apply line)" } },
@@ -294,6 +294,43 @@ return {
             vim.opt_local.wrap = false
             vim.opt_local.list = false
             vim.opt_local.relativenumber = false
+          end,
+
+          -- Performance: Disable heavy features in diff buffers
+          diff_buf_win_enter = function(bufnr, winid)
+            -- Disable gitsigns in diff view (redundant and slows navigation)
+            pcall(function()
+              require("gitsigns").detach(bufnr)
+            end)
+
+            -- Disable treesitter highlighting in diff view for better performance
+            pcall(function()
+              vim.treesitter.stop(bufnr)
+            end)
+
+            -- Disable diagnostics in diff view (not needed) - Neovim 0.11+ API
+            vim.diagnostic.enable(false, { bufnr = bufnr })
+
+            -- Disable sign column (not needed in diffs)
+            vim.wo[winid].signcolumn = "no"
+          end,
+
+          -- Re-enable features when leaving diffview
+          view_closed = function()
+            -- Re-attach gitsigns to normal buffers when diffview closes
+            vim.schedule(function()
+              for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.api.nvim_buf_is_loaded(buf) then
+                  local ft = vim.bo[buf].filetype
+                  -- Re-attach gitsigns to regular file buffers
+                  if ft ~= "diffview" and ft ~= "" and not ft:match("^git") then
+                    pcall(function()
+                      require("gitsigns").attach(buf)
+                    end)
+                  end
+                end
+              end
+            end)
           end,
         },
       })

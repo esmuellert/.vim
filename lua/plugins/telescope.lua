@@ -1,4 +1,18 @@
 -- Telescope fuzzy finder
+--
+-- SEARCH OPERATORS (via fzf-native):
+--   'text  → Exact match       ^text  → Starts with
+--   text$  → Ends with         !text  → Exclude (NOT)
+--   one|two → OR operator
+--
+-- Examples:
+--   'TODO        → Exact "TODO" only
+--   ^src/        → Files in src directory
+--   .lua$        → Files ending with .lua
+--   !test        → Exclude files with "test"
+--   ^src/ .ts$   → TypeScript files in src/
+--
+-- See TELESCOPE_SEARCH_MODES.md for full guide!
 
 local enabled = require('config.plugins-enabled')
 
@@ -94,6 +108,11 @@ return {
 
           -- Better UI
           borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+          
+          -- Show helpful prompt to remind users of search operators
+          prompt_prefix = "🔭 ",
+          selection_caret = "❯ ",
+          entry_prefix = "  ",
 
           -- Performance improvements
           path_display = { "truncate" },
@@ -120,6 +139,7 @@ return {
               ["<C-u>"] = actions.preview_scrolling_up,
               ["<C-d>"] = actions.preview_scrolling_down,
               ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
+              ["<C-/>"] = "which_key",  -- Show help for keybindings
             },
             n = {
               ["q"] = actions.close,
