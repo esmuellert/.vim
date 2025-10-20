@@ -54,7 +54,7 @@ require("lazy").setup("plugins", {
   },
   install = {
     missing = true, -- install missing plugins on startup
-    colorscheme = { "github_light" },
+   --[[  colorscheme = { "tokyonight-moon" }, ]]
   },
   checker = {
     enabled = false, -- don't check for plugin updates automatically

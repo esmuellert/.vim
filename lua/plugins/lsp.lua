@@ -2,6 +2,143 @@
 
 local enabled = require('config.plugins-enabled')
 
+-- Helper function to install tsgo if not present (non-blocking)
+local function install_tsgo()
+  local utils = require('core.utils')
+  local tsgo_install_dir = vim.fn.stdpath("data") .. "/tsgo"
+  local tsgo_bin = tsgo_install_dir .. "/node_modules/.bin/tsgo"
+
+  if utils.is_windows() then
+    tsgo_bin = tsgo_bin .. ".cmd"
+  end
+
+  -- Check if already installed
+  if vim.fn.filereadable(tsgo_bin) == 0 then
+    vim.notify("Installing tsgo in background...", vim.log.levels.INFO)
+    vim.fn.mkdir(tsgo_install_dir, "p")
+
+    -- Install asynchronously using vim.system (native nvim async API)
+    vim.system({ 'npm', 'install', '@typescript/native-preview' }, {
+      text = true,
+      cwd = tsgo_install_dir,
+    }, function(result)
+      vim.schedule(function()
+        if result.code == 0 then
+          vim.notify("tsgo installed successfully! Restart Neovim to activate.", vim.log.levels.INFO)
+        else
+          vim.notify("Failed to install tsgo. Error: " .. (result.stderr or "unknown"), vim.log.levels.ERROR)
+        end
+      end)
+    end)
+  end
+end
+
+-- Helper function to configure tsgo LSP
+local function setup_tsgo()
+  local utils = require('core.utils')
+  local tsgo_install_dir = vim.fn.stdpath("data") .. "/tsgo"
+  local tsgo_bin = tsgo_install_dir .. "/node_modules/.bin/tsgo"
+
+  if utils.is_windows() then
+    tsgo_bin = tsgo_bin .. ".cmd"
+  end
+
+  -- Only configure if tsgo is installed
+  if vim.fn.filereadable(tsgo_bin) == 0 then
+    return
+  end
+
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+  -- Configure tsgo LSP using new vim.lsp.config API (nvim 0.11+)
+  vim.lsp.config('tsgo', {
+    cmd = { tsgo_bin, 'lsp', '--stdio' },
+    filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
+    root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
+    capabilities = capabilities,
+    init_options = { hostInfo = 'neovim' },
+    on_attach = function(client, bufnr)
+      -- Enable inlay hints if supported
+      if client.server_capabilities.inlayHintProvider then
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      end
+
+      -- Create custom command for TypeScript source-level actions
+      vim.api.nvim_buf_create_user_command(bufnr, "LspTypescriptSourceAction", function()
+        if client.server_capabilities.codeActionProvider then
+          local source_actions = vim.tbl_filter(function(action)
+            return vim.startswith(action, "source.")
+          end, client.server_capabilities.codeActionProvider.codeActionKinds or {})
+
+          vim.lsp.buf.code_action({ context = { only = source_actions } })
+        end
+      end, { desc = "TypeScript source actions" })
+    end,
+    handlers = {
+      -- Handle rename requests for code actions like extract function/type
+      ["_typescript.rename"] = function(_, result, ctx)
+        local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+        vim.lsp.util.show_document({
+          uri = result.textDocument.uri,
+          range = { start = result.position, ["end"] = result.position },
+        }, client.offset_encoding)
+        vim.lsp.buf.rename()
+        return vim.NIL
+      end,
+    },
+    commands = {
+      -- Handle show references command - displays in quickfix list
+      ["editor.action.showReferences"] = function(command, ctx)
+        local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+        local file_uri, position, references = unpack(command.arguments)
+
+        local quickfix_items = vim.lsp.util.locations_to_items(references, client.offset_encoding)
+        vim.fn.setqflist({}, " ", {
+          title = command.title,
+          items = quickfix_items,
+          context = { command = command, bufnr = ctx.bufnr },
+        })
+
+        vim.lsp.util.show_document({
+          uri = file_uri,
+          range = { start = position, ["end"] = position },
+        }, client.offset_encoding)
+
+        vim.cmd("botright copen")
+      end,
+    },
+    settings = {
+      typescript = {
+        inlayHints = {
+          includeInlayParameterNameHints = 'all',
+          includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+          includeInlayFunctionParameterTypeHints = true,
+          includeInlayVariableTypeHints = true,
+          includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+          includeInlayPropertyDeclarationTypeHints = true,
+          includeInlayEnumMemberValueHints = true,
+        },
+        implicitProjectConfig = { allowJs = true },
+      },
+      javascript = {
+        inlayHints = {
+          includeInlayParameterNameHints = 'all',
+          includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+          includeInlayFunctionParameterTypeHints = true,
+          includeInlayVariableTypeHints = true,
+          includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+          includeInlayPropertyDeclarationTypeHints = true,
+          includeInlayEnumMemberValueHints = true,
+        },
+        implicitProjectConfig = { checkJs = true },
+      },
+    },
+  })
+
+  -- Enable tsgo LSP server
+  vim.lsp.enable('tsgo')
+end
+
 return {
   ------------------------------------------------------------------------
   -- 🛠️ mason.nvim: Tool to manage LSPs, DAPs, linters, and formatters
@@ -23,12 +160,21 @@ return {
           vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
         end
       end
-      
+
       -- Setup mason first
       require('mason').setup({})
-      
+
+      -- Install and configure tsgo on first VimEnter
+      vim.api.nvim_create_autocmd("VimEnter", {
+        once = true,
+        callback = function()
+          install_tsgo()
+          setup_tsgo()
+        end,
+      })
+
       return {
-        ensure_installed = { 'ts_ls', 'html', 'cssls', 'lua_ls', 'lemminx', 'powershell_es' },
+        ensure_installed = { 'html', 'cssls', 'lua_ls', 'lemminx', 'powershell_es' },
         handlers = {
           function(server)
             lspconfig[server].setup({
@@ -59,39 +205,6 @@ return {
               },
             })
           end,
-          ['ts_ls'] = function(server)
-            lspconfig[server].setup({
-              on_attach = default_on_attach,
-              root_dir = function(_, bufnr)
-                return vim.fs.root(bufnr, { '.git' })
-              end,
-              capabilities = capabilities,
-              settings = {
-                typescript = {
-                  inlayHints = {
-                    includeInlayParameterNameHints = 'all',
-                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                    includeInlayFunctionParameterTypeHints = true,
-                    includeInlayVariableTypeHints = true,
-                    includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                    includeInlayPropertyDeclarationTypeHints = true,
-                    includeInlayEnumMemberValueHints = true,
-                  }
-                },
-                javascript = {
-                  inlayHints = {
-                    includeInlayParameterNameHints = 'all',
-                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                    includeInlayFunctionParameterTypeHints = true,
-                    includeInlayVariableTypeHints = true,
-                    includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                    includeInlayPropertyDeclarationTypeHints = true,
-                    includeInlayEnumMemberValueHints = true,
-                  }
-                }
-              }
-            })
-          end,
         },
       }
     end,
@@ -107,12 +220,12 @@ return {
           vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
         end
       end
-      
+
       local resolved = vim.trim(vim.fn.system('xcrun -f sourcekit-lsp'))
       if resolved == '' or vim.v.shell_error ~= 0 then
         resolved = 'sourcekit-lsp'
       end
-      
+
       -- Use new vim.lsp.config API for Neovim 0.11+
       if vim.lsp.config then
         vim.lsp.config.sourcekit = {
@@ -121,7 +234,7 @@ return {
           root_dir = vim.fs.root,
           capabilities = capabilities,
         }
-        
+
         -- Register the on_attach handler
         vim.api.nvim_create_autocmd('LspAttach', {
           callback = function(args)

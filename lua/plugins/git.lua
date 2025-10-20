@@ -228,6 +228,10 @@ return {
 
             -- Layout
             { "n", "g<C-x>",     actions.cycle_layout,              { desc = "Cycle layout" } },
+            
+            -- Revert/Obtain changes (use vim's diff commands)
+            { "n", "do",         "<cmd>diffget<cr>",                { desc = "Obtain diff (revert line)" } },
+            { "n", "dp",         "<cmd>diffput<cr>",                { desc = "Put diff (apply line)" } },
 
             -- Conflict resolution (for merge tool)
             { "n", "[x",         actions.prev_conflict,             { desc = "Previous conflict" } },
