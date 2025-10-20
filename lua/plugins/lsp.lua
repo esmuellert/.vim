@@ -52,7 +52,7 @@ local function setup_tsgo()
 
   -- Configure tsgo LSP using new vim.lsp.config API (nvim 0.11+)
   vim.lsp.config('tsgo', {
-    cmd = { tsgo_bin, 'lsp', '--stdio' },
+    cmd = { tsgo_bin, '--lsp', '--stdio' },
     filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
     root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
     capabilities = capabilities,
