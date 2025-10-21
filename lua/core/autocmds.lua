@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function(args)
     local buf = args.buf
     local filename = vim.api.nvim_buf_get_name(buf)
-    
+
     -- Detect minified files (very long lines)
     local first_line = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ""
     if #first_line > 1000 then
@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
       vim.notify("Large line detected - syntax disabled for performance", vim.log.levels.WARN)
       return
     end
-    
+
     -- Disable features for known large file types
     if filename:match("%.min%.js$") or filename:match("%.min%.css$") then
       vim.bo[buf].syntax = ""

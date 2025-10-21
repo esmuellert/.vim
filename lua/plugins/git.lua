@@ -80,10 +80,10 @@ return {
         current_line_blame_opts      = {
           virt_text = true,
           virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
-          delay = 1000,
+          delay = 1500,  -- Increased delay to avoid race conditions during file reloads
           ignore_whitespace = false,
           virt_text_priority = 100,
-          use_focus = false,  -- Prevent errors with floating windows (Telescope, etc.)
+          use_focus = true,  -- Use focus events (more reliable window state)
         },
         current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
         sign_priority                = 6,
