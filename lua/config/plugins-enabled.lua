@@ -4,6 +4,7 @@
 
 return {
   -- Git plugins
+  fugitive = false,
   gitsigns = true,
   diffview = true,
 

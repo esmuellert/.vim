@@ -4,6 +4,44 @@ local enabled = require('config.plugins-enabled')
 
 return {
   ------------------------------------------------------------------------
+  -- 🚀 Fugitive: The premier Git plugin for Vim/Neovim
+  ------------------------------------------------------------------------
+  {
+    'tpope/vim-fugitive',
+    enabled = enabled.fugitive,
+    cmd = { 'Git', 'G', 'Gdiffsplit', 'Gread', 'Gwrite', 'Ggrep', 'GMove', 'GDelete', 'GBrowse', 'GRemove', 'GRename' },
+    keys = {
+      { '<leader>gs', '<cmd>Git<cr>',                                  desc = 'Git status' },
+      { '<leader>gc', '<cmd>Git commit<cr>',                           desc = 'Git commit' },
+      { '<leader>gp', '<cmd>Git push<cr>',                             desc = 'Git push' },
+      { '<leader>gP', '<cmd>Git pull<cr>',                             desc = 'Git pull' },
+      { '<leader>gb', '<cmd>Git blame<cr>',                            desc = 'Git blame' },
+      { '<leader>gd', '<cmd>Gdiffsplit<cr>',                           desc = 'Git diff split' },
+      { '<leader>gl', '<cmd>Git log<cr>',                              desc = 'Git log' },
+      { '<leader>gL', '<cmd>Git log --oneline --graph --all<cr>',      desc = 'Git log graph' },
+      { '<leader>gw', '<cmd>Gwrite<cr>',                               desc = 'Git write (stage)' },
+      { '<leader>gr', '<cmd>Gread<cr>',                                desc = 'Git read (checkout)' },
+    },
+    config = function()
+      -- Automatically delete fugitive buffers when they become hidden
+      vim.api.nvim_create_autocmd('BufReadPost', {
+        pattern = 'fugitive://*',
+        callback = function()
+          vim.bo.bufhidden = 'delete'
+        end,
+      })
+
+      -- Set up nice statusline integration
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'FugitiveChanged',
+        callback = function()
+          vim.cmd('redrawstatus')
+        end,
+      })
+    end,
+  },
+
+  ------------------------------------------------------------------------
   -- 🔍 Gitsigns: Track git changes in the gutter
   ------------------------------------------------------------------------
   {
