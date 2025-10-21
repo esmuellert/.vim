@@ -15,6 +15,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     enabled = enabled.treesitter,
     event = 'BufRead',
+    branch = 'main',
     build = ':TSUpdate',
     config = function()
       require('nvim-treesitter.configs').setup({
