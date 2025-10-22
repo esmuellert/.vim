@@ -19,8 +19,13 @@ local plugin_modules = {
   require("plugins.xcodebuild"),
   require("plugins.writing"),
   require("plugins.session"),
-  require("plugins.local-dev"), -- Local development plugins
 }
+
+-- Load local-dev plugins if file exists
+local local_dev_path = vim.fn.stdpath('config') .. '/lua/plugins/local-dev.lua'
+if vim.loop.fs_stat(local_dev_path) then
+  table.insert(plugin_modules, require("plugins.local-dev"))
+end
 
 -- Flatten the plugin list (since each module returns a table of plugins)
 local plugins = {}
