@@ -67,5 +67,16 @@ vim.opt.fillchars:append({
   eob = " ",  -- Suppress ~ on empty lines
 })
 
+-- Diff options - IMPORTANT: 'internal' is crucial for Windows to avoid E810 errors
+vim.opt.diffopt = {
+  'internal',        -- Use internal xdiff library (required for Windows)
+  'filler',          -- Show filler lines for deleted/added lines
+  'closeoff',        -- Turn off diff when closing window
+  'vertical',        -- Use vertical splits by default
+  'algorithm:histogram', -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
+  'indent-heuristic',    -- Slide diffs along indentation for better alignment
+  'linematch:60',    -- Match similar lines within diff blocks (max 60 lines)
+}
+
 -- Auto-reload files when changed outside of Neovim
 vim.o.autoread = true
