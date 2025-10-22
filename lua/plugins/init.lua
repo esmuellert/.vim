@@ -11,6 +11,7 @@ local plugin_modules = {
   require("plugins.ui"),
   require("plugins.completion"),
   require("plugins.lsp"),
+  require("plugins.roslyn"),
   require("plugins.diagnostics"),
   require("plugins.filetree"),
   require("plugins.which-key"),

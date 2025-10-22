@@ -20,3 +20,5 @@
 
 !*.md
 !*.png
+
+!/dev-docs

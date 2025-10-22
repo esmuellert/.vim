@@ -171,8 +171,13 @@ return {
         end
       end
 
-      -- Setup mason first
-      require('mason').setup({})
+      -- Setup mason first with custom registry for roslyn
+      require('mason').setup({
+        registries = {
+          'github:mason-org/mason-registry',
+          'github:Crashdummyy/mason-registry',
+        },
+      })
 
       -- Install and configure tsgo on first VimEnter
       vim.api.nvim_create_autocmd("VimEnter", {

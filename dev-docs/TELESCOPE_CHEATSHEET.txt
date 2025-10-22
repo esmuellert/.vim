@@ -1,0 +1,32 @@
+┌──────────────────────────────────────────────────┐
+│     TELESCOPE SEARCH OPERATORS CHEAT SHEET       │
+└──────────────────────────────────────────────────┘
+
+BASIC OPERATORS:
+  'text     Exact match (single quote prefix)
+  ^text     Starts with (caret prefix)
+  text$     Ends with (dollar suffix)
+  !text     Exclude/NOT (exclamation prefix)
+  one|two   OR operator (pipe separator)
+
+QUICK EXAMPLES:
+  'TODO                    → Only exact "TODO"
+  ^src/                    → Files in src directory
+  .lua$                    → Files ending with .lua
+  !test                    → Exclude anything with "test"
+  ^components/ .tsx$       → React components
+  error !node_modules      → Errors not in dependencies
+
+COMMON PATTERNS:
+  ^src/ .ts$ !test         → Production TypeScript
+  'function getUserById'   → Exact function name
+  TODO !// !#              → TODOs not in comments
+  .test | .spec            → All test files
+
+TIPS:
+  • Start fuzzy, refine with operators
+  • Exact searches are FASTER
+  • Combine multiple operators
+  • Use ! to filter out noise
+
+Press Ctrl+/ in Telescope for help!

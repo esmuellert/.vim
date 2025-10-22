@@ -30,6 +30,7 @@ return {
   cmp = true,
   lspsaga = true,
   fidget = true,
+  roslyn = true,
 
   -- Diagnostics
   trouble = true,
