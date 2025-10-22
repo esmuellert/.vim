@@ -19,6 +19,7 @@ local plugin_modules = {
   require("plugins.xcodebuild"),
   require("plugins.writing"),
   require("plugins.session"),
+  require("plugins.local-dev"), -- Local development plugins
 }
 
 -- Flatten the plugin list (since each module returns a table of plugins)
