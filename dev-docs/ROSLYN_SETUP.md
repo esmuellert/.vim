@@ -117,6 +117,31 @@ Your existing LSP keybindings from lspsaga will work with Roslyn:
 - `<leader>ac` - Code Action
 - `<leader>fm` - Format Buffer
 
+## Diagnostic Levels
+
+The configuration is set to match Visual Studio's behavior:
+
+- **Error and Warning**: Displayed prominently with underlines, signs, and virtual text
+- **Info and Hint**: Available in diagnostics but not shown inline (matching VS behavior)
+
+This matches your repository's `.editorconfig` and `build/code-analysis.ruleset` settings. Most analyzer rules in your WAC repo are set to `Info` or `None`, which means they won't show as prominent warnings.
+
+### Viewing All Diagnostics
+
+If you want to see all diagnostics including Info/Hint levels:
+- Use `:lua vim.diagnostic.setqflist()` to see all in quickfix list
+- Use `:Telescope diagnostics` to browse all diagnostics
+
+### Changing Diagnostic Display
+
+To show Info and Hint diagnostics inline, edit `lua/plugins/roslyn.lua` and change:
+
+```lua
+virtual_text = {
+  severity = { min = vim.diagnostic.severity.INFO },  -- Changed from WARN
+},
+```
+
 ## Enabling/Disabling
 
 To disable roslyn.nvim temporarily, edit `lua/config/plugins-enabled.lua`:

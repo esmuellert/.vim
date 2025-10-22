@@ -59,6 +59,24 @@ return {
           if client.server_capabilities.inlayHintProvider then
             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
           end
+          
+          -- Configure diagnostic display to only show Error and Warning by default
+          -- This matches Visual Studio's behavior where Info and Hint are less prominent
+          vim.diagnostic.config({
+            severity_sort = true,
+            virtual_text = {
+              severity = { min = vim.diagnostic.severity.WARN },
+            },
+            signs = {
+              severity = { min = vim.diagnostic.severity.WARN },
+            },
+            underline = {
+              severity = { min = vim.diagnostic.severity.WARN },
+            },
+            float = {
+              severity_sort = true,
+            },
+          }, bufnr)
         end,
         settings = {
           ['csharp|background_analysis'] = {
