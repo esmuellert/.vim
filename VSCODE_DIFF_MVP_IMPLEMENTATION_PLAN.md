@@ -1,6 +1,17 @@
 # VSCode-Style Diff Rendering for Neovim - MVP Implementation Plan
 
-**Generated:** 2025-10-22T06:19:27.645Z
+**Generated:** 2025-10-22T06:19:27.645Z  
+**Updated:** 2025-10-22T06:51:00.000Z - **Character-level LCS now MANDATORY for MVP**
+
+---
+
+## ⚠️ CRITICAL UPDATE
+
+**Character-level highlighting is NOW a core MVP requirement, NOT optional.**
+
+Without the two-tier highlighting system (light backgrounds + deep character highlights), this plugin is just a re-implementation of Neovim's built-in `diffthis` with no unique value.
+
+**The "deeper color" effect is THE defining feature that makes VSCode's diff superior.**
 
 ---
 
@@ -525,74 +536,329 @@ make test
 # All tests passed!
 ```
 
-**Note for Code Agent:** The above is a **simplified stub**. For production, implement full Myers algorithm following VSCode's `myersDiffAlgorithm.ts` logic. The stub is sufficient for MVP testing.
+**Note for Code Agent:** The above is a **simplified stub**. For production, implement full Myers algorithm following VSCode's `myersDiffAlgorithm.ts` logic. The stub is sufficient for initial testing only.
 
 ---
 
-### **Step 4: Implement Character-Level Diff**
+### **Step 4: Implement Character-Level Diff (CRITICAL FOR MVP)**
 
-**Objective:** For MODIFIED lines, compute character-level changes.
+**Objective:** For MODIFIED lines, compute character-level changes using LCS.
+
+**⚠️ IMPORTANCE:** This is **THE defining feature** that makes this plugin different from `diffthis`. Without it, the MVP has no unique value. This is **NOT optional**.
 
 **VSCode Reference:**
 - `src/vs/editor/common/diff/algorithms/diffAlgorithm.ts` (character diff)
 - `src/vs/editor/common/diff/linesDiffComputer.ts` (computeCharChanges)
+- VSCode uses a two-tier highlighting system:
+  - **Light background**: Entire modified line (red/green)
+  - **Dark/deep highlight**: Only the changed characters within that line
 
 **Tasks:**
-1. Implement character-level diff for modified lines
-2. Generate CharHighlight entries
-3. Add tests
+1. Implement character-level LCS algorithm for modified lines
+2. Generate **two types** of highlights per modified line:
+   - Whole-line background (light red/green)
+   - Character-range highlights (dark red/green) for changed portions
+3. Add comprehensive tests
+
+**Algorithm Overview:**
+
+For two modified lines:
+```
+Old: "const oldValue = 42;"
+New: "const newValue = 42;"
+```
+
+1. **LCS (Longest Common Subsequence)** finds common parts: `"const "`, `"Value = 42;"`
+2. **Diff parts**: `"old"` vs `"new"`
+3. **Generate highlights**:
+   - Left line: Light red background (full line) + Dark red for `"old"` (chars 6-9)
+   - Right line: Light green background (full line) + Dark green for `"new"` (chars 6-9)
+
+**Update `c-diff-core/diff_core.h`:**
+```c
+// Update HighlightType enum to support two-tier highlighting
+typedef enum {
+    HL_ADDED_LINE,      // Light green background (full line)
+    HL_REMOVED_LINE,    // Light red background (full line)
+    HL_ADDED_CHAR,      // Dark green (changed characters only)
+    HL_REMOVED_CHAR,    // Dark red (changed characters only)
+    HL_MODIFIED_LINE    // Light blue background (full line)
+} HighlightType;
+```
 
 **Update `c-diff-core/diff_core.c`:**
 ```c
-// Add character-level diff (simplified LCS-based approach)
-// Real implementation would use similar algorithm to Myers but at char level
+#include <string.h>
+#include <stdlib.h>
 
+// LCS-based character diff implementation
+// This is the CRITICAL function that makes us different from diffthis
+
+typedef struct {
+    size_t start;
+    size_t end;
+} CharRange;
+
+// Helper: Compute LCS length table (dynamic programming)
+static size_t** compute_lcs_table(const char* a, size_t len_a, 
+                                   const char* b, size_t len_b) {
+    size_t** lcs = (size_t**)malloc((len_a + 1) * sizeof(size_t*));
+    
+    for (size_t i = 0; i <= len_a; i++) {
+        lcs[i] = (size_t*)calloc(len_b + 1, sizeof(size_t));
+    }
+    
+    // Fill LCS table
+    for (size_t i = 1; i <= len_a; i++) {
+        for (size_t j = 1; j <= len_b; j++) {
+            if (a[i-1] == b[j-1]) {
+                lcs[i][j] = lcs[i-1][j-1] + 1;
+            } else {
+                lcs[i][j] = (lcs[i-1][j] > lcs[i][j-1]) ? lcs[i-1][j] : lcs[i][j-1];
+            }
+        }
+    }
+    
+    return lcs;
+}
+
+// Helper: Free LCS table
+static void free_lcs_table(size_t** lcs, size_t len_a) {
+    for (size_t i = 0; i <= len_a; i++) {
+        free(lcs[i]);
+    }
+    free(lcs);
+}
+
+// Helper: Extract changed character ranges using LCS backtracking
+static void extract_char_ranges(const char* a, size_t len_a,
+                                 const char* b, size_t len_b,
+                                 size_t** lcs,
+                                 CharRange** ranges_a, size_t* ranges_a_count,
+                                 CharRange** ranges_b, size_t* ranges_b_count) {
+    // Backtrack through LCS table to find differences
+    size_t i = len_a, j = len_b;
+    size_t ranges_capacity = 16;
+    
+    *ranges_a = (CharRange*)malloc(ranges_capacity * sizeof(CharRange));
+    *ranges_b = (CharRange*)malloc(ranges_capacity * sizeof(CharRange));
+    *ranges_a_count = 0;
+    *ranges_b_count = 0;
+    
+    size_t range_start_a = len_a, range_start_b = len_b;
+    
+    while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && a[i-1] == b[j-1]) {
+            // Characters match - if we were in a diff range, close it
+            if (range_start_a < i) {
+                // Add range to left (deleted chars)
+                if (*ranges_a_count >= ranges_capacity) {
+                    ranges_capacity *= 2;
+                    *ranges_a = (CharRange*)realloc(*ranges_a, ranges_capacity * sizeof(CharRange));
+                }
+                (*ranges_a)[*ranges_a_count].start = range_start_a;
+                (*ranges_a)[*ranges_a_count].end = i;
+                (*ranges_a_count)++;
+                range_start_a = len_a;
+            }
+            if (range_start_b < j) {
+                // Add range to right (added chars)
+                if (*ranges_b_count >= ranges_capacity) {
+                    ranges_capacity *= 2;
+                    *ranges_b = (CharRange*)realloc(*ranges_b, ranges_capacity * sizeof(CharRange));
+                }
+                (*ranges_b)[*ranges_b_count].start = range_start_b;
+                (*ranges_b)[*ranges_b_count].end = j;
+                (*ranges_b_count)++;
+                range_start_b = len_b;
+            }
+            i--;
+            j--;
+        } else if (j > 0 && (i == 0 || lcs[i][j-1] >= lcs[i-1][j])) {
+            // Character added in b
+            if (range_start_b == len_b) {
+                range_start_b = j - 1;
+            }
+            j--;
+        } else if (i > 0) {
+            // Character deleted in a
+            if (range_start_a == len_a) {
+                range_start_a = i - 1;
+            }
+            i--;
+        }
+    }
+    
+    // Close any remaining ranges
+    if (range_start_a < len_a) {
+        (*ranges_a)[*ranges_a_count].start = 0;
+        (*ranges_a)[*ranges_a_count].end = range_start_a + 1;
+        (*ranges_a_count)++;
+    }
+    if (range_start_b < len_b) {
+        (*ranges_b)[*ranges_b_count].start = 0;
+        (*ranges_b)[*ranges_b_count].end = range_start_b + 1;
+        (*ranges_b_count)++;
+    }
+}
+
+// Main character-level diff function
 static void compute_char_diff(const char* line_a, const char* line_b,
                                size_t line_num_a, size_t line_num_b,
                                DiffRenderPlan* plan) {
-    // Simplified: just highlight the entire line for now
-    // Real implementation would compute LCS and highlight only changed chars
-    
     size_t len_a = strlen(line_a);
     size_t len_b = strlen(line_b);
     
-    // Allocate space for highlights (resize if needed)
+    // Step 1: Add whole-line background highlights
+    // Left line: light red background
     plan->left.char_highlights = (CharHighlight*)realloc(
         plan->left.char_highlights,
         (plan->left.char_highlights_count + 1) * sizeof(CharHighlight)
     );
+    CharHighlight line_hl_left = {
+        .line = line_num_a,
+        .col_start = 0,
+        .col_end = len_a,
+        .type = HL_REMOVED_LINE  // Light red
+    };
+    plan->left.char_highlights[plan->left.char_highlights_count++] = line_hl_left;
     
+    // Right line: light green background
     plan->right.char_highlights = (CharHighlight*)realloc(
         plan->right.char_highlights,
         (plan->right.char_highlights_count + 1) * sizeof(CharHighlight)
     );
-    
-    // Add highlights for entire lines (stub implementation)
-    CharHighlight hl_left = {
-        .line = line_num_a,
-        .col_start = 0,
-        .col_end = len_a,
-        .type = HL_REMOVED
-    };
-    
-    CharHighlight hl_right = {
+    CharHighlight line_hl_right = {
         .line = line_num_b,
         .col_start = 0,
         .col_end = len_b,
-        .type = HL_ADDED
+        .type = HL_ADDED_LINE  // Light green
     };
+    plan->right.char_highlights[plan->right.char_highlights_count++] = line_hl_right;
     
-    plan->left.char_highlights[plan->left.char_highlights_count++] = hl_left;
-    plan->right.char_highlights[plan->right.char_highlights_count++] = hl_right;
+    // Step 2: Compute LCS and find changed character ranges
+    size_t** lcs = compute_lcs_table(line_a, len_a, line_b, len_b);
+    
+    CharRange* ranges_a = NULL;
+    CharRange* ranges_b = NULL;
+    size_t ranges_a_count = 0;
+    size_t ranges_b_count = 0;
+    
+    extract_char_ranges(line_a, len_a, line_b, len_b, lcs,
+                        &ranges_a, &ranges_a_count,
+                        &ranges_b, &ranges_b_count);
+    
+    // Step 3: Add deep highlights for changed characters only
+    // Left: dark red for deleted chars
+    for (size_t i = 0; i < ranges_a_count; i++) {
+        plan->left.char_highlights = (CharHighlight*)realloc(
+            plan->left.char_highlights,
+            (plan->left.char_highlights_count + 1) * sizeof(CharHighlight)
+        );
+        CharHighlight char_hl = {
+            .line = line_num_a,
+            .col_start = ranges_a[i].start,
+            .col_end = ranges_a[i].end,
+            .type = HL_REMOVED_CHAR  // Dark red (the "deeper color"!)
+        };
+        plan->left.char_highlights[plan->left.char_highlights_count++] = char_hl;
+    }
+    
+    // Right: dark green for added chars
+    for (size_t i = 0; i < ranges_b_count; i++) {
+        plan->right.char_highlights = (CharHighlight*)realloc(
+            plan->right.char_highlights,
+            (plan->right.char_highlights_count + 1) * sizeof(CharHighlight)
+        );
+        CharHighlight char_hl = {
+            .line = line_num_b,
+            .col_start = ranges_b[i].start,
+            .col_end = ranges_b[i].end,
+            .type = HL_ADDED_CHAR  // Dark green (the "deeper color"!)
+        };
+        plan->right.char_highlights[plan->right.char_highlights_count++] = char_hl;
+    }
+    
+    // Cleanup
+    free_lcs_table(lcs, len_a);
+    free(ranges_a);
+    free(ranges_b);
 }
 
 // Update diff_compute to call compute_char_diff for MODIFIED lines
-// (Modify the existing diff_compute function)
+// In the main diff loop, whenever you detect LINE_MODIFIED, call:
+// compute_char_diff(lines_a[i], lines_b[j], i, j, plan);
 ```
 
-**Validation:** Add test case for character highlights in `test_diff_core.c`.
+**Update `c-diff-core/test_diff_core.c`:**
+```c
+void test_char_level_diff(void) {
+    const char* line_a = "const oldValue = 42;";
+    const char* line_b = "const newValue = 42;";
+    
+    DiffRenderPlan* plan = diff_render_plan_create();
+    
+    // Manually call char diff (in real code, this is called from diff_compute)
+    compute_char_diff(line_a, line_b, 0, 0, plan);
+    
+    // Should have highlights for both lines
+    assert(plan->left.char_highlights_count >= 2);  // At least: line bg + char range
+    assert(plan->right.char_highlights_count >= 2); // At least: line bg + char range
+    
+    // Find the character-level highlights (not the line backgrounds)
+    int found_left_char = 0, found_right_char = 0;
+    for (size_t i = 0; i < plan->left.char_highlights_count; i++) {
+        if (plan->left.char_highlights[i].type == HL_REMOVED_CHAR) {
+            // Should highlight "old" (roughly chars 6-9)
+            assert(plan->left.char_highlights[i].col_start >= 5);
+            assert(plan->left.char_highlights[i].col_end <= 10);
+            found_left_char = 1;
+        }
+    }
+    
+    for (size_t i = 0; i < plan->right.char_highlights_count; i++) {
+        if (plan->right.char_highlights[i].type == HL_ADDED_CHAR) {
+            // Should highlight "new" (roughly chars 6-9)
+            assert(plan->right.char_highlights[i].col_start >= 5);
+            assert(plan->right.char_highlights[i].col_end <= 10);
+            found_right_char = 1;
+        }
+    }
+    
+    assert(found_left_char == 1);
+    assert(found_right_char == 1);
+    
+    diff_render_plan_free(plan);
+    printf("✓ Character-level diff test passed (LCS working!)\n");
+}
+```
 
-**Note:** For MVP, highlighting entire modified lines is acceptable. Character-level LCS can be added later.
+**Validation:** 
+```bash
+make test
+
+# Expected output:
+# Running C unit tests...
+# ✓ Version test passed: 0.1.0
+# ✓ Render plan lifecycle test passed
+# ✓ Simple diff test passed
+# ✓ Character-level diff test passed (LCS working!)
+# All tests passed!
+```
+
+**Visual Result:**
+
+When viewing a modified line like:
+```
+Old: "const oldValue = 42;"
+New: "const newValue = 42;"
+```
+
+You will see:
+- **Left buffer**: Light red background on entire line + **Dark red** on "old" only
+- **Right buffer**: Light green background on entire line + **Dark green** on "new" only
+
+**This is the "deeper color" you noticed in VSCode!** 🎯
 
 ---
 
@@ -652,9 +918,11 @@ local diff_core = ffi.load(lib_path)
 -- Define C API
 ffi.cdef[[
   typedef enum {
-    HL_ADDED,
-    HL_REMOVED,
-    HL_MODIFIED
+    HL_ADDED_LINE,      // Light green background (full line)
+    HL_REMOVED_LINE,    // Light red background (full line)
+    HL_ADDED_CHAR,      // Dark green (changed characters only) ← THE "DEEPER COLOR"!
+    HL_REMOVED_CHAR,    // Dark red (changed characters only) ← THE "DEEPER COLOR"!
+    HL_MODIFIED_LINE    // Light blue background (full line)
   } HighlightType;
 
   typedef struct {
@@ -835,14 +1103,16 @@ nvim --headless -c "luafile tests/test_render.lua" -c "quit"
 local M = {}
 
 -- Highlight group definitions (VSCode colors)
+-- Two-tier system: light backgrounds for lines, dark/deep for changed characters
 local function setup_highlight_groups()
-  vim.api.nvim_set_hl(0, "DiffAddedLine", { bg = "#1e3a20" })      -- Dark green
-  vim.api.nvim_set_hl(0, "DiffRemovedLine", { bg = "#3a1e1e" })    -- Dark red
-  vim.api.nvim_set_hl(0, "DiffModifiedLine", { bg = "#1e2a3a" })   -- Dark blue
+  -- Line-level backgrounds (light colors)
+  vim.api.nvim_set_hl(0, "DiffAddedLine", { bg = "#1e3a20" })      -- Light green (entire line)
+  vim.api.nvim_set_hl(0, "DiffRemovedLine", { bg = "#3a1e1e" })    -- Light red (entire line)
+  vim.api.nvim_set_hl(0, "DiffModifiedLine", { bg = "#1e2a3a" })   -- Light blue (entire line)
   
-  vim.api.nvim_set_hl(0, "DiffAddedChar", { bg = "#2ea043" })      -- Bright green
-  vim.api.nvim_set_hl(0, "DiffRemovedChar", { bg = "#f85149" })    -- Bright red
-  vim.api.nvim_set_hl(0, "DiffModifiedChar", { bg = "#58a6ff" })   -- Bright blue
+  -- Character-level highlights (dark/deep colors - the "deeper color" you noticed!)
+  vim.api.nvim_set_hl(0, "DiffAddedChar", { bg = "#2ea043", fg = "#ffffff" })    -- DEEP GREEN (changed chars only)
+  vim.api.nvim_set_hl(0, "DiffRemovedChar", { bg = "#f85149", fg = "#ffffff" })  -- DEEP RED (changed chars only)
 end
 
 -- Apply render plan to a buffer
@@ -870,18 +1140,26 @@ function M.apply_render_plan(bufnr, render_plan)
     end
   end
   
-  -- Apply character-level highlights
+  -- Apply character-level highlights (two-tier system)
+  -- Note: Highlights are applied in order, so line backgrounds first, then character ranges
+  -- This creates the "deeper color" effect where changed chars stand out
   for _, hl in ipairs(render_plan.char_highlights) do
     local hl_group
-    if hl.type == 0 then -- HL_ADDED
+    if hl.type == 0 then -- HL_ADDED_LINE (light green background)
+      hl_group = "DiffAddedLine"
+    elseif hl.type == 1 then -- HL_REMOVED_LINE (light red background)
+      hl_group = "DiffRemovedLine"
+    elseif hl.type == 2 then -- HL_ADDED_CHAR (DEEP GREEN - the key feature!)
       hl_group = "DiffAddedChar"
-    elseif hl.type == 1 then -- HL_REMOVED
+    elseif hl.type == 3 then -- HL_REMOVED_CHAR (DEEP RED - the key feature!)
       hl_group = "DiffRemovedChar"
-    elseif hl.type == 2 then -- HL_MODIFIED
-      hl_group = "DiffModifiedChar"
+    elseif hl.type == 4 then -- HL_MODIFIED_LINE
+      hl_group = "DiffModifiedLine"
     end
     
-    vim.api.nvim_buf_add_highlight(bufnr, ns, hl_group, hl.line, hl.col_start, hl.col_end)
+    if hl_group then
+      vim.api.nvim_buf_add_highlight(bufnr, ns, hl_group, hl.line, hl.col_start, hl.col_end)
+    end
   end
   
   -- Apply filler lines (virtual text)
