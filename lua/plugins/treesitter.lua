@@ -1,11 +1,8 @@
 -- Treesitter configuration
 
 local enabled = require('config.plugins-enabled')
--- Note: Neovim 0.12-dev has built-in treesitter support
-
--- Updated parsers are installed via install-deps-linux.sh to ~/.local/share/nvim/site/parser/
-
-
+-- Note: nvim-treesitter main branch requires Neovim 0.11.0+ (nightly)
+-- Breaking changes from master branch: new API, manual parser installation required
 
 return {
   ------------------------------------------------------------------------
@@ -14,48 +11,71 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     enabled = enabled.treesitter,
-    event = 'BufRead',
+    lazy = false, -- Plugin should not be lazy-loaded per documentation
     branch = 'main',
     build = ':TSUpdate',
     config = function()
-      require('nvim-treesitter.configs').setup({
-        -- A list of parser names, or "all"
-        ensure_installed = {
-          "c", "lua", "vim", "vimdoc", "markdown", "markdown_inline",
-          "javascript", "typescript", "c_sharp", "powershell", "tsx",
-          "html", "json", "python", "bash"
-        },
-
-        -- Install parsers synchronously (only applied to `ensure_installed`)
-        sync_install = false,
-
-        -- Automatically install missing parsers when entering buffer
-        auto_install = true,
-
-        highlight = {
-          enable = true,
-
-          -- Disable for very large files (prevents hanging)
-          disable = function(lang, buf)
-            local max_filesize = 100 * 1024 -- 100 KB
-            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-            if ok and stats and stats.size > max_filesize then
-              return true
-            end
-          end,
-
-          -- Additional regex-based highlighting
-          additional_vim_regex_highlighting = false,
-        },
-        indent = {
-          enable = true,
-          -- Disable indent for problematic languages
-          disable = {},
-        },
+      -- Setup is optional - only needed if you want to customize install_dir
+      require('nvim-treesitter').setup({
+        install_dir = vim.fn.stdpath('data') .. '/site',
       })
+
+      -- Install parsers only if missing
+      local parsers = {
+        'c', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
+        'javascript', 'typescript', 'c_sharp', 'powershell', 'tsx',
+        'html', 'json', 'python', 'bash'
+      }
       
-      -- Add timeout protection for treesitter parsing
-      vim.g.ts_highlight_timeout = 500  -- 500ms timeout per tree
+      local missing = {}
+      for _, parser in ipairs(parsers) do
+        if not vim.treesitter.language.add(parser, { silent = true }) then
+          table.insert(missing, parser)
+        end
+      end
+      
+      if #missing > 0 then
+        require('nvim-treesitter').install(missing)
+      end
+
+      -- Enable highlighting via autocommand (new API)
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = {
+          'c', 'lua', 'vim', 'markdown', 'javascript', 'typescript',
+          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh'
+        },
+        callback = function()
+          local max_filesize = 100 * 1024 -- 100 KB
+          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(0))
+          if ok and stats and stats.size > max_filesize then
+            return -- Skip large files
+          end
+          vim.treesitter.start()
+        end,
+        group = vim.api.nvim_create_augroup('TreesitterHighlight', { clear = true }),
+      })
+
+      -- Enable folding (optional)
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = {
+          'c', 'lua', 'vim', 'markdown', 'javascript', 'typescript',
+          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh'
+        },
+        callback = function()
+          vim.wo.foldmethod = 'expr'
+          vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+        end,
+        group = vim.api.nvim_create_augroup('TreesitterFold', { clear = true }),
+      })
+
+      -- Enable experimental indentation (optional)
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'lua', 'python', 'javascript', 'typescript' },
+        callback = function()
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
+        group = vim.api.nvim_create_augroup('TreesitterIndent', { clear = true }),
+      })
     end,
   },
 }
