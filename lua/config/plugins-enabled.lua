@@ -40,4 +40,5 @@ return {
   xcodebuild = false,
   writing = true,
   session = true,
+  kulala = true,
 }

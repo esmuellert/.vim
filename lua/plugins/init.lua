@@ -19,6 +19,7 @@ local plugin_modules = {
   require("plugins.xcodebuild"),
   require("plugins.writing"),
   require("plugins.session"),
+  require("plugins.http-client"),
 }
 
 -- Load local-dev plugins if file exists

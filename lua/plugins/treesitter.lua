@@ -24,7 +24,7 @@ return {
       local parsers = {
         'c', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
         'javascript', 'typescript', 'c_sharp', 'powershell', 'tsx',
-        'html', 'json', 'python', 'bash'
+        'html', 'json', 'python', 'bash', 'http'
       }
       
       local missing = {}
@@ -42,7 +42,7 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         pattern = {
           'c', 'lua', 'vim', 'markdown', 'javascript', 'typescript',
-          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh'
+          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh', 'http'
         },
         callback = function()
           local max_filesize = 100 * 1024 -- 100 KB
@@ -59,7 +59,7 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         pattern = {
           'c', 'lua', 'vim', 'markdown', 'javascript', 'typescript',
-          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh'
+          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh', 'http'
         },
         callback = function()
           vim.wo.foldmethod = 'expr'
