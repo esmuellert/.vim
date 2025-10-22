@@ -37,13 +37,19 @@ vim.opt.synmaxcol = 500  -- Don't highlight lines longer than 500 chars (prevent
 -- ============================================================================
 
 -- Diagnostic configuration
+-- Global: Show Error, Warning, and Info (but not Hint)
+-- Roslyn-specific override in plugins/roslyn.lua to only show Error and Warning
 vim.diagnostic.config({
   virtual_text = {
     prefix = "",
+    severity = { min = vim.diagnostic.severity.INFO },  -- Show INFO and above globally
   },
   severity_sort = true,
-  underline = true,
+  underline = {
+    severity = { min = vim.diagnostic.severity.INFO },  -- Show INFO and above globally
+  },
   signs = {
+    severity = { min = vim.diagnostic.severity.INFO },  -- Show INFO and above globally
     text = {
       [vim.diagnostic.severity.ERROR] = "",
       [vim.diagnostic.severity.WARN] = "",
