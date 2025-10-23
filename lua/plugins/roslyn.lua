@@ -5,7 +5,7 @@ local enabled = require('config.plugins-enabled')
 -- Helper function to install roslyn via Mason if not present
 local function ensure_roslyn_installed()
   local mason_registry = require('mason-registry')
-  
+
   if not mason_registry.is_installed('roslyn') then
     vim.notify("Installing roslyn language server...", vim.log.levels.INFO)
     local roslyn = mason_registry.get_package('roslyn')
@@ -35,12 +35,14 @@ return {
     },
     opts = function()
       return {
-        filewatching = "auto",
-        
-        broad_search = true,
-        
-        lock_target = false,
-        
+        -- Use "roslyn" to let the server handle file watching
+        -- This prevents Neovim from watching build artifacts (bin/, obj/)
+        filewatching = "roslyn",
+
+        broad_search = false,
+
+        lock_target = true,
+
         silent = false,
       }
     end,
@@ -50,18 +52,17 @@ return {
         ensure_roslyn_installed()
       end)
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
-      
+
       require('roslyn').setup(opts)
-      
+
       vim.lsp.config('roslyn', {
         capabilities = capabilities,
         on_attach = function(client, bufnr)
           if client.server_capabilities.inlayHintProvider then
             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
           end
-          
+
           -- Configure diagnostic display to only show Error and Warning by default
-          -- This matches Visual Studio's behavior where Info and Hint are less prominent
           vim.diagnostic.config({
             severity_sort = true,
             virtual_text = {
@@ -79,6 +80,8 @@ return {
           }, bufnr)
         end,
         settings = {
+          -- CRITICAL: Limit analysis to open files only
+          -- This is the MOST IMPORTANT setting for large solutions
           ['csharp|background_analysis'] = {
             dotnet_analyzer_diagnostics_scope = 'openFiles',
             dotnet_compiler_diagnostics_scope = 'openFiles',
