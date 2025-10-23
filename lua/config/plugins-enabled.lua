@@ -41,4 +41,5 @@ return {
   writing = true,
   session = true,
   kulala = true,
+  render_markdown = true,
 }

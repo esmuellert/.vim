@@ -112,4 +112,15 @@ return {
       })
     end,
   },
+
+  ------------------------------------------------------------------------
+  -- 📝 render-markdown.nvim: Render markdown in Neovim
+  ------------------------------------------------------------------------
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    enabled = enabled.render_markdown,
+    ft = { "markdown" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    opts = {},
+  },
 }
