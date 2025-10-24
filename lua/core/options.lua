@@ -82,6 +82,7 @@ vim.opt.diffopt = {
   'algorithm:histogram', -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
   'indent-heuristic',    -- Slide diffs along indentation for better alignment
   'linematch:60',    -- Match similar lines within diff blocks (max 60 lines)
+  'inline:word'
 }
 
 -- Auto-reload files when changed outside of Neovim

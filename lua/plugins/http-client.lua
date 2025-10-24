@@ -10,6 +10,28 @@ return {
     "mistweaverco/kulala.nvim",
     enabled = enabled.kulala,
     ft = { "http", "rest" },
+    
+    -- Prevent .NET Interactive from auto-starting for HTTP files
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("DisableHttpLSP", { clear = true }),
+        pattern = { "http", "rest" },
+        callback = function(ev)
+          -- Stop any LSP clients that attach to HTTP files
+          vim.schedule(function()
+            local clients = vim.lsp.get_clients({ bufnr = ev.buf })
+            for _, client in ipairs(clients) do
+              vim.lsp.stop_client(client.id, true)
+              vim.notify(
+                string.format("Stopped LSP '%s' for HTTP file (using Kulala)", client.name),
+                vim.log.levels.INFO
+              )
+            end
+          end)
+        end
+      })
+    end,
+    
     opts = {
       default_view = "body",
       default_env = "dev",
