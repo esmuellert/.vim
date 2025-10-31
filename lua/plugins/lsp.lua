@@ -189,12 +189,38 @@ return {
       })
 
       return {
-        ensure_installed = { 'html', 'cssls', 'lua_ls', 'lemminx', 'powershell_es' },
+        ensure_installed = { 'html', 'cssls', 'lua_ls', 'lemminx', 'powershell_es', 'clangd' },
         handlers = {
           function(server)
             lspconfig[server].setup({
               capabilities = capabilities,
               on_attach = default_on_attach,
+            })
+          end,
+          ['clangd'] = function(server)
+            -- Disable clangd on Windows
+            local utils = require('core.utils')
+            if utils.is_windows() then
+              return
+            end
+
+            lspconfig[server].setup({
+              on_attach = default_on_attach,
+              capabilities = capabilities,
+              cmd = {
+                'clangd',
+                '--background-index',
+                '--clang-tidy',
+                '--header-insertion=iwyu',
+                '--completion-style=detailed',
+                '--function-arg-placeholders',
+                '--fallback-style=llvm',
+              },
+              init_options = {
+                usePlaceholders = true,
+                completeUnimported = true,
+                clangdFileStatus = true,
+              },
             })
           end,
           ['lua_ls'] = function(server)
