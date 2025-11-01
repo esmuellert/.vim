@@ -195,44 +195,17 @@ if command_exists "tmux"; then
         echo -e "${GREEN}✓${NC} TPM is already installed"
     fi
     
-    # Install catppuccin tmux plugin directory if needed
-    mkdir -p "$HOME/.config/tmux/plugins"
-    if [ ! -d "$HOME/.config/tmux/plugins/catppuccin" ]; then
-        echo -e "${YELLOW}→${NC} Installing Catppuccin tmux theme..."
-        git clone https://github.com/catppuccin/tmux.git "$HOME/.config/tmux/plugins/catppuccin"
-        echo -e "${GREEN}✓${NC} Catppuccin theme installed"
-    else
-        echo -e "${YELLOW}→${NC} Updating Catppuccin tmux theme..."
-        cd "$HOME/.config/tmux/plugins/catppuccin"
-        git pull --quiet
-        echo -e "${GREEN}✓${NC} Catppuccin theme is up to date"
-    fi
-    
-    # Install tmux-cpu plugin
-    if [ ! -d "$HOME/.config/tmux/plugins/tmux-plugins/tmux-cpu" ]; then
-        echo -e "${YELLOW}→${NC} Installing tmux-cpu plugin..."
-        mkdir -p "$HOME/.config/tmux/plugins/tmux-plugins"
-        git clone https://github.com/tmux-plugins/tmux-cpu.git "$HOME/.config/tmux/plugins/tmux-plugins/tmux-cpu"
-        echo -e "${GREEN}✓${NC} tmux-cpu plugin installed"
-    else
-        echo -e "${GREEN}✓${NC} tmux-cpu plugin is already installed"
-    fi
-    
-    # Install tmux-battery plugin
-    if [ ! -d "$HOME/.config/tmux/plugins/tmux-plugins/tmux-battery" ]; then
-        echo -e "${YELLOW}→${NC} Installing tmux-battery plugin..."
-        mkdir -p "$HOME/.config/tmux/plugins/tmux-plugins"
-        git clone https://github.com/tmux-plugins/tmux-battery.git "$HOME/.config/tmux/plugins/tmux-plugins/tmux-battery"
-        echo -e "${GREEN}✓${NC} tmux-battery plugin installed"
-    else
-        echo -e "${GREEN}✓${NC} tmux-battery plugin is already installed"
-    fi
+    # Install tmux plugins using TPM
+    echo -e "${YELLOW}→${NC} Installing tmux plugins via TPM..."
+    "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+    echo -e "${GREEN}✓${NC} tmux plugins installed"
     
     echo -e "${GREEN}✓${NC} tmux setup completed"
     echo ""
     echo "Note: To activate the tmux configuration:"
-    echo "  • If tmux is running: run 'tmux source-file ~/.tmux.conf'"
-    echo "  • For colored undercurls: restart tmux completely with 'tmux kill-server && tmux'"
+    echo "  • If tmux is running: run 'tmux source-file ~/.tmux.conf' then press prefix + I to install plugins"
+    echo "  • Or restart tmux: 'tmux kill-server && tmux'"
+    echo "  • Plugins can also be installed manually with prefix + I (default: Ctrl-b + Shift-i)"
 fi
 
 echo ""

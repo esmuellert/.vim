@@ -188,8 +188,17 @@ return {
         end,
       })
 
+      -- Determine which servers to install based on architecture
+      local utils = require('core.utils')
+      local ensure_installed = { 'html', 'cssls', 'lua_ls', 'powershell_es' }
+      
+      if not utils.is_arm64() then
+        table.insert(ensure_installed, 'clangd')
+        table.insert(ensure_installed, 'lemminx')
+      end
+
       return {
-        ensure_installed = { 'html', 'cssls', 'lua_ls', 'lemminx', 'powershell_es', 'clangd' },
+        ensure_installed = ensure_installed,
         handlers = {
           function(server)
             lspconfig[server].setup({
@@ -198,9 +207,9 @@ return {
             })
           end,
           ['clangd'] = function(server)
-            -- Disable clangd on Windows
+            -- Disable clangd on Windows and ARM64
             local utils = require('core.utils')
-            if utils.is_windows() then
+            if utils.is_windows() or utils.is_arm64() then
               return
             end
 

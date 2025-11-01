@@ -16,6 +16,7 @@ return {
   comment = true,
   autopairs = true,
   illuminate = true,
+  vscode_diff = true,
 
   -- UI plugins
   bufferline = true,

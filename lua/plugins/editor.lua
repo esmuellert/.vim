@@ -46,4 +46,17 @@ return {
       require('guess-indent').setup()
     end,
   },
+
+  ------------------------------------------------------------------------
+  --- 🔀 vscode-diff.nvim: VSCode-style inline diff rendering
+  ------------------------------------------------------------------------
+  {
+    'esmuellert/vscode-diff.nvim',
+    enabled = enabled.vscode_diff,
+    build = vim.fn.has('win32') == 1 and 'build.cmd' or 'bash build.sh',
+    cmd = 'VscodeDiff',
+    config = function()
+      require('vscode-diff.config').setup({})
+    end,
+  },
 }

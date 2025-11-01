@@ -7,6 +7,12 @@ function M.is_windows()
   return vim.loop.os_uname().sysname == 'Windows_NT'
 end
 
+--- Check if the current architecture is ARM64
+function M.is_arm64()
+  local machine = vim.loop.os_uname().machine
+  return machine:match('arm64') or machine:match('aarch64') or machine:match('ARM64')
+end
+
 --- Check if path exists
 function M.file_exists(name)
   local f = io.open(name, "r")
