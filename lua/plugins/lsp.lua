@@ -213,22 +213,76 @@ return {
               return
             end
 
+            -- Check clangd version to determine if it's clangd-21+
+            local handle = io.popen('clangd --version 2>&1')
+            local version_output = handle and handle:read('*a') or ''
+            if handle then handle:close() end
+            
+            local is_clangd_21_plus = version_output:match('clangd version (%d+)') and 
+                                       tonumber(version_output:match('clangd version (%d+)')) >= 21
+
+            -- Enhanced capabilities for clangd
+            local clangd_capabilities = vim.deepcopy(capabilities)
+            clangd_capabilities.offsetEncoding = { 'utf-16' }
+            clangd_capabilities.textDocument = clangd_capabilities.textDocument or {}
+            clangd_capabilities.textDocument.completion = clangd_capabilities.textDocument.completion or {}
+            clangd_capabilities.textDocument.completion.editsNearCursor = true
+
+            local clangd_cmd = {
+              'clangd',
+              '--background-index',
+              '--clang-tidy',
+              '--header-insertion=iwyu',
+              '--completion-style=detailed',
+              '--function-arg-placeholders',
+              '--fallback-style=llvm',
+              '--pch-storage=memory',
+              '--all-scopes-completion',
+              '--completion-parse=auto',
+              '--enable-config',
+              '--offset-encoding=utf-16',
+            }
+
+            -- Add clangd-21+ specific features
+            if is_clangd_21_plus then
+              table.insert(clangd_cmd, '--header-insertion-decorators')
+              table.insert(clangd_cmd, '--ranking-model=decision_forest')
+              table.insert(clangd_cmd, '--limit-results=0')
+            end
+
+            local clangd_on_attach = function(client, bufnr)
+              default_on_attach(client, bufnr)
+              
+              -- Switch between source/header files (clangd extension)
+              vim.keymap.set('n', '<leader>ch', '<cmd>ClangdSwitchSourceHeader<CR>', 
+                { buffer = bufnr, desc = 'Switch Source/Header' })
+              
+              -- Symbol info under cursor
+              vim.keymap.set('n', '<leader>ci', '<cmd>ClangdSymbolInfo<CR>', 
+                { buffer = bufnr, desc = 'Symbol Info' })
+              
+              -- Type hierarchy
+              vim.keymap.set('n', '<leader>ct', '<cmd>ClangdTypeHierarchy<CR>', 
+                { buffer = bufnr, desc = 'Type Hierarchy' })
+            end
+
             lspconfig[server].setup({
-              on_attach = default_on_attach,
-              capabilities = capabilities,
-              cmd = {
-                'clangd',
-                '--background-index',
-                '--clang-tidy',
-                '--header-insertion=iwyu',
-                '--completion-style=detailed',
-                '--function-arg-placeholders',
-                '--fallback-style=llvm',
-              },
+              on_attach = clangd_on_attach,
+              capabilities = clangd_capabilities,
+              cmd = clangd_cmd,
               init_options = {
                 usePlaceholders = true,
                 completeUnimported = true,
                 clangdFileStatus = true,
+                compilationDatabasePath = '',
+                fallbackFlags = {},
+              },
+              handlers = {
+                -- Custom handler for clangd's file status updates
+                ['textDocument/clangd.fileStatus'] = function(_, result, ctx)
+                  -- Optionally handle file status notifications
+                  return vim.NIL
+                end,
               },
             })
           end,
