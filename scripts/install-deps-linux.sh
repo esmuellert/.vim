@@ -79,10 +79,10 @@ echo ""
 echo "=== Neovim ==="
 echo ""
 
-# Install latest stable Neovim from PPA
+# Install latest unstable Neovim from PPA (for 0.12.0-dev)
 if ! command_exists "nvim"; then
     echo -e "${YELLOW}→${NC} Installing Neovim from official PPA..."
-    sudo add-apt-repository -y ppa:neovim-ppa/stable
+    sudo add-apt-repository -y ppa:neovim-ppa/unstable
     sudo apt-get update -qq
     sudo apt-get install -y neovim
     if command_exists "nvim"; then
