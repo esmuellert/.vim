@@ -2,6 +2,8 @@
 -- Set any plugin to false to disable it completely
 -- This makes it easy to enable/disable plugins without commenting out code
 
+local utils = require('core.utils')
+
 return {
   -- Git plugins
   fugitive = false,
@@ -10,7 +12,7 @@ return {
 
   -- Editor plugins
   telescope = true,
-  treesitter = false,
+  treesitter = not utils.is_windows(),
   nvim_tree = false,
   neo_tree = true,
   comment = true,

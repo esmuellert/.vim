@@ -51,6 +51,9 @@ return {
             return -- Skip large files
           end
           vim.treesitter.start()
+          -- Ensure LSP semantic tokens have higher priority than treesitter
+          vim.highlight.priorities.semantic_tokens = 125
+          vim.highlight.priorities.treesitter = 100
         end,
         group = vim.api.nvim_create_augroup('TreesitterHighlight', { clear = true }),
       })
@@ -64,6 +67,7 @@ return {
         callback = function()
           vim.wo.foldmethod = 'expr'
           vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+          vim.wo.foldlevel = 99 -- Open all folds by default
         end,
         group = vim.api.nvim_create_augroup('TreesitterFold', { clear = true }),
       })
