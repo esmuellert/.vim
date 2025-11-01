@@ -74,7 +74,7 @@ vim.opt.fillchars:append({
 })
 
 -- Diff options - IMPORTANT: 'internal' is crucial for Windows to avoid E810 errors
-vim.opt.diffopt = {
+local diffopt = {
   'internal',        -- Use internal xdiff library (required for Windows)
   'filler',          -- Show filler lines for deleted/added lines
   'closeoff',        -- Turn off diff when closing window
@@ -82,8 +82,14 @@ vim.opt.diffopt = {
   'algorithm:histogram', -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
   'indent-heuristic',    -- Slide diffs along indentation for better alignment
   'linematch:60',    -- Match similar lines within diff blocks (max 60 lines)
-  'inline:word'
 }
+
+-- Add inline word-level diffs for Neovim 0.12+
+if vim.fn.has('nvim-0.12') == 1 then
+  table.insert(diffopt, 'inline:word')
+end
+
+vim.opt.diffopt = diffopt
 
 -- Auto-reload files when changed outside of Neovim
 vim.o.autoread = true
