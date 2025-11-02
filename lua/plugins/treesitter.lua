@@ -3,6 +3,7 @@
 local enabled = require('config.plugins-enabled')
 -- Note: nvim-treesitter main branch requires Neovim 0.11.0+ (nightly)
 -- Breaking changes from master branch: new API, manual parser installation required
+-- Install parsers manually with: :TSInstall c lua vim vimdoc markdown markdown_inline javascript typescript c_sharp powershell tsx html json python bash http
 
 return {
   ------------------------------------------------------------------------
@@ -15,28 +16,8 @@ return {
     branch = 'main',
     build = ':TSUpdate',
     config = function()
-      -- Setup is optional - only needed if you want to customize install_dir
-      require('nvim-treesitter').setup({
-        install_dir = vim.fn.stdpath('data') .. '/site',
-      })
-
-      -- Install parsers only if missing
-      local parsers = {
-        'c', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
-        'javascript', 'typescript', 'c_sharp', 'powershell', 'tsx',
-        'html', 'json', 'python', 'bash', 'http'
-      }
-      
-      local missing = {}
-      for _, parser in ipairs(parsers) do
-        if not vim.treesitter.language.add(parser, { silent = true }) then
-          table.insert(missing, parser)
-        end
-      end
-      
-      if #missing > 0 then
-        require('nvim-treesitter').install(missing)
-      end
+      -- Note: setup() is optional - only needed for non-default install_dir
+      -- Default install_dir is stdpath('data')/site, so we don't need to call setup()
 
       -- Enable highlighting via autocommand (new API)
       vim.api.nvim_create_autocmd('FileType', {
