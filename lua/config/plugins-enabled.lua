@@ -6,7 +6,7 @@ local utils = require('core.utils')
 
 return {
   -- Git plugins
-  fugitive = false,
+  fugitive = true,
   gitsigns = true,
   diffview = true,
 
