@@ -9,7 +9,7 @@ return {
   -- Distraction-free writing
   {
     "folke/zen-mode.nvim",
-    enabled = enabled.writing,
+    enabled = enabled.zen_mode,
     ft = { "text" },
     opts = {
       window = { width = 0.62, options = { number = false, relativenumber = false, signcolumn = "no" } },
@@ -23,6 +23,7 @@ return {
   -- Prose-friendly soft wrap & paragraph motions for text
   {
     "reedes/vim-pencil",
+    enabled = enabled.vim_pencil,
     ft = { "text" },
     init = function()
       vim.g["pencil#wrapModeDefault"] = "soft"  -- soft-wrap for prose
@@ -33,6 +34,7 @@ return {
   -- Sticky notes / inline review markers like TODO:, NOTE:, etc. (works in .txt)
   {
     "folke/todo-comments.nvim",
+    enabled = enabled.todo_comments,
     ft = { "text", "markdown" },
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {

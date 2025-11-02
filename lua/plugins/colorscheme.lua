@@ -1,6 +1,8 @@
 -- Colorscheme configuration
 -- All theme-specific settings are now in lua/config/theme.lua
 
+local enabled = require('config.plugins-enabled')
+
 -- Export github colors for backward compatibility
 _G.github_colors = require("config.theme").github_colors
 
@@ -167,6 +169,7 @@ return {
   ------------------------------------------------------------------------
   {
     'norcalli/nvim-colorizer.lua',
+    enabled = enabled.colorizer,
     config = function()
       require('colorizer').setup()
     end,

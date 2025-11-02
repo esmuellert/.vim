@@ -82,6 +82,7 @@ return {
   ------------------------------------------------------------------------
   {
     'onsails/lspkind.nvim',
+    enabled = enabled.lspkind,
     lazy = true,
   },
 }

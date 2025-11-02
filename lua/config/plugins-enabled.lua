@@ -18,19 +18,21 @@ return {
   comment = true,
   autopairs = true,
   illuminate = true,
+  guess_indent = true,
   vscode_diff = true,
 
   -- UI plugins
   bufferline = true,
   lualine = true,
   indent_blankline = true,
-  colorizer = true,
+  colorizer = false,
   which_key = true,
 
   -- LSP and completion
   lsp = true,
   mason = true,
   cmp = true,
+  lspkind = true,
   lspsaga = true,
   fidget = true,
   roslyn = true,
@@ -42,6 +44,9 @@ return {
   eslint = true,
   xcodebuild = false,
   writing = true,
+  zen_mode = true,
+  vim_pencil = true,
+  todo_comments = true,
   session = true,
   kulala = true,
   render_markdown = true,

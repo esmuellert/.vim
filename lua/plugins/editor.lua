@@ -42,6 +42,7 @@ return {
   ------------------------------------------------------------------------
   {
     'NMAC427/guess-indent.nvim',
+    enabled = enabled.guess_indent,
     config = function()
       require('guess-indent').setup()
     end,
