@@ -191,7 +191,7 @@ return {
       -- Determine which servers to install based on architecture
       local utils = require('core.utils')
       local ensure_installed = { 'html', 'cssls', 'lua_ls', 'powershell_es' }
-      
+
       if not utils.is_arm64() then
         table.insert(ensure_installed, 'clangd')
         table.insert(ensure_installed, 'lemminx')
@@ -217,8 +217,8 @@ return {
             local handle = io.popen('clangd --version 2>&1')
             local version_output = handle and handle:read('*a') or ''
             if handle then handle:close() end
-            
-            local is_clangd_21_plus = version_output:match('clangd version (%d+)') and 
+
+            local is_clangd_21_plus = version_output:match('clangd version (%d+)') and
                                        tonumber(version_output:match('clangd version (%d+)')) >= 21
 
             -- Enhanced capabilities for clangd
@@ -252,17 +252,17 @@ return {
 
             local clangd_on_attach = function(client, bufnr)
               default_on_attach(client, bufnr)
-              
+
               -- Switch between source/header files (clangd extension)
-              vim.keymap.set('n', '<leader>ch', '<cmd>ClangdSwitchSourceHeader<CR>', 
+              vim.keymap.set('n', '<leader>ch', '<cmd>ClangdSwitchSourceHeader<CR>',
                 { buffer = bufnr, desc = 'Switch Source/Header' })
-              
+
               -- Symbol info under cursor
-              vim.keymap.set('n', '<leader>ci', '<cmd>ClangdSymbolInfo<CR>', 
+              vim.keymap.set('n', '<leader>ci', '<cmd>ClangdSymbolInfo<CR>',
                 { buffer = bufnr, desc = 'Symbol Info' })
-              
+
               -- Type hierarchy
-              vim.keymap.set('n', '<leader>ct', '<cmd>ClangdTypeHierarchy<CR>', 
+              vim.keymap.set('n', '<leader>ct', '<cmd>ClangdTypeHierarchy<CR>',
                 { buffer = bufnr, desc = 'Type Hierarchy' })
             end
 
@@ -276,6 +276,15 @@ return {
                 clangdFileStatus = true,
                 compilationDatabasePath = '',
                 fallbackFlags = {},
+              },
+              settings = {
+                clangd = {
+                  InlayHints = {
+                    Enabled = true,
+                    ParameterNames = true,
+                    DeducedTypes = true,
+                  },
+                },
               },
               handlers = {
                 -- Custom handler for clangd's file status updates
