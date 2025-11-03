@@ -16,10 +16,18 @@ return {
     branch = 'main',
     build = ':TSUpdate',
     config = function()
-      -- Note: setup() is optional - only needed for non-default install_dir
-      -- Default install_dir is stdpath('data')/site, so we don't need to call setup()
-
-      -- Enable highlighting via autocommand (new API)
+      -- Register C# language mapping for treesitter
+      vim.treesitter.language.register('c_sharp', 'cs')
+      
+      -- Install parsers (this is async, parsers will be installed in background)
+      local parsers_to_install = { 
+        'c', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline', 
+        'javascript', 'typescript', 'c_sharp', 'powershell', 'tsx', 
+        'html', 'json', 'python', 'bash', 'http'
+      }
+      require'nvim-treesitter'.install(parsers_to_install)
+      
+      -- Enable highlighting via autocommand
       vim.api.nvim_create_autocmd('FileType', {
         pattern = {
           'c', 'lua', 'vim', 'markdown', 'javascript', 'typescript',
@@ -32,12 +40,13 @@ return {
             return -- Skip large files
           end
           vim.treesitter.start()
-          -- Ensure LSP semantic tokens have higher priority than treesitter
-          vim.highlight.priorities.semantic_tokens = 125
-          vim.highlight.priorities.treesitter = 100
         end,
         group = vim.api.nvim_create_augroup('TreesitterHighlight', { clear = true }),
       })
+      
+      -- Set highlight priorities
+      vim.highlight.priorities.semantic_tokens = 125
+      vim.highlight.priorities.treesitter = 100
 
       -- Enable folding (optional)
       vim.api.nvim_create_autocmd('FileType', {
