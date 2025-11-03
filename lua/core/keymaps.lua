@@ -82,28 +82,6 @@ vim.api.nvim_set_keymap('n', '<leader>g', ':lua ToggleLazyGit()<CR>', { noremap 
 vim.api.nvim_set_keymap('n', '<leader>cp', ':let @+ = expand("%:p")<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>cr', ':let @+ = expand("%")<CR>', { noremap = true, silent = true })
 
--- Reload Neovim configuration
-vim.api.nvim_set_keymap('n', '<leader>R', ':lua ReloadConfig()<CR>', { noremap = true, silent = false })
-
--- Function to reload config and preserve colorscheme
-function ReloadConfig()
-  -- Save current colorscheme (set by :colorscheme command)
-  local current_colorscheme = vim.g.colors_name
-
-  -- Reload config
-  vim.cmd('source $MYVIMRC')
-
-  -- Restore colorscheme after a short delay to let plugins reload
-  vim.defer_fn(function()
-    if current_colorscheme and current_colorscheme ~= "" then
-      pcall(function() vim.cmd('colorscheme ' .. current_colorscheme) end)
-      vim.notify("Config reloaded! Theme: " .. current_colorscheme, vim.log.levels.INFO)
-    else
-      vim.notify("Config reloaded!", vim.log.levels.INFO)
-    end
-  end, 100)
-end
-
 -- Function to diff current file with git version
 function DiffWithGit(ref)
   ref = ref or 'HEAD'

@@ -186,11 +186,10 @@ local function setup_roslyn_lsp(workspace_root)
     return
   end
 
-  -- Check if already running
+  -- Check if already running (silently return if so)
   if roslyn_client_id then
     local client = vim.lsp.get_client_by_id(roslyn_client_id)
     if client then
-      vim.notify("Roslyn Language Service already running", vim.log.levels.INFO)
       return roslyn_client_id
     end
   end
@@ -330,6 +329,7 @@ local function setup_roslyn_lsp(workspace_root)
     on_attach = function(client, bufnr)
       roslyn_client_id = client.id
 
+      -- Enable inlay hints if supported
       if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
