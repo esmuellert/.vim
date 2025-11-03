@@ -1,16 +1,7 @@
 -- Autocommands
 
-------------------------------------------------------------------------
---- Auto-reload files changed outside of Neovim
-------------------------------------------------------------------------
-vim.api.nvim_create_autocmd({'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI'}, {
-  callback = function()
-    if vim.fn.mode() ~= 'c' then
-      vim.cmd('checktime')
-    end
-  end,
-  desc = "Check if buffers changed outside of Neovim"
-})
+-- Note: File reload handling is now in file_reload.lua
+-- The checktime autocmd was removed to prevent freeze during dotnet build
 
 ------------------------------------------------------------------------
 --- Performance: Disable features for problematic files

@@ -218,6 +218,13 @@ local function setup_roslyn_lsp(workspace_root)
           dynamicRegistration = true,
         },
       },
+      -- CRITICAL: Disable file watching to prevent freeze during dotnet build
+      -- Roslyn will rely on textDocument/didOpen, didChange, didSave events only
+      workspace = {
+        didChangeWatchedFiles = {
+          dynamicRegistration = false,
+        },
+      },
     }),
     -- Add Roslyn-specific handlers
     handlers = {
@@ -325,6 +332,17 @@ local function setup_roslyn_lsp(workspace_root)
 
       if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      end
+      
+      -- Fix semantic token highlighting for C# fields
+      vim.api.nvim_set_hl(0, '@lsp.type.field.cs', { link = '@field' })
+      
+      -- CRITICAL: Disable file watching to prevent freeze during dotnet build
+      -- Roslyn watches files internally, we don't need nvim to also watch
+      if client.server_capabilities.workspace and client.server_capabilities.workspace.fileOperations then
+        client.server_capabilities.workspace.fileOperations.didCreate = false
+        client.server_capabilities.workspace.fileOperations.didRename = false  
+        client.server_capabilities.workspace.fileOperations.didDelete = false
       end
 
       -- Use fidget for non-blocking notification
