@@ -12,7 +12,7 @@ return {
 
   -- Editor plugins
   telescope = true,
-  treesitter = not utils.is_windows(),
+  treesitter = true,
   nvim_tree = false,
   neo_tree = true,
   comment = true,

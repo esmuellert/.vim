@@ -36,8 +36,6 @@ return {
       default_view = "body",
       default_env = "dev",
       debug = false,
-      -- Disable treesitter integration
-      treesitter = false,
       contenttypes = {
         ["application/json"] = {
           ft = "json",

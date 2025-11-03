@@ -4,6 +4,13 @@
 local enabled = require('config.plugins-enabled')
 
 ------------------------------------------------------------------------
+-- Configuration
+------------------------------------------------------------------------
+local ROSLYN_VERSION = "5.0.0-1.25277.114"  -- Update this for new versions
+local ROSLYN_INSTALL_DIR = vim.fn.stdpath("data") .. "/roslyn-lsp"
+local ROSLYN_BIN_PATH = ROSLYN_INSTALL_DIR .. "/packages/Microsoft.CodeAnalysis.LanguageServer.win-x64/content/LanguageServer/win-x64/Microsoft.CodeAnalysis.LanguageServer.exe"
+
+------------------------------------------------------------------------
 -- Helper: Install Roslyn LSP if not present (non-blocking)
 ------------------------------------------------------------------------
 local function install_roslyn()
@@ -14,11 +21,8 @@ local function install_roslyn()
     return
   end
   
-  local roslyn_dir = vim.fn.stdpath("data") .. "/roslyn-lsp"
-  local roslyn_bin = roslyn_dir .. "/packages/Microsoft.CodeAnalysis.LanguageServer.win-x64/content/LanguageServer/win-x64/Microsoft.CodeAnalysis.LanguageServer.exe"
-  
   -- Check if already installed
-  if vim.fn.filereadable(roslyn_bin) == 0 then
+  if vim.fn.filereadable(ROSLYN_BIN_PATH) == 0 then
     -- Use fidget for non-blocking notification
     local ok, fidget = pcall(require, 'fidget')
     if ok then
@@ -26,7 +30,7 @@ local function install_roslyn()
     else
       vim.notify("Installing Microsoft Roslyn Language Service in background...", vim.log.levels.INFO)
     end
-    vim.fn.mkdir(roslyn_dir, "p")
+    vim.fn.mkdir(ROSLYN_INSTALL_DIR, "p")
     
     -- Create a dummy project file for NuGet restore
     local project_content = [[<Project Sdk="Microsoft.NET.Sdk">
@@ -36,7 +40,7 @@ local function install_roslyn()
   </PropertyGroup>
 </Project>]]
     
-    local project_file = roslyn_dir .. "/roslyn-lsp.csproj"
+    local project_file = ROSLYN_INSTALL_DIR .. "/roslyn-lsp.csproj"
     local file = io.open(project_file, "w")
     if file then
       file:write(project_content)
@@ -46,21 +50,26 @@ local function install_roslyn()
     -- Install using NuGet (ignoring dependencies since it's self-contained)
     vim.system({
       'nuget', 'install', 'Microsoft.CodeAnalysis.LanguageServer.win-x64',
-      '-Version', '5.0.0-1.25277.114',
-      '-OutputDirectory', roslyn_dir .. '/packages',
+      '-Version', ROSLYN_VERSION,
+      '-OutputDirectory', ROSLYN_INSTALL_DIR .. '/packages',
       '-ExcludeVersion',
       '-DependencyVersion', 'Ignore'
     }, {
       text = true,
-      cwd = roslyn_dir,
+      cwd = ROSLYN_INSTALL_DIR,
     }, function(result)
       vim.schedule(function()
         local ok, fidget = pcall(require, 'fidget')
         if result.code == 0 then
           if ok then
-            fidget.notify("Roslyn Language Service installed! Restart Neovim to activate.", vim.log.levels.INFO, { key = "roslyn_install" })
+            fidget.notify("Roslyn Language Service installed successfully!", vim.log.levels.INFO, { key = "roslyn_install" })
           else
-            vim.notify("Roslyn Language Service installed successfully! Restart Neovim to activate.", vim.log.levels.INFO)
+            vim.notify("Roslyn Language Service installed successfully!", vim.log.levels.INFO)
+          end
+          
+          -- Auto-start Roslyn for current buffer if it's a C# file
+          if vim.bo.filetype == 'cs' then
+            vim.cmd('Roslyn start')
           end
         else
           if ok then
@@ -71,6 +80,51 @@ local function install_roslyn()
         end
       end)
     end)
+  end
+end
+
+------------------------------------------------------------------------
+-- Helper: Check installed version and reinstall if mismatch
+------------------------------------------------------------------------
+local function check_and_reinstall_if_needed()
+  if vim.fn.filereadable(ROSLYN_BIN_PATH) == 0 then
+    -- Not installed, will be installed later
+    return
+  end
+  
+  -- Check version by running --version
+  local result = vim.system({ ROSLYN_BIN_PATH, '--version' }, { text = true }):wait()
+  
+  if result.code == 0 and result.stdout then
+    -- Extract version (format: 5.0.0-1.25277.114+commithash)
+    local installed_version = result.stdout:match("^([%d%.%-]+)")
+    
+    if installed_version and installed_version ~= ROSLYN_VERSION then
+      local ok, fidget = pcall(require, 'fidget')
+      if ok then
+        fidget.notify(
+          string.format("Version mismatch detected\nInstalled: %s\nExpected: %s\nReinstalling...", 
+            installed_version, ROSLYN_VERSION),
+          vim.log.levels.WARN,
+          { key = "roslyn_version_check" }
+        )
+      else
+        vim.notify(
+          string.format("Roslyn version mismatch (installed: %s, expected: %s). Reinstalling...", 
+            installed_version, ROSLYN_VERSION),
+          vim.log.levels.WARN
+        )
+      end
+      
+      -- Delete old installation
+      local packages_dir = ROSLYN_INSTALL_DIR .. "/packages"
+      vim.fn.delete(packages_dir, "rf")
+      
+      -- Trigger reinstall
+      vim.schedule(function()
+        install_roslyn()
+      end)
+    end
   end
 end
 
@@ -140,9 +194,7 @@ local function setup_roslyn_lsp(workspace_root)
     return
   end
   
-  local roslyn_bin = vim.fn.stdpath("data") .. "/roslyn-lsp/packages/Microsoft.CodeAnalysis.LanguageServer.win-x64/content/LanguageServer/win-x64/Microsoft.CodeAnalysis.LanguageServer.exe"
-  
-  if vim.fn.filereadable(roslyn_bin) == 0 then
+  if vim.fn.filereadable(ROSLYN_BIN_PATH) == 0 then
     vim.notify("Roslyn Language Service not installed. Installing...", vim.log.levels.INFO)
     install_roslyn()
     return
@@ -160,12 +212,12 @@ local function setup_roslyn_lsp(workspace_root)
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   
   -- Roslyn LSP requires specific command line args
-  local log_dir = vim.fn.stdpath("data") .. "/roslyn-lsp/logs"
+  local log_dir = ROSLYN_INSTALL_DIR .. "/logs"
   vim.fn.mkdir(log_dir, "p")
   
   vim.lsp.config('roslyn', {
     cmd = { 
-      roslyn_bin,
+      ROSLYN_BIN_PATH,
       '--logLevel', 'Information',
       '--extensionLogDirectory', log_dir,
       '--stdio'
@@ -185,7 +237,7 @@ local function setup_roslyn_lsp(workspace_root)
       -- Get version from initialize result
       local ok, fidget = pcall(require, 'fidget')
       if initialize_result and initialize_result.serverInfo then
-        local version = initialize_result.serverInfo.version or "5.0.0-1.25277.114"
+        local version = initialize_result.serverInfo.version or ROSLYN_VERSION
         if ok then
           fidget.notify("Roslyn Language Service v" .. version .. " initialized", vim.log.levels.INFO, { key = "roslyn_init" })
         else
@@ -193,9 +245,9 @@ local function setup_roslyn_lsp(workspace_root)
         end
       else
         if ok then
-          fidget.notify("Roslyn Language Service v5.0.0-1.25277.114 initialized", vim.log.levels.INFO, { key = "roslyn_init" })
+          fidget.notify("Roslyn Language Service v" .. ROSLYN_VERSION .. " initialized", vim.log.levels.INFO, { key = "roslyn_init" })
         else
-          vim.notify("Roslyn Language Service v5.0.0-1.25277.114 initialized", vim.log.levels.INFO)
+          vim.notify("Roslyn Language Service v" .. ROSLYN_VERSION .. " initialized", vim.log.levels.INFO)
         end
       end
     end,
@@ -269,7 +321,12 @@ end
 -- Main setup
 ------------------------------------------------------------------------
 if enabled.lsp and enabled.roslyn then
-  -- Install Roslyn LSP on startup
+  -- Check version and reinstall if needed on startup
+  vim.schedule(function()
+    check_and_reinstall_if_needed()
+  end)
+  
+  -- Install Roslyn LSP on startup if not present
   vim.schedule(function()
     install_roslyn()
   end)
