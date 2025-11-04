@@ -10,7 +10,7 @@ local ROSLYN_VERSION = "5.0.0-1.25277.114"  -- Update this for new versions
 local ROSLYN_INSTALL_DIR = vim.fn.stdpath("data") .. "/roslyn-lsp"
 local ROSLYN_BIN_PATH = ROSLYN_INSTALL_DIR .. "/packages/Microsoft.CodeAnalysis.LanguageServer.win-x64/content/LanguageServer/win-x64/Microsoft.CodeAnalysis.LanguageServer.exe"
 
--- Import fidget once for all notifications
+-- Import fidget once for use throughout the file
 local has_fidget, fidget = pcall(require, 'fidget')
 
 ------------------------------------------------------------------------
@@ -349,15 +349,12 @@ local function setup_roslyn_lsp(workspace_root)
       end
 
       -- Use fidget for non-blocking notification
-      -- Using global fidget import
-      if ok then
+      if has_fidget then
         local buf_count = #vim.lsp.get_buffers_by_client_id(client.id)
         fidget.notify("Attached to " .. buf_count .. " buffer" .. (buf_count > 1 and "s" or ""), vim.log.levels.INFO, {
           key = "roslyn_attach",
           annote = "Roslyn"
         })
-      else
-        vim.notify("Roslyn Language Service attached", vim.log.levels.INFO)
       end
     end,
     on_exit = function()
