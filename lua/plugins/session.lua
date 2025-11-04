@@ -19,7 +19,7 @@ return {
     },
     config = function(_, opts)
       require('persistence').setup(opts)
-      
+
       -- Close diffview before saving session
       vim.api.nvim_create_autocmd('User', {
         pattern = 'PersistenceSavePre',
@@ -37,7 +37,7 @@ return {
           end)
         end,
       })
-      
+
       -- Auto-restore session when opening nvim without arguments
       vim.api.nvim_create_autocmd('VimEnter', {
         group = vim.api.nvim_create_augroup('persistence_auto_restore', { clear = true }),

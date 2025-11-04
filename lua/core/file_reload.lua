@@ -24,7 +24,7 @@ local function on_file_changed_shell()
     -- Notify user about conflict
     vim.schedule(function()
       vim.notify(
-        string.format('File "%s" changed externally but you have unsaved changes', 
+        string.format('File "%s" changed externally but you have unsaved changes',
           vim.fn.fnamemodify(filename, ':t')),
         vim.log.levels.WARN
       )

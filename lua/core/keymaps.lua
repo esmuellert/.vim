@@ -97,7 +97,7 @@ function DiffWithGit(ref)
 
   -- Save current diffopt to ensure internal diff is used
   local saved_diffopt = vim.o.diffopt
-  
+
   -- Force internal diff mode (crucial for Windows to avoid E810)
   if not saved_diffopt:match('internal') then
     vim.o.diffopt = saved_diffopt .. ',internal'

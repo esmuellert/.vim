@@ -108,7 +108,7 @@ return {
 
           -- Better UI
           borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
-          
+
           -- Show helpful prompt to remind users of search operators
           prompt_prefix = "🔭 ",
           selection_caret = "❯ ",

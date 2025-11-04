@@ -10,7 +10,7 @@ return {
     "mistweaverco/kulala.nvim",
     enabled = enabled.kulala,
     ft = { "http", "rest" },
-    
+
     -- Prevent .NET Interactive from auto-starting for HTTP files
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
@@ -31,7 +31,7 @@ return {
         end
       })
     end,
-    
+
     opts = {
       default_view = "body",
       default_env = "dev",
@@ -56,7 +56,7 @@ return {
     },
     config = function(_, opts)
       require("kulala").setup(opts)
-      
+
       -- Set up keymaps (only loaded when plugin loads)
       vim.keymap.set("n", "<leader>Rs", "<cmd>lua require('kulala').run()<cr>", { desc = "Send the request" })
       vim.keymap.set("n", "<leader>Rt", "<cmd>lua require('kulala').toggle_view()<cr>", { desc = "Toggle headers/body" })

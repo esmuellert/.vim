@@ -327,7 +327,7 @@ return {
 
         -- Hooks for customization
         hooks = {
-          diff_buf_read = function(bufnr)
+          diff_buf_read = function()
             -- Improve diff readability
             vim.opt_local.wrap = false
             vim.opt_local.list = false

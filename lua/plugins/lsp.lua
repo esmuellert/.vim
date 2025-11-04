@@ -8,7 +8,7 @@ local enabled = require('config.plugins-enabled')
 -- Helper function to configure clangd using vim.lsp.config
 local function setup_clangd()
   local utils = require('core.utils')
-  
+
   -- Skip on Windows
   if utils.is_windows() then
     return
@@ -213,7 +213,7 @@ local function setup_tsgo()
             return vim.startswith(action, "source.")
           end, client.server_capabilities.codeActionProvider.codeActionKinds or {})
 
-          vim.lsp.buf.code_action({ context = { only = source_actions } })
+          vim.lsp.buf.code_action({ context = { only = source_actions, diagnostics = {} } })
         end
       end, { desc = "TypeScript source actions" })
     end,

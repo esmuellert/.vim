@@ -18,7 +18,7 @@ return {
         vim.diagnostic.reset(ns, bufnr)
         return vim.NIL
       end
-      
+
       require('nvim-eslint').setup({})
     end,
   },
