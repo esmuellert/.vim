@@ -10,6 +10,9 @@ local ROSLYN_VERSION = "5.0.0-1.25277.114"  -- Update this for new versions
 local ROSLYN_INSTALL_DIR = vim.fn.stdpath("data") .. "/roslyn-lsp"
 local ROSLYN_BIN_PATH = ROSLYN_INSTALL_DIR .. "/packages/Microsoft.CodeAnalysis.LanguageServer.win-x64/content/LanguageServer/win-x64/Microsoft.CodeAnalysis.LanguageServer.exe"
 
+-- Import fidget once for all notifications
+local has_fidget, fidget = pcall(require, 'fidget')
+
 ------------------------------------------------------------------------
 -- Helper: Install Roslyn LSP if not present (non-blocking)
 ------------------------------------------------------------------------
@@ -24,8 +27,8 @@ local function install_roslyn()
   -- Check if already installed
   if vim.fn.filereadable(ROSLYN_BIN_PATH) == 0 then
     -- Use fidget for non-blocking notification
-    local ok, fidget = pcall(require, 'fidget')
-    if ok then
+    -- Using global fidget import
+    if has_fidget then
       fidget.notify("Installing Microsoft Roslyn Language Service...", vim.log.levels.INFO, { key = "roslyn_install" })
     else
       vim.notify("Installing Microsoft Roslyn Language Service in background...", vim.log.levels.INFO)
@@ -59,10 +62,10 @@ local function install_roslyn()
       cwd = ROSLYN_INSTALL_DIR,
     }, function(result)
       vim.schedule(function()
-        local ok, fidget = pcall(require, 'fidget')
+        -- Using global fidget import
         if result.code == 0 then
-          if ok then
-            fidget.notify("Roslyn Language Service installed successfully!", vim.log.levels.INFO, { key = "roslyn_install" })
+          if has_fidget then
+      fidget.notify("Roslyn Language Service installed successfully!", vim.log.levels.INFO, { key = "roslyn_install" })
           else
             vim.notify("Roslyn Language Service installed successfully!", vim.log.levels.INFO)
           end
@@ -72,8 +75,8 @@ local function install_roslyn()
             vim.cmd('Roslyn start')
           end
         else
-          if ok then
-            fidget.notify("Failed to install Roslyn Language Service", vim.log.levels.ERROR, { key = "roslyn_install", annote = result.stderr or "unknown" })
+          if has_fidget then
+      fidget.notify("Failed to install Roslyn Language Service", vim.log.levels.ERROR, { key = "roslyn_install", annote = result.stderr or "unknown" })
           else
             vim.notify("Failed to install Roslyn Language Service. Error: " .. (result.stderr or "unknown"), vim.log.levels.ERROR)
           end
@@ -100,9 +103,9 @@ local function check_and_reinstall_if_needed()
     local installed_version = result.stdout:match("^([%d%.%-]+)")
 
     if installed_version and installed_version ~= ROSLYN_VERSION then
-      local ok, fidget = pcall(require, 'fidget')
-      if ok then
-        fidget.notify(
+      -- Using global fidget import
+      if has_fidget then
+      fidget.notify(
           string.format("Version mismatch detected\nInstalled: %s\nExpected: %s\nReinstalling...",
             installed_version, ROSLYN_VERSION),
           vim.log.levels.WARN,
@@ -229,9 +232,9 @@ local function setup_roslyn_lsp(workspace_root)
     handlers = {
       -- Project initialization complete - refresh diagnostics
       ['workspace/projectInitializationComplete'] = function(_, _, ctx)
-        local ok, fidget = pcall(require, 'fidget')
-        if ok then
-          fidget.notify('Project initialization complete', vim.log.levels.INFO, { key = 'roslyn_init_complete' })
+        -- Using global fidget import
+        if has_fidget then
+      fidget.notify('Project initialization complete', vim.log.levels.INFO, { key = 'roslyn_init_complete' })
         end
 
         local client = vim.lsp.get_client_by_id(ctx.client_id)
@@ -256,9 +259,9 @@ local function setup_roslyn_lsp(workspace_root)
       ['workspace/_roslyn_projectNeedsRestore'] = function(_, result, ctx)
         local client = vim.lsp.get_client_by_id(ctx.client_id)
         if client and result then
-          local ok, fidget = pcall(require, 'fidget')
-          if ok then
-            fidget.notify('Project needs restore', vim.log.levels.WARN, { key = 'roslyn_restore_needed' })
+          -- Using global fidget import
+          if has_fidget then
+      fidget.notify('Project needs restore', vim.log.levels.WARN, { key = 'roslyn_restore_needed' })
           end
 
           -- Trigger restore using generic request (custom Roslyn method)
@@ -270,8 +273,8 @@ local function setup_roslyn_lsp(workspace_root)
             end
             if response then
               for _, v in ipairs(response) do
-                if ok then
-                  fidget.notify(v.message, vim.log.levels.INFO, { key = 'roslyn_restore' })
+                if has_fidget then
+      fidget.notify(v.message, vim.log.levels.INFO, { key = 'roslyn_restore' })
                 end
               end
             end
@@ -295,9 +298,9 @@ local function setup_roslyn_lsp(workspace_root)
         end
 
         if sln_file then
-          local ok, fidget = pcall(require, 'fidget')
-          if ok then
-            fidget.notify(string.format("Loading: %s", vim.fn.fnamemodify(sln_file, ":t")), vim.log.levels.INFO, { key = 'roslyn_sln_load' })
+          -- Using global fidget import
+          if has_fidget then
+      fidget.notify(string.format("Loading: %s", vim.fn.fnamemodify(sln_file, ":t")), vim.log.levels.INFO, { key = 'roslyn_sln_load' })
           end
           -- Send solution/open notification to Roslyn
           client:notify('solution/open', {
@@ -310,17 +313,17 @@ local function setup_roslyn_lsp(workspace_root)
       end)
 
       -- Get version from initialize result
-      local ok, fidget = pcall(require, 'fidget')
+      -- Using global fidget import
       if initialize_result and initialize_result.serverInfo then
         local version = initialize_result.serverInfo.version or ROSLYN_VERSION
-        if ok then
-          fidget.notify("Roslyn Language Service v" .. version .. " initialized", vim.log.levels.INFO, { key = "roslyn_init" })
+        if has_fidget then
+      fidget.notify("Roslyn Language Service v" .. version .. " initialized", vim.log.levels.INFO, { key = "roslyn_init" })
         else
           vim.notify(string.format("Roslyn Language Service v%s initialized", version), vim.log.levels.INFO)
         end
       else
-        if ok then
-          fidget.notify("Roslyn Language Service v" .. ROSLYN_VERSION .. " initialized", vim.log.levels.INFO, { key = "roslyn_init" })
+        if has_fidget then
+      fidget.notify("Roslyn Language Service v" .. ROSLYN_VERSION .. " initialized", vim.log.levels.INFO, { key = "roslyn_init" })
         else
           vim.notify("Roslyn Language Service v" .. ROSLYN_VERSION .. " initialized", vim.log.levels.INFO)
         end
@@ -346,7 +349,7 @@ local function setup_roslyn_lsp(workspace_root)
       end
 
       -- Use fidget for non-blocking notification
-      local ok, fidget = pcall(require, 'fidget')
+      -- Using global fidget import
       if ok then
         local buf_count = #vim.lsp.get_buffers_by_client_id(client.id)
         fidget.notify("Attached to " .. buf_count .. " buffer" .. (buf_count > 1 and "s" or ""), vim.log.levels.INFO, {
@@ -530,3 +533,4 @@ end
 
 -- Return empty table since this is not a plugin spec anymore
 return {}
+
