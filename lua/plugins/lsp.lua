@@ -202,7 +202,7 @@ local function setup_tsgo()
       maxTsServerMemory = 8192,
     },
     on_attach = function(client, bufnr)
-      -- Enable inlay hints if supported
+      -- Enable inlay hints if supported (tsgo doesn't support yet as of 2025-11-05)
       if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
@@ -253,32 +253,6 @@ local function setup_tsgo()
 
         vim.cmd('botright copen')
       end,
-    },
-    settings = {
-      typescript = {
-        inlayHints = {
-          includeInlayParameterNameHints = 'all',
-          includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayVariableTypeHints = true,
-          includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
-        },
-        implicitProjectConfig = { allowJs = true },
-      },
-      javascript = {
-        inlayHints = {
-          includeInlayParameterNameHints = 'all',
-          includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayVariableTypeHints = true,
-          includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayEnumMemberValueHints = true,
-        },
-        implicitProjectConfig = { checkJs = true },
-      },
     },
   })
 
