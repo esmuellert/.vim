@@ -1,8 +1,12 @@
 -- Custom keymaps and shortcuts
 
 --- Prettier format current buffer
-vim.api.nvim_set_keymap('n', '<A-S-F>', ':w!<CR> :!pnpm exec prettier --write %<CR> :edit!<CR>',
-  { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+  'n',
+  '<A-S-F>',
+  ':w!<CR> :!pnpm exec prettier --write %<CR> :edit!<CR>',
+  { noremap = true, silent = true }
+)
 
 -- Function to toggle terminal buffer
 function ToggleTerminal()
@@ -63,14 +67,14 @@ function ToggleLazyGit()
       vim.opt_local.relativenumber = false
 
       -- Automatically exit insert mode when LazyGit closes
-      vim.api.nvim_create_autocmd("TermClose", {
+      vim.api.nvim_create_autocmd('TermClose', {
         buffer = 0, -- Current buffer
         callback = function()
-          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
         end,
       })
     else
-      print("LazyGit is not installed or not found in PATH.")
+      print('LazyGit is not installed or not found in PATH.')
     end
   end
 end
@@ -88,7 +92,7 @@ function DiffWithGit(ref)
 
   local filepath = vim.fn.expand('%:p')
   if filepath == '' then
-    vim.notify("No file in current buffer", vim.log.levels.WARN)
+    vim.notify('No file in current buffer', vim.log.levels.WARN)
     return
   end
 
@@ -119,7 +123,7 @@ function DiffWithGit(ref)
     vim.cmd('wincmd l | diffoff')
     -- Restore diffopt
     vim.o.diffopt = saved_diffopt
-    vim.notify("Failed to get version '" .. ref .. "': " .. table.concat(git_content, '\n'), vim.log.levels.ERROR)
+    vim.notify('Failed to get version \'' .. ref .. '\': ' .. table.concat(git_content, '\n'), vim.log.levels.ERROR)
     return
   end
 
@@ -146,4 +150,3 @@ end
 vim.api.nvim_create_user_command('Diff', function(opts)
   DiffWithGit(opts.args ~= '' and opts.args or nil)
 end, { nargs = '?' })
-

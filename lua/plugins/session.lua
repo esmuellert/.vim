@@ -70,7 +70,7 @@ return {
         function()
           require('persistence').stop()
         end,
-        desc = "Don't Save Current Session",
+        desc = 'Don\'t Save Current Session',
       },
     },
   },

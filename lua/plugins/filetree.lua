@@ -2,7 +2,6 @@
 
 local enabled = require('config.plugins-enabled')
 
-
 return {
   ------------------------------------------------------------------------
   --- 🌲 nvim-tree.lua: File explorer tree (DISABLED)
@@ -18,29 +17,29 @@ return {
     config = function()
       require('nvim-tree').setup({
         git = {
-          timeout = 10000
+          timeout = 10000,
         },
         renderer = {
           icons = {
             glyphs = {
               git = {
-                unstaged = "󱧃",
-                staged = "󰸩",
-                untracked = ""
-              }
-            }
-          }
-        }
+                unstaged = '󱧃',
+                staged = '󰸩',
+                untracked = '',
+              },
+            },
+          },
+        },
       })
 
       -- Auto-close nvim-tree when it's the last window
-      vim.api.nvim_create_autocmd("BufEnter", {
+      vim.api.nvim_create_autocmd('BufEnter', {
         nested = true,
         callback = function()
-          if #vim.api.nvim_list_wins() == 1 and require("nvim-tree.utils").is_nvim_tree_buf() then
-            vim.cmd "quit"
+          if #vim.api.nvim_list_wins() == 1 and require('nvim-tree.utils').is_nvim_tree_buf() then
+            vim.cmd('quit')
           end
-        end
+        end,
       })
     end,
   },
@@ -51,7 +50,7 @@ return {
   {
     enabled = enabled.neo_tree,
     'nvim-neo-tree/neo-tree.nvim',
-    branch = "v3.x",
+    branch = 'v3.x',
     cmd = { 'Neotree' },
     keys = {
       { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Toggle Neo-tree' },
@@ -64,7 +63,7 @@ return {
     config = function()
       require('neo-tree').setup({
         close_if_last_window = true,
-        popup_border_style = "rounded",
+        popup_border_style = 'rounded',
         enable_git_status = true,
         enable_diagnostics = true,
 
@@ -74,45 +73,45 @@ return {
             with_markers = true,
           },
           icon = {
-            folder_closed = "",
-            folder_open = "",
-            folder_empty = "",
-            default = "",
+            folder_closed = '',
+            folder_open = '',
+            folder_empty = '',
+            default = '',
           },
           git_status = {
             symbols = {
-              added     = "",
-              modified  = "",
-              deleted   = "✖",
-              renamed   = "󰁕",
-              untracked = "",
-              ignored   = "",
-              unstaged  = "󱧃",
-              staged    = "󰸩",
-              conflict  = "",
-            }
+              added = '',
+              modified = '',
+              deleted = '✖',
+              renamed = '󰁕',
+              untracked = '',
+              ignored = '',
+              unstaged = '󱧃',
+              staged = '󰸩',
+              conflict = '',
+            },
           },
         },
 
         window = {
-          position = "left",
+          position = 'left',
           width = 30,
           mappings = {
-            ["<space>"] = "none",
-            ["<cr>"] = "open",
-            ["<esc>"] = "cancel",
-            ["l"] = "open",
-            ["h"] = "close_node",
-            ["z"] = "close_all_nodes",
-            ["Z"] = "expand_all_nodes",
-            ["a"] = { "add", config = { show_path = "relative" } },
-            ["d"] = "delete",
-            ["r"] = "rename",
-            ["y"] = "copy_to_clipboard",
-            ["x"] = "cut_to_clipboard",
-            ["p"] = "paste_from_clipboard",
-            ["R"] = "refresh",
-            ["?"] = "show_help",
+            ['<space>'] = 'none',
+            ['<cr>'] = 'open',
+            ['<esc>'] = 'cancel',
+            ['l'] = 'open',
+            ['h'] = 'close_node',
+            ['z'] = 'close_all_nodes',
+            ['Z'] = 'expand_all_nodes',
+            ['a'] = { 'add', config = { show_path = 'relative' } },
+            ['d'] = 'delete',
+            ['r'] = 'rename',
+            ['y'] = 'copy_to_clipboard',
+            ['x'] = 'cut_to_clipboard',
+            ['p'] = 'paste_from_clipboard',
+            ['R'] = 'refresh',
+            ['?'] = 'show_help',
           },
         },
 
@@ -131,7 +130,7 @@ return {
 
         git_status = {
           window = {
-            position = "float",
+            position = 'float',
           },
         },
       })

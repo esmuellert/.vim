@@ -19,21 +19,21 @@ if vim.loop.fs_stat(vimrc_path) then
 end
 
 -- Load core configuration
-require("core")
+require('core')
 
 -- ============================================================================
 -- 💤 Lazy.nvim Plugin Manager Setup
 -- ============================================================================
 -- Bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out,                            "WarningMsg" },
-      { "\nPress any key to exit..." },
+      { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
+      { out, 'WarningMsg' },
+      { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
     os.exit(1)
@@ -42,11 +42,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Set leader keys before loading plugins
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+vim.g.mapleader = ' '
+vim.g.maplocalleader = '\\'
 
 -- Load plugins from lua/plugins/init.lua (which loads all plugin modules)
-require("lazy").setup("plugins", {
+require('lazy').setup('plugins', {
   -- Lazy.nvim configuration options
   defaults = {
     lazy = false, -- plugins are not lazy-loaded by default
@@ -54,7 +54,7 @@ require("lazy").setup("plugins", {
   },
   install = {
     missing = true, -- install missing plugins on startup
-   --[[  colorscheme = { "tokyonight-moon" }, ]]
+    --[[  colorscheme = { "tokyonight-moon" }, ]]
   },
   checker = {
     enabled = false, -- don't check for plugin updates automatically
@@ -66,11 +66,11 @@ require("lazy").setup("plugins", {
   performance = {
     rtp = {
       disabled_plugins = {
-        "gzip",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
+        'gzip',
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
       },
     },
   },
@@ -80,13 +80,13 @@ require("lazy").setup("plugins", {
 -- Load additional configurations
 -- ============================================================================
 -- Load writing configuration if it exists
-local writing_config_path = vim.fn.stdpath("config") .. "/lua/config/writing.lua"
+local writing_config_path = vim.fn.stdpath('config') .. '/lua/config/writing.lua'
 if vim.loop.fs_stat(writing_config_path) then
-  require("config.writing")
+  require('config.writing')
 end
 
 -- Load local user configuration if it exists (for machine-specific settings)
-local local_config_path = vim.fn.stdpath("config") .. "/lua/local.lua"
+local local_config_path = vim.fn.stdpath('config') .. '/lua/local.lua'
 if vim.loop.fs_stat(local_config_path) then
-  require("local")
+  require('local')
 end

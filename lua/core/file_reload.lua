@@ -24,8 +24,7 @@ local function on_file_changed_shell()
     -- Notify user about conflict
     vim.schedule(function()
       vim.notify(
-        string.format('File "%s" changed externally but you have unsaved changes',
-          vim.fn.fnamemodify(filename, ':t')),
+        string.format('File "%s" changed externally but you have unsaved changes', vim.fn.fnamemodify(filename, ':t')),
         vim.log.levels.WARN
       )
     end)
@@ -39,7 +38,7 @@ local function setup()
   vim.api.nvim_create_autocmd('FileChangedShell', {
     group = group,
     callback = on_file_changed_shell,
-    desc = "Handle external file changes"
+    desc = 'Handle external file changes',
   })
 
   -- Enable auto-reload

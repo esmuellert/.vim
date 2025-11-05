@@ -7,28 +7,28 @@
 --- Performance: Disable features for problematic files
 ------------------------------------------------------------------------
 -- Automatically disable heavy features for minified/large files
-vim.api.nvim_create_autocmd("BufReadPost", {
+vim.api.nvim_create_autocmd('BufReadPost', {
   callback = function(args)
     local buf = args.buf
     local filename = vim.api.nvim_buf_get_name(buf)
 
     -- Detect minified files (very long lines)
-    local first_line = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ""
+    local first_line = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ''
     if #first_line > 1000 then
       -- Disable expensive features for minified files
-      vim.bo[buf].syntax = ""  -- Disable syntax
-      vim.notify("Large line detected - syntax disabled for performance", vim.log.levels.WARN)
+      vim.bo[buf].syntax = '' -- Disable syntax
+      vim.notify('Large line detected - syntax disabled for performance', vim.log.levels.WARN)
       return
     end
 
     -- Disable features for known large file types
-    if filename:match("%.min%.js$") or filename:match("%.min%.css$") then
-      vim.bo[buf].syntax = ""
+    if filename:match('%.min%.js$') or filename:match('%.min%.css$') then
+      vim.bo[buf].syntax = ''
       vim.treesitter.stop(buf)
-      vim.notify("Minified file detected - highlighting disabled", vim.log.levels.INFO)
+      vim.notify('Minified file detected - highlighting disabled', vim.log.levels.INFO)
     end
   end,
-  desc = "Disable features for problematic files to prevent freezing"
+  desc = 'Disable features for problematic files to prevent freezing',
 })
 
 ------------------------------------------------------------------------
@@ -37,45 +37,45 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Setup diagnostic line highlights with only background color from theme
 local function setup_diagnostic_line_highlights()
   -- Get colors from DiagnosticVirtualText highlights
-  local error_hl = vim.api.nvim_get_hl(0, { name = "DiagnosticVirtualTextError" })
-  local warn_hl = vim.api.nvim_get_hl(0, { name = "DiagnosticVirtualTextWarn" })
-  local hint_hl = vim.api.nvim_get_hl(0, { name = "DiagnosticVirtualTextHint" })
-  local info_hl = vim.api.nvim_get_hl(0, { name = "DiagnosticVirtualTextInfo" })
+  local error_hl = vim.api.nvim_get_hl(0, { name = 'DiagnosticVirtualTextError' })
+  local warn_hl = vim.api.nvim_get_hl(0, { name = 'DiagnosticVirtualTextWarn' })
+  local hint_hl = vim.api.nvim_get_hl(0, { name = 'DiagnosticVirtualTextHint' })
+  local info_hl = vim.api.nvim_get_hl(0, { name = 'DiagnosticVirtualTextInfo' })
 
   -- Set line highlights with only background color (preserving text color)
-  vim.api.nvim_set_hl(0, "DiagnosticLineError", { bg = error_hl.bg })
-  vim.api.nvim_set_hl(0, "DiagnosticLineWarn", { bg = warn_hl.bg })
-  vim.api.nvim_set_hl(0, "DiagnosticLineHint", { bg = hint_hl.bg })
-  vim.api.nvim_set_hl(0, "DiagnosticLineInfo", { bg = info_hl.bg })
+  vim.api.nvim_set_hl(0, 'DiagnosticLineError', { bg = error_hl.bg })
+  vim.api.nvim_set_hl(0, 'DiagnosticLineWarn', { bg = warn_hl.bg })
+  vim.api.nvim_set_hl(0, 'DiagnosticLineHint', { bg = hint_hl.bg })
+  vim.api.nvim_set_hl(0, 'DiagnosticLineInfo', { bg = info_hl.bg })
 
   -- Set underline highlights with diagnostic color
   -- Use sp for undercurl color and nocombine to prevent fg from being combined
   -- Note: colored undercurls require terminal support (termguicolors + undercurl color support)
-  vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", {
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', {
     undercurl = true,
     sp = error_hl.fg,
-    nocombine = true
+    nocombine = true,
   })
-  vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", {
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', {
     undercurl = true,
     sp = warn_hl.fg,
-    nocombine = true
+    nocombine = true,
   })
-  vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", {
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineHint', {
     undercurl = true,
     sp = hint_hl.fg,
-    nocombine = true
+    nocombine = true,
   })
-  vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", {
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineInfo', {
     undercurl = true,
     sp = info_hl.fg,
-    nocombine = true
+    nocombine = true,
   })
 end
 
-vim.api.nvim_create_autocmd("ColorScheme", {
+vim.api.nvim_create_autocmd('ColorScheme', {
   callback = setup_diagnostic_line_highlights,
-  desc = "Setup diagnostic line highlighting for all colorschemes"
+  desc = 'Setup diagnostic line highlighting for all colorschemes',
 })
 
 -- Apply immediately for current colorscheme with delay
@@ -85,15 +85,15 @@ vim.defer_fn(setup_diagnostic_line_highlights, 200)
 --- Auto-update Neovim config when on main and clean
 ------------------------------------------------------------------------
 local function auto_update_config_repo()
-  local config_path = vim.fn.stdpath("config")
+  local config_path = vim.fn.stdpath('config')
 
-  if vim.g.__config_auto_update_ran or vim.fn.isdirectory(config_path .. "/.git") == 0 then
+  if vim.g.__config_auto_update_ran or vim.fn.isdirectory(config_path .. '/.git') == 0 then
     return
   end
   vim.g.__config_auto_update_ran = true
 
   local function git_cmd(args)
-    local cmd = { "git", "-C", config_path }
+    local cmd = { 'git', '-C', config_path }
     vim.list_extend(cmd, args)
     local output = vim.fn.systemlist(cmd)
     local code = vim.v.shell_error
@@ -101,46 +101,46 @@ local function auto_update_config_repo()
   end
 
   local function is_empty(output)
-    return output == nil or #output == 0 or (#output == 1 and output[1] == "")
+    return output == nil or #output == 0 or (#output == 1 and output[1] == '')
   end
 
-  local branch_out, branch_code = git_cmd({ "rev-parse", "--abbrev-ref", "HEAD" })
+  local branch_out, branch_code = git_cmd({ 'rev-parse', '--abbrev-ref', 'HEAD' })
   if branch_code ~= 0 then
     return
   end
 
-  local branch = vim.trim(branch_out[1] or "")
-  if branch ~= "main" then
+  local branch = vim.trim(branch_out[1] or '')
+  if branch ~= 'main' then
     return
   end
 
-  local status_out, status_code = git_cmd({ "status", "--porcelain" })
+  local status_out, status_code = git_cmd({ 'status', '--porcelain' })
   if status_code ~= 0 or not is_empty(status_out) then
     return
   end
 
   -- Ensure the upstream reference exists before attempting to pull
-  local upstream_out, upstream_code = git_cmd({ "rev-parse", "--abbrev-ref", "@{upstream}" })
+  local upstream_out, upstream_code = git_cmd({ 'rev-parse', '--abbrev-ref', '@{upstream}' })
   if upstream_code ~= 0 then
     return
   end
-  local upstream = vim.trim(upstream_out[1] or "")
-  if upstream == "" then
+  local upstream = vim.trim(upstream_out[1] or '')
+  if upstream == '' then
     return
   end
 
   -- Fetch latest changes to compare ahead/behind state
-  local _, fetch_code = git_cmd({ "fetch", "--quiet" })
+  local _, fetch_code = git_cmd({ 'fetch', '--quiet' })
   if fetch_code ~= 0 then
     return
   end
 
-  local ahead_out, ahead_code = git_cmd({ "rev-list", "--count", "HEAD.." .. upstream })
+  local ahead_out, ahead_code = git_cmd({ 'rev-list', '--count', 'HEAD..' .. upstream })
   if ahead_code ~= 0 then
     return
   end
 
-  local ahead_count = tonumber(vim.trim(ahead_out[1] or "0")) or 0
+  local ahead_count = tonumber(vim.trim(ahead_out[1] or '0')) or 0
   if ahead_count == 0 then
     return
   end
@@ -148,7 +148,7 @@ local function auto_update_config_repo()
   local function notify(lines, level)
     local filtered = {}
     for _, line in ipairs(lines or {}) do
-      if line and line ~= "" then
+      if line and line ~= '' then
         table.insert(filtered, line)
       end
     end
@@ -156,11 +156,11 @@ local function auto_update_config_repo()
       return
     end
     vim.schedule(function()
-      vim.notify(table.concat(filtered, "\n"), level, { title = "Neovim config update" })
+      vim.notify(table.concat(filtered, '\n'), level, { title = 'Neovim config update' })
     end)
   end
 
-  vim.fn.jobstart({ "git", "-C", config_path, "pull", "--ff-only" }, {
+  vim.fn.jobstart({ 'git', '-C', config_path, 'pull', '--ff-only' }, {
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, data)
@@ -171,16 +171,16 @@ local function auto_update_config_repo()
     end,
     on_exit = function(_, code)
       if code == 0 then
-        notify({ "Config updated from " .. upstream }, vim.log.levels.INFO)
+        notify({ 'Config updated from ' .. upstream }, vim.log.levels.INFO)
       else
-        notify({ "git pull failed (exit " .. code .. ")" }, vim.log.levels.ERROR)
+        notify({ 'git pull failed (exit ' .. code .. ')' }, vim.log.levels.ERROR)
       end
     end,
   })
 end
 
-vim.api.nvim_create_autocmd("VimEnter", {
+vim.api.nvim_create_autocmd('VimEnter', {
   once = true,
   callback = auto_update_config_repo,
-  desc = "Pull latest config when clean and behind upstream",
+  desc = 'Pull latest config when clean and behind upstream',
 })

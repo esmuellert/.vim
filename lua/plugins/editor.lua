@@ -2,7 +2,6 @@
 
 local enabled = require('config.plugins-enabled')
 
-
 return {
   ------------------------------------------------------------------------
   -- 💬 Comment.nvim: Efficient code commenting

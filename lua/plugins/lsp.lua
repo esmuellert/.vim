@@ -17,10 +17,7 @@ local function setup_clangd()
   -- Check Neovim version
   local nvim_version = vim.version()
   if nvim_version.major == 0 and nvim_version.minor < 11 then
-    vim.notify(
-      "Neovim 0.11+ required for native clangd support. Please upgrade Neovim.",
-      vim.log.levels.WARN
-    )
+    vim.notify('Neovim 0.11+ required for native clangd support. Please upgrade Neovim.', vim.log.levels.WARN)
     return
   end
 
@@ -38,10 +35,10 @@ local function setup_clangd()
   if not exit_success or version_output == '' then
     vim.notify(
       string.format(
-        "clangd not found at '%s'. Please install clangd:\n" ..
-        "  - Ubuntu/Debian: sudo apt install clangd-21\n" ..
-        "  - macOS: brew install llvm\n" ..
-        "  - Other: https://clangd.llvm.org/installation",
+        'clangd not found at \'%s\'. Please install clangd:\n'
+          .. '  - Ubuntu/Debian: sudo apt install clangd-21\n'
+          .. '  - macOS: brew install llvm\n'
+          .. '  - Other: https://clangd.llvm.org/installation',
         clangd_binary
       ),
       vim.log.levels.WARN
@@ -120,16 +117,18 @@ local function setup_clangd()
       end
 
       -- Clangd-specific keymaps
-      vim.keymap.set('n', '<leader>ch', '<cmd>ClangdSwitchSourceHeader<CR>',
-        { buffer = bufnr, desc = 'Switch Source/Header' })
-      vim.keymap.set('n', '<leader>ci', '<cmd>ClangdSymbolInfo<CR>',
-        { buffer = bufnr, desc = 'Symbol Info' })
-      vim.keymap.set('n', '<leader>ct', '<cmd>ClangdTypeHierarchy<CR>',
-        { buffer = bufnr, desc = 'Type Hierarchy' })
+      vim.keymap.set(
+        'n',
+        '<leader>ch',
+        '<cmd>ClangdSwitchSourceHeader<CR>',
+        { buffer = bufnr, desc = 'Switch Source/Header' }
+      )
+      vim.keymap.set('n', '<leader>ci', '<cmd>ClangdSymbolInfo<CR>', { buffer = bufnr, desc = 'Symbol Info' })
+      vim.keymap.set('n', '<leader>ct', '<cmd>ClangdTypeHierarchy<CR>', { buffer = bufnr, desc = 'Type Hierarchy' })
     end,
   })
 
-  vim.notify("clangd configured successfully (version " .. (version_major or "unknown") .. ")", vim.log.levels.INFO)
+  vim.notify('clangd configured successfully (version ' .. (version_major or 'unknown') .. ')', vim.log.levels.INFO)
 end
 
 ------------------------------------------------------------------------
@@ -138,17 +137,17 @@ end
 -- Helper function to install tsgo if not present (non-blocking)
 local function install_tsgo()
   local utils = require('core.utils')
-  local tsgo_install_dir = vim.fn.stdpath("data") .. "/tsgo"
-  local tsgo_bin = tsgo_install_dir .. "/node_modules/.bin/tsgo"
+  local tsgo_install_dir = vim.fn.stdpath('data') .. '/tsgo'
+  local tsgo_bin = tsgo_install_dir .. '/node_modules/.bin/tsgo'
 
   if utils.is_windows() then
-    tsgo_bin = tsgo_bin .. ".cmd"
+    tsgo_bin = tsgo_bin .. '.cmd'
   end
 
   -- Check if already installed
   if vim.fn.filereadable(tsgo_bin) == 0 then
-    vim.notify("Installing tsgo in background...", vim.log.levels.INFO)
-    vim.fn.mkdir(tsgo_install_dir, "p")
+    vim.notify('Installing tsgo in background...', vim.log.levels.INFO)
+    vim.fn.mkdir(tsgo_install_dir, 'p')
 
     -- Install asynchronously using vim.system (native nvim async API)
     vim.system({ 'npm', 'install', '@typescript/native-preview' }, {
@@ -157,9 +156,9 @@ local function install_tsgo()
     }, function(result)
       vim.schedule(function()
         if result.code == 0 then
-          vim.notify("tsgo installed successfully! Restart Neovim to activate.", vim.log.levels.INFO)
+          vim.notify('tsgo installed successfully! Restart Neovim to activate.', vim.log.levels.INFO)
         else
-          vim.notify("Failed to install tsgo. Error: " .. (result.stderr or "unknown"), vim.log.levels.ERROR)
+          vim.notify('Failed to install tsgo. Error: ' .. (result.stderr or 'unknown'), vim.log.levels.ERROR)
         end
       end)
     end)
@@ -169,11 +168,11 @@ end
 -- Helper function to configure tsgo LSP
 local function setup_tsgo()
   local utils = require('core.utils')
-  local tsgo_install_dir = vim.fn.stdpath("data") .. "/tsgo"
-  local tsgo_bin = tsgo_install_dir .. "/node_modules/.bin/tsgo"
+  local tsgo_install_dir = vim.fn.stdpath('data') .. '/tsgo'
+  local tsgo_bin = tsgo_install_dir .. '/node_modules/.bin/tsgo'
 
   if utils.is_windows() then
-    tsgo_bin = tsgo_bin .. ".cmd"
+    tsgo_bin = tsgo_bin .. '.cmd'
   end
 
   -- Only configure if tsgo is installed
@@ -207,23 +206,23 @@ local function setup_tsgo()
       end
 
       -- Create custom command for TypeScript source-level actions
-      vim.api.nvim_buf_create_user_command(bufnr, "LspTypescriptSourceAction", function()
+      vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptSourceAction', function()
         if client.server_capabilities.codeActionProvider then
           local source_actions = vim.tbl_filter(function(action)
-            return vim.startswith(action, "source.")
+            return vim.startswith(action, 'source.')
           end, client.server_capabilities.codeActionProvider.codeActionKinds or {})
 
           vim.lsp.buf.code_action({ context = { only = source_actions, diagnostics = {} } })
         end
-      end, { desc = "TypeScript source actions" })
+      end, { desc = 'TypeScript source actions' })
     end,
     handlers = {
       -- Handle rename requests for code actions like extract function/type
-      ["_typescript.rename"] = function(_, result, ctx)
+      ['_typescript.rename'] = function(_, result, ctx)
         local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
         vim.lsp.util.show_document({
           uri = result.textDocument.uri,
-          range = { start = result.position, ["end"] = result.position },
+          range = { start = result.position, ['end'] = result.position },
         }, client.offset_encoding)
         vim.lsp.buf.rename()
         return vim.NIL
@@ -231,12 +230,12 @@ local function setup_tsgo()
     },
     commands = {
       -- Handle show references command - displays in quickfix list
-      ["editor.action.showReferences"] = function(command, ctx)
+      ['editor.action.showReferences'] = function(command, ctx)
         local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
         local file_uri, position, references = unpack(command.arguments)
 
         local quickfix_items = vim.lsp.util.locations_to_items(references, client.offset_encoding)
-        vim.fn.setqflist({}, " ", {
+        vim.fn.setqflist({}, ' ', {
           title = command.title,
           items = quickfix_items,
           context = { command = command, bufnr = ctx.bufnr },
@@ -244,10 +243,10 @@ local function setup_tsgo()
 
         vim.lsp.util.show_document({
           uri = file_uri,
-          range = { start = position, ["end"] = position },
+          range = { start = position, ['end'] = position },
         }, client.offset_encoding)
 
-        vim.cmd("botright copen")
+        vim.cmd('botright copen')
       end,
     },
     settings = {
@@ -294,7 +293,7 @@ return {
       'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
     },
-    event = "BufEnter",
+    event = 'BufEnter',
     opts = function()
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
       local lspconfig = require('lspconfig')
@@ -313,7 +312,7 @@ return {
       })
 
       -- Install and configure tsgo on first VimEnter
-      vim.api.nvim_create_autocmd("VimEnter", {
+      vim.api.nvim_create_autocmd('VimEnter', {
         once = true,
         callback = function()
           install_tsgo()
@@ -429,7 +428,7 @@ return {
     enabled = enabled.fidget,
     event = 'BufEnter',
     config = function()
-      require("fidget").setup({})
+      require('fidget').setup({})
     end,
   },
 
@@ -456,14 +455,56 @@ return {
         desc = 'Goto Definition',
         mode = 'n',
         noremap = true,
-        silent = true
+        silent = true,
       },
-      { 'gr',         '<cmd>Lspsaga finder<CR>',      desc = 'Lspsaga Finder',                 mode = 'n', noremap = true, silent = true },
-      { 'gi',         '<cmd>Lspsaga finder imp<CR>',  desc = 'Lspsaga Finder Implementations', mode = 'n', noremap = true, silent = true },
-      { 'K',          '<cmd>Lspsaga hover_doc<CR>',   desc = 'Hover Documentation',            mode = 'n', noremap = true, silent = true },
-      { 'rn',         '<cmd>Lspsaga rename<CR>',      desc = 'Rename Symbol',                  mode = 'n', noremap = true, silent = true },
-      { '<leader>ac', '<cmd>Lspsaga code_action<CR>', desc = 'Code Action',                    mode = 'n', noremap = true, silent = true },
-      { '<leader>fm', vim.lsp.buf.format,             desc = 'Format Buffer',                  mode = 'n', noremap = true, silent = true },
+      {
+        'gr',
+        '<cmd>Lspsaga finder<CR>',
+        desc = 'Lspsaga Finder',
+        mode = 'n',
+        noremap = true,
+        silent = true,
+      },
+      {
+        'gi',
+        '<cmd>Lspsaga finder imp<CR>',
+        desc = 'Lspsaga Finder Implementations',
+        mode = 'n',
+        noremap = true,
+        silent = true,
+      },
+      {
+        'K',
+        '<cmd>Lspsaga hover_doc<CR>',
+        desc = 'Hover Documentation',
+        mode = 'n',
+        noremap = true,
+        silent = true,
+      },
+      {
+        'rn',
+        '<cmd>Lspsaga rename<CR>',
+        desc = 'Rename Symbol',
+        mode = 'n',
+        noremap = true,
+        silent = true,
+      },
+      {
+        '<leader>ac',
+        '<cmd>Lspsaga code_action<CR>',
+        desc = 'Code Action',
+        mode = 'n',
+        noremap = true,
+        silent = true,
+      },
+      {
+        '<leader>fm',
+        vim.lsp.buf.format,
+        desc = 'Format Buffer',
+        mode = 'n',
+        noremap = true,
+        silent = true,
+      },
     },
   },
 }

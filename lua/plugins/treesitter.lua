@@ -21,17 +21,43 @@ return {
 
       -- Install parsers (this is async, parsers will be installed in background)
       local parsers_to_install = {
-        'c', 'lua', 'vim', 'vimdoc', 'markdown', 'markdown_inline',
-        'javascript', 'typescript', 'c_sharp', 'powershell', 'tsx',
-        'html', 'json', 'python', 'bash', 'http'
+        'c',
+        'lua',
+        'vim',
+        'vimdoc',
+        'markdown',
+        'markdown_inline',
+        'javascript',
+        'typescript',
+        'c_sharp',
+        'powershell',
+        'tsx',
+        'html',
+        'json',
+        'python',
+        'bash',
+        'http',
       }
-      require'nvim-treesitter'.install(parsers_to_install)
+      require('nvim-treesitter').install(parsers_to_install)
 
       -- Enable highlighting via autocommand
       vim.api.nvim_create_autocmd('FileType', {
         pattern = {
-          'c', 'lua', 'vim', 'markdown', 'javascript', 'typescript',
-          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh', 'http'
+          'c',
+          'lua',
+          'vim',
+          'markdown',
+          'javascript',
+          'typescript',
+          'typescriptreact',
+          'cs',
+          'powershell',
+          'html',
+          'json',
+          'python',
+          'bash',
+          'sh',
+          'http',
         },
         callback = function()
           local max_filesize = 100 * 1024 -- 100 KB
@@ -51,8 +77,21 @@ return {
       -- Enable folding (optional)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = {
-          'c', 'lua', 'vim', 'markdown', 'javascript', 'typescript',
-          'typescriptreact', 'cs', 'powershell', 'html', 'json', 'python', 'bash', 'sh', 'http'
+          'c',
+          'lua',
+          'vim',
+          'markdown',
+          'javascript',
+          'typescript',
+          'typescriptreact',
+          'cs',
+          'powershell',
+          'html',
+          'json',
+          'python',
+          'bash',
+          'sh',
+          'http',
         },
         callback = function()
           vim.wo.foldmethod = 'expr'
@@ -66,7 +105,7 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         pattern = { 'lua', 'python', 'javascript', 'typescript' },
         callback = function()
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          vim.bo.indentexpr = 'v:lua.require\'nvim-treesitter\'.indentexpr()'
         end,
         group = vim.api.nvim_create_augroup('TreesitterIndent', { clear = true }),
       })

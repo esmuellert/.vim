@@ -4,7 +4,7 @@
 local enabled = require('config.plugins-enabled')
 
 -- Export github colors for backward compatibility
-_G.github_colors = require("config.theme").github_colors
+_G.github_colors = require('config.theme').github_colors
 
 return {
   ------------------------------------------------------------------------
@@ -88,7 +88,7 @@ return {
   --       end,
   --     })
   --     vim.cmd('colorscheme catppuccin')
-  --     
+  --
   --     -- Trigger UI refresh after theme loads
   --     vim.defer_fn(function()
   --       vim.cmd('redraw')
@@ -105,14 +105,14 @@ return {
     priority = 1000,
     config = function()
       -- ⚙️ CHANGE THEME STYLE HERE: storm, moon, night, day
-      local theme_style = "moon"
+      local theme_style = 'moon'
 
       -- Set background to dark BEFORE loading the theme
-      vim.o.background = "dark"
+      vim.o.background = 'dark'
 
-      require("tokyonight").setup({
+      require('tokyonight').setup({
         style = theme_style,
-        light_style = "day",
+        light_style = 'day',
         transparent = false,
         terminal_colors = true,
         styles = {
@@ -120,10 +120,10 @@ return {
           keywords = { italic = true },
           functions = {},
           variables = {},
-          sidebars = "dark",
-          floats = "dark",
+          sidebars = 'dark',
+          floats = 'dark',
         },
-        sidebars = { "qf", "help", "vista_kind", "terminal", "packer" },
+        sidebars = { 'qf', 'help', 'vista_kind', 'terminal', 'packer' },
         day_brightness = 0.3,
         hide_inactive_statusline = false,
         dim_inactive = false,
@@ -139,18 +139,18 @@ return {
           -- Diffview file panel customizations for better visibility
           highlights.DiffviewFilePanelTitle = { fg = colors.blue, bg = colors.bg_dark, bold = true }
           highlights.DiffviewFilePanelCounter = { fg = colors.fg_dark, bg = colors.bg_dark }
-          highlights.DiffviewFilePanelFileName = { fg = colors.fg, bg = "NONE" }
-          highlights.DiffviewFilePanelPath = { fg = colors.fg_dark, bg = "NONE" }
+          highlights.DiffviewFilePanelFileName = { fg = colors.fg, bg = 'NONE' }
+          highlights.DiffviewFilePanelPath = { fg = colors.fg_dark, bg = 'NONE' }
           highlights.DiffviewFilePanelSelected = { fg = colors.blue, bg = colors.bg_highlight, bold = true }
-          highlights.DiffviewFilePanelInsertions = { fg = colors.green, bg = "NONE" }
-          highlights.DiffviewFilePanelDeletions = { fg = colors.red, bg = "NONE" }
-          highlights.DiffviewFolderName = { fg = colors.blue, bg = "NONE", bold = true }
-          highlights.DiffviewFolderSign = { fg = colors.blue, bg = "NONE" }
-          highlights.DiffviewStatusAdded = { fg = colors.green, bg = "NONE" }
-          highlights.DiffviewStatusModified = { fg = colors.blue, bg = "NONE" }
-          highlights.DiffviewStatusRenamed = { fg = colors.purple, bg = "NONE" }
-          highlights.DiffviewStatusDeleted = { fg = colors.red, bg = "NONE" }
-          highlights.DiffviewStatusUntracked = { fg = colors.fg_dark, bg = "NONE" }
+          highlights.DiffviewFilePanelInsertions = { fg = colors.green, bg = 'NONE' }
+          highlights.DiffviewFilePanelDeletions = { fg = colors.red, bg = 'NONE' }
+          highlights.DiffviewFolderName = { fg = colors.blue, bg = 'NONE', bold = true }
+          highlights.DiffviewFolderSign = { fg = colors.blue, bg = 'NONE' }
+          highlights.DiffviewStatusAdded = { fg = colors.green, bg = 'NONE' }
+          highlights.DiffviewStatusModified = { fg = colors.blue, bg = 'NONE' }
+          highlights.DiffviewStatusRenamed = { fg = colors.purple, bg = 'NONE' }
+          highlights.DiffviewStatusDeleted = { fg = colors.red, bg = 'NONE' }
+          highlights.DiffviewStatusUntracked = { fg = colors.fg_dark, bg = 'NONE' }
         end,
 
         -- Plugin integrations (all enabled for your setup)
