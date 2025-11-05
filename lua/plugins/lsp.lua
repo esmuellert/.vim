@@ -169,8 +169,9 @@ end
 local function setup_tsgo()
   local utils = require('core.utils')
   local tsgo_install_dir = vim.fn.stdpath('data') .. '/tsgo'
+  
+  -- Use the npm bin shim which automatically selects the correct platform-specific exe
   local tsgo_bin = tsgo_install_dir .. '/node_modules/.bin/tsgo'
-
   if utils.is_windows() then
     tsgo_bin = tsgo_bin .. '.cmd'
   end
@@ -182,8 +183,9 @@ local function setup_tsgo()
 
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-  -- Configure tsgo LSP using new vim.lsp.config API (nvim 0.11+)
-  vim.lsp.config('tsgo', {
+  -- IMPORTANT: Must modify vim.lsp.config.tsgo.cmd BEFORE calling vim.lsp.enable()
+  -- because vim.lsp.enable() reads the config at enable-time
+  vim.lsp.config.tsgo = vim.tbl_deep_extend('force', vim.lsp.config.tsgo or {}, {
     cmd = { tsgo_bin, '--lsp', '--stdio' },
     filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
     root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
@@ -217,6 +219,9 @@ local function setup_tsgo()
       end, { desc = 'TypeScript source actions' })
     end,
     handlers = {
+      -- Intercept workspace/didChangeConfiguration to prevent tsgo from logging error
+      -- tsgo's handler requires session to be initialized first
+      ['workspace/didChangeConfiguration'] = function() end,
       -- Handle rename requests for code actions like extract function/type
       ['_typescript.rename'] = function(_, result, ctx)
         local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
