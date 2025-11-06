@@ -150,3 +150,9 @@ end
 vim.api.nvim_create_user_command('Diff', function(opts)
   DiffWithGit(opts.args ~= '' and opts.args or nil)
 end, { nargs = '?' })
+
+-- Lazy.nvim plugin manager
+vim.api.nvim_set_keymap('n', '<leader>L', '<cmd>Lazy<cr>', { noremap = true, silent = true, desc = 'Lazy Plugin Manager' })
+
+-- Restart Neovim
+vim.api.nvim_set_keymap('n', '<leader>R', '<cmd>restart<cr>', { noremap = true, silent = true, desc = 'Restart Neovim' })
