@@ -55,6 +55,10 @@ return {
     enabled = enabled.vscode_diff,
     pin = false,
     build = vim.fn.has('win32') == 1 and 'cmd.exe /c build.cmd' or 'bash build.sh',
+    cmd = { 'CodeDiff' },
+    keys = {
+      { '<leader>dh', '<cmd>CodeDiff HEAD<CR>', desc = 'CodeDiff with HEAD' },
+    },
     config = function()
       require('vscode-diff').setup({})
     end,

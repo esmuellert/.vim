@@ -4,6 +4,17 @@ local enabled = require('config.plugins-enabled')
 
 return {
   ------------------------------------------------------------------------
+  --- 📦 Lazy.nvim: Plugin manager (self-managed)
+  ------------------------------------------------------------------------
+  {
+    'folke/lazy.nvim',
+    keys = {
+      { '<leader>L', '<cmd>Lazy<cr>', desc = 'Lazy Plugin Manager' },
+      { '<leader>R', '<cmd>restart<cr>', desc = 'Restart Neovim' },
+    },
+  },
+
+  ------------------------------------------------------------------------
   --- 📊 lualine.nvim: Blazing fast statusline
   ------------------------------------------------------------------------
   {

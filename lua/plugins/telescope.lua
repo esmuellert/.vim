@@ -41,20 +41,6 @@ return {
       { '<leader>hl', '<cmd>Telescope highlights<cr>', desc = 'Highlights' },
       { '<leader>/', '<cmd>Telescope current_buffer_fuzzy_find<cr>', desc = 'Fuzzy find in buffer' },
       { '<leader>r', '<cmd>Telescope oldfiles<cr>', desc = 'Recent files' },
-      {
-        '<leader>pd',
-        function()
-          vim.fn.feedkeys(':Telescope find_files cwd=', 'n')
-        end,
-        desc = 'Find files in directory',
-      },
-      {
-        '<leader>fd',
-        function()
-          vim.fn.feedkeys(':Telescope live_grep cwd=', 'n')
-        end,
-        desc = 'Live grep in directory',
-      },
     },
     config = function()
       local actions = require('telescope.actions')
