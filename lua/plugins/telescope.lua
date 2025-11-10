@@ -41,6 +41,7 @@ return {
       { '<leader>hl', '<cmd>Telescope highlights<cr>', desc = 'Highlights' },
       { '<leader>/', '<cmd>Telescope current_buffer_fuzzy_find<cr>', desc = 'Fuzzy find in buffer' },
       { '<leader>r', '<cmd>Telescope oldfiles<cr>', desc = 'Recent files' },
+      { '<leader>gs', '<cmd>Telescope git_status<cr>', desc = 'Git status' },
     },
     config = function()
       local actions = require('telescope.actions')

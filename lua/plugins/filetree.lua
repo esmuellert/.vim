@@ -54,7 +54,6 @@ return {
     cmd = { 'Neotree' },
     keys = {
       { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Toggle Neo-tree' },
-      { '<leader>gs', '<cmd>Neotree float git_status<CR>', desc = 'Git status (Neo-tree)' },
     },
     dependencies = {
       'nvim-lua/plenary.nvim',
