@@ -57,6 +57,7 @@ return {
     build = vim.fn.has('win32') == 1 and 'cmd.exe /c build.cmd' or 'bash build.sh',
     cmd = { 'CodeDiff' },
     keys = {
+      { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff' },
       { '<leader>dh', '<cmd>CodeDiff file HEAD<CR>', desc = 'CodeDiff current buffer with HEAD' },
     },
     config = function()

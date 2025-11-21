@@ -137,19 +137,6 @@ return {
     'sindrets/diffview.nvim',
     enabled = enabled.diffview,
     cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles', 'DiffviewFileHistory' },
-    keys = {
-      {
-        '<leader>df',
-        function()
-          if next(require('diffview.lib').views) == nil then
-            vim.cmd('DiffviewOpen')
-          else
-            vim.cmd('DiffviewClose')
-          end
-        end,
-        desc = 'Toggle Diffview',
-      },
-    },
     config = function()
       local actions = require('diffview.actions')
 
