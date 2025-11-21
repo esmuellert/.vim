@@ -54,7 +54,6 @@ return {
     'esmuellert/vscode-diff.nvim',
     enabled = enabled.vscode_diff,
     pin = false,
-    build = vim.fn.has('win32') == 1 and 'cmd.exe /c build.cmd' or 'bash build.sh',
     cmd = { 'CodeDiff' },
     keys = {
       { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff' },
