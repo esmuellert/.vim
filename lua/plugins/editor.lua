@@ -55,12 +55,15 @@ return {
     enabled = enabled.vscode_diff,
     pin = false,
     cmd = { 'CodeDiff' },
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+    },
     keys = {
-      { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff' },
-      { '<leader>dh', '<cmd>CodeDiff file HEAD<CR>', desc = 'CodeDiff current buffer with HEAD' },
+      { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff Explorer' },
+      { '<leader>dh', '<cmd>CodeDiff file HEAD<CR>', desc = 'Diff current file with HEAD' },
     },
     config = function()
-      require('vscode-diff').setup({})
+      require('vscode-diff.config').setup({})
     end,
   },
 }

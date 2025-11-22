@@ -18,6 +18,7 @@ return {
     config = function()
       -- Register C# language mapping for treesitter
       vim.treesitter.language.register('c_sharp', 'cs')
+      vim.treesitter.language.register('powershell', 'ps1')
 
       -- Install parsers (this is async, parsers will be installed in background)
       local parsers_to_install = {
@@ -52,6 +53,7 @@ return {
           'typescriptreact',
           'cs',
           'powershell',
+          'ps1',
           'html',
           'json',
           'python',
@@ -86,6 +88,7 @@ return {
           'typescriptreact',
           'cs',
           'powershell',
+          'ps1',
           'html',
           'json',
           'python',

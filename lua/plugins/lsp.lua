@@ -303,7 +303,7 @@ return {
       -- Determine which servers to install based on architecture
       local utils = require('core.utils')
       -- Exclude clangd from Mason - it's configured separately via vim.lsp.config
-      local ensure_installed = { 'html', 'cssls', 'lua_ls', 'powershell_es' }
+      local ensure_installed = { 'html', 'cssls', 'lua_ls' }
 
       if not utils.is_arm64() then
         table.insert(ensure_installed, 'lemminx')
