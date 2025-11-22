@@ -44,7 +44,10 @@ return {
         callback = function()
           -- Only load the session if nvim was started with no args
           if vim.fn.argc() == 0 then
-            require('persistence').load()
+            -- Schedule session loading after UI is rendered
+            vim.schedule(function()
+              require('persistence').load()
+            end)
           end
         end,
         nested = true,

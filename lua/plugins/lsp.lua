@@ -272,7 +272,7 @@ return {
       'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
     },
-    event = 'BufEnter',
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = function()
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
       local lspconfig = require('lspconfig')
