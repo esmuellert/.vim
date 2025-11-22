@@ -10,94 +10,81 @@ return {
   ------------------------------------------------------------------------
   --- 🌿 lush.nvim: A Neovim plugin for building and customizing themes with ease
   ------------------------------------------------------------------------
-  -- DISABLED: Custom github_light theme
-  -- {
-  --   'rktjmp/lush.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     -- Load the custom github_light theme
-  --     -- The theme file is in lua/themes/github_light.lua
-  --     vim.cmd('colorscheme github_light')
-  --   end,
-  -- },
+  {
+    'rktjmp/lush.nvim',
+    lazy = false,
+    priority = 900,
+  },
 
   ------------------------------------------------------------------------
   --- 🎨 Catppuccin: Soothing pastel theme for Neovim
   ------------------------------------------------------------------------
-  -- DISABLED: Trying Tokyo Night instead
-  -- {
-  --   'catppuccin/nvim',
-  --   name = 'catppuccin',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require("catppuccin").setup({
-  --       flavour = "mocha", -- latte, frappe, macchiato, mocha
-  --       background = {
-  --         light = "latte",
-  --         dark = "mocha",
-  --       },
-  --       transparent_background = false,
-  --       show_end_of_buffer = false,
-  --       term_colors = false,
-  --       dim_inactive = {
-  --         enabled = false,
-  --         shade = "dark",
-  --         percentage = 0.15,
-  --       },
-  --       no_italic = false,
-  --       no_bold = false,
-  --       no_underline = false,
-  --       styles = {
-  --         comments = { "italic" },
-  --         conditionals = { "italic" },
-  --       },
-  --       integrations = {
-  --         cmp = true,
-  --         gitsigns = true,
-  --         nvimtree = true,
-  --         treesitter = true,
-  --         telescope = {
-  --           enabled = true,
-  --         },
-  --         mason = true,
-  --         which_key = true,
-  --         bufferline = true,
-  --         diffview = true,
-  --         native_lsp = {
-  --           enabled = true,
-  --           virtual_text = {
-  --             errors = { "italic" },
-  --             hints = { "italic" },
-  --             warnings = { "italic" },
-  --             information = { "italic" },
-  --           },
-  --           underlines = {
-  --             errors = { "underline" },
-  --             hints = { "underline" },
-  --             warnings = { "underline" },
-  --             information = { "underline" },
-  --           },
-  --         },
-  --       },
-  --       custom_highlights = function(colors)
-  --         return {
-  --           -- Additional custom highlights if needed
-  --         }
-  --       end,
-  --     })
-  --     vim.cmd('colorscheme catppuccin')
-  --
-  --     -- Trigger UI refresh after theme loads
-  --     vim.defer_fn(function()
-  --       vim.cmd('redraw')
-  --     end, 100)
-  --   end,
-  -- },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    lazy = false,
+    priority = 900,
+    config = function()
+      require('catppuccin').setup({
+        flavour = 'mocha', -- latte, frappe, macchiato, mocha
+        background = {
+          light = 'latte',
+          dark = 'mocha',
+        },
+        transparent_background = false,
+        show_end_of_buffer = false,
+        term_colors = false,
+        dim_inactive = {
+          enabled = false,
+          shade = 'dark',
+          percentage = 0.15,
+        },
+        no_italic = false,
+        no_bold = false,
+        no_underline = false,
+        styles = {
+          comments = { 'italic' },
+          conditionals = { 'italic' },
+        },
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          telescope = {
+            enabled = true,
+          },
+          mason = true,
+          which_key = true,
+          bufferline = true,
+          diffview = true,
+          native_lsp = {
+            enabled = true,
+            virtual_text = {
+              errors = { 'italic' },
+              hints = { 'italic' },
+              warnings = { 'italic' },
+              information = { 'italic' },
+            },
+            underlines = {
+              errors = { 'underline' },
+              hints = { 'underline' },
+              warnings = { 'underline' },
+              information = { 'underline' },
+            },
+          },
+        },
+        custom_highlights = function(colors)
+          return {
+            -- Additional custom highlights if needed
+          }
+        end,
+      })
+    end,
+  },
 
   ------------------------------------------------------------------------
-  --- 🏙️ Tokyo Night: A clean, dark Neovim theme
+  --- 🏙️ Tokyo Night: A clean, dark Neovim theme (DEFAULT)
   ------------------------------------------------------------------------
   {
     'folke/tokyonight.nvim',
@@ -177,37 +164,16 @@ return {
 }
 
 --[[
-To switch themes:
-1. Comment out the github_light plugin above
-2. Uncomment one of the themes below
-3. Update the colorscheme command
+Available colorschemes to switch temporarily with :colorscheme command:
+- :colorscheme tokyonight-moon (default)
+- :colorscheme tokyonight-storm
+- :colorscheme tokyonight-night
+- :colorscheme tokyonight-day
+- :colorscheme catppuccin-mocha
+- :colorscheme catppuccin-macchiato
+- :colorscheme catppuccin-frappe
+- :colorscheme catppuccin-latte
+- :colorscheme github_light (if custom theme file exists)
 
-Example alternative themes:
-  {
-    'projekt0n/github-nvim-theme',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd('colorscheme github_light')
-    end,
-  },
-
-  {
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd('colorscheme tokyonight')
-    end,
-  },
-
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd('colorscheme catppuccin')
-    end,
-  },
+Tokyo Night will always be the default theme on restart.
 ]]
