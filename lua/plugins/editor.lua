@@ -62,8 +62,5 @@ return {
       { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff Explorer' },
       { '<leader>dh', '<cmd>CodeDiff file HEAD<CR>', desc = 'Diff current file with HEAD' },
     },
-    config = function()
-      require('vscode-diff.config').setup({})
-    end,
   },
 }
