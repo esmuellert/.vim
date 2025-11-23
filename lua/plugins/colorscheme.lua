@@ -84,6 +84,56 @@ return {
   },
 
   ------------------------------------------------------------------------
+  --- 🎌 Kanagawa: Dark theme inspired by Japanese painting
+  ------------------------------------------------------------------------
+  {
+    'rebelot/kanagawa.nvim',
+    lazy = false,
+    priority = 900,
+    config = function()
+      require('kanagawa').setup({
+        compile = false,
+        undercurl = true,
+        commentStyle = { italic = true },
+        functionStyle = {},
+        keywordStyle = { italic = true },
+        statementStyle = { bold = true },
+        typeStyle = {},
+        transparent = false,
+        dimInactive = false,
+        terminalColors = true,
+        theme = 'wave', -- wave, dragon, lotus
+      })
+    end,
+  },
+
+  ------------------------------------------------------------------------
+  --- 🦊 Nightfox: Highly customizable theme with multiple variants
+  ------------------------------------------------------------------------
+  {
+    'EdenEast/nightfox.nvim',
+    lazy = false,
+    priority = 900,
+    config = function()
+      require('nightfox').setup({
+        options = {
+          compile_path = vim.fn.stdpath('cache') .. '/nightfox',
+          compile_file_suffix = '_compiled',
+          transparent = false,
+          terminal_colors = true,
+          dim_inactive = false,
+          module_default = true,
+          styles = {
+            comments = 'italic',
+            keywords = 'bold',
+            types = 'italic,bold',
+          },
+        },
+      })
+    end,
+  },
+
+  ------------------------------------------------------------------------
   --- 🏙️ Tokyo Night: A clean, dark Neovim theme (DEFAULT)
   ------------------------------------------------------------------------
   {
@@ -173,6 +223,16 @@ Available colorschemes to switch temporarily with :colorscheme command:
 - :colorscheme catppuccin-macchiato
 - :colorscheme catppuccin-frappe
 - :colorscheme catppuccin-latte
+- :colorscheme kanagawa-wave
+- :colorscheme kanagawa-dragon
+- :colorscheme kanagawa-lotus
+- :colorscheme nightfox
+- :colorscheme dayfox
+- :colorscheme dawnfox
+- :colorscheme duskfox
+- :colorscheme nordfox
+- :colorscheme terafox
+- :colorscheme carbonfox
 - :colorscheme github_light (if custom theme file exists)
 
 Tokyo Night will always be the default theme on restart.

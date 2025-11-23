@@ -62,5 +62,28 @@ return {
       { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff Explorer' },
       { '<leader>dh', '<cmd>CodeDiff file HEAD<CR>', desc = 'Diff current file with HEAD' },
     },
+    config = function()
+      local colorscheme = vim.g.colors_name or ''
+      
+      local config = require('vscode-diff.config')
+      if colorscheme == 'github_light' then
+        -- VSCode GitHub Light theme colors
+        config.setup({
+          highlights = {
+            line_insert = '#d2ffd2',
+            line_delete = '#ffd7d5',
+            char_insert = '#acf2bd',
+            char_delete = '#fdb8c0',
+          },
+        })
+      else
+        -- Use default highlights
+        config.setup({})
+      end
+      
+      -- Re-apply highlights with new config
+      local render = require('vscode-diff.render')
+      render.setup_highlights()
+    end,
   },
 }
