@@ -153,10 +153,20 @@ function M.get_lualine_theme()
     return 'catppuccin'
   elseif colorscheme:match('kanagawa') then
     return 'kanagawa'
-  elseif colorscheme:match('nightfox') or colorscheme:match('dayfox') or colorscheme:match('dawnfox') 
-      or colorscheme:match('duskfox') or colorscheme:match('nordfox') or colorscheme:match('terafox')
-      or colorscheme:match('carbonfox') then
+  elseif colorscheme:match('carbonfox') then
+    return 'carbonfox'
+  elseif colorscheme:match('dawnfox') then
+    return 'dawnfox'
+  elseif colorscheme:match('dayfox') then
+    return 'dayfox'
+  elseif colorscheme:match('duskfox') then
+    return 'duskfox'
+  elseif colorscheme:match('nightfox') then
     return 'nightfox'
+  elseif colorscheme:match('nordfox') then
+    return 'nordfox'
+  elseif colorscheme:match('terafox') then
+    return 'terafox'
   elseif colorscheme:match('github') then
     return M.github_light_lualine
   else
