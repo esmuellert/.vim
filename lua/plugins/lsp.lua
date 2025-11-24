@@ -21,30 +21,24 @@ local function setup_clangd()
     return
   end
 
-  -- Determine clangd binary path based on architecture
-  local clangd_binary = 'clangd'
-  if utils.is_arm64() then
-    clangd_binary = '/usr/bin/clangd-21'
-  end
-
-  -- Check if clangd is installed
-  local handle = io.popen(clangd_binary .. ' --version 2>&1')
-  local version_output = handle and handle:read('*a') or ''
-  local exit_success = handle and handle:close()
-
-  if not exit_success or version_output == '' then
+  -- Find clangd binary using vim.fn.exepath (searches $PATH)
+  local clangd_binary = vim.fn.exepath('clangd') or vim.fn.exepath('clangd-21')
+  
+  if not clangd_binary or clangd_binary == '' then
     vim.notify(
-      string.format(
-        'clangd not found at \'%s\'. Please install clangd:\n'
-          .. '  - Ubuntu/Debian: sudo apt install clangd-21\n'
-          .. '  - macOS: brew install llvm\n'
-          .. '  - Other: https://clangd.llvm.org/installation',
-        clangd_binary
-      ),
+      'clangd not found in PATH. Please install clangd:\n'
+        .. '  - Ubuntu/Debian: sudo apt install clangd-21\n'
+        .. '  - macOS: brew install llvm\n'
+        .. '  - Other: https://clangd.llvm.org/installation',
       vim.log.levels.WARN
     )
     return
   end
+
+  -- Get clangd version
+  local handle = io.popen(clangd_binary .. ' --version 2>&1')
+  local version_output = handle and handle:read('*a') or ''
+  if handle then handle:close() end
 
   -- Parse version
   local version_major = tonumber(version_output:match('clangd version (%d+)'))
@@ -290,13 +284,15 @@ return {
         },
       })
 
+      -- Setup clangd immediately (not deferred)
+      setup_clangd()
+      
       -- Install and configure tsgo on first VimEnter
       vim.api.nvim_create_autocmd('VimEnter', {
         once = true,
         callback = function()
           install_tsgo()
           setup_tsgo()
-          setup_clangd()
         end,
       })
 
