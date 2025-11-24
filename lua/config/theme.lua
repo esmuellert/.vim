@@ -151,6 +151,12 @@ function M.get_lualine_theme()
     return 'tokyonight'
   elseif colorscheme:match('catppuccin') then
     return 'catppuccin'
+  elseif colorscheme:match('kanagawa') then
+    return 'kanagawa'
+  elseif colorscheme:match('nightfox') or colorscheme:match('dayfox') or colorscheme:match('dawnfox') 
+      or colorscheme:match('duskfox') or colorscheme:match('nordfox') or colorscheme:match('terafox')
+      or colorscheme:match('carbonfox') then
+    return 'nightfox'
   elseif colorscheme:match('github') then
     return M.github_light_lualine
   else
@@ -167,6 +173,14 @@ function M.get_bufferline_highlights()
     return {}
   elseif colorscheme:match('catppuccin') then
     -- Catppuccin automatically applies bufferline highlights
+    return {}
+  elseif colorscheme:match('kanagawa') then
+    -- Kanagawa has built-in integration
+    return {}
+  elseif colorscheme:match('nightfox') or colorscheme:match('dayfox') or colorscheme:match('dawnfox')
+      or colorscheme:match('duskfox') or colorscheme:match('nordfox') or colorscheme:match('terafox')
+      or colorscheme:match('carbonfox') then
+    -- Nightfox has built-in integration
     return {}
   elseif colorscheme:match('github') then
     return M.github_light_bufferline
