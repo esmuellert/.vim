@@ -196,8 +196,6 @@ return {
           auto = true, -- Automatically enable all available integrations
         },
       })
-
-      vim.cmd('colorscheme tokyonight-' .. theme_style)
     end,
   },
 
@@ -212,28 +210,3 @@ return {
     end,
   },
 }
-
---[[
-Available colorschemes to switch temporarily with :colorscheme command:
-- :colorscheme tokyonight-moon (default)
-- :colorscheme tokyonight-storm
-- :colorscheme tokyonight-night
-- :colorscheme tokyonight-day
-- :colorscheme catppuccin-mocha
-- :colorscheme catppuccin-macchiato
-- :colorscheme catppuccin-frappe
-- :colorscheme catppuccin-latte
-- :colorscheme kanagawa-wave
-- :colorscheme kanagawa-dragon
-- :colorscheme kanagawa-lotus
-- :colorscheme nightfox
-- :colorscheme dayfox
-- :colorscheme dawnfox
-- :colorscheme duskfox
-- :colorscheme nordfox
-- :colorscheme terafox
-- :colorscheme carbonfox
-- :colorscheme github_light (if custom theme file exists)
-
-Tokyo Night will always be the default theme on restart.
-]]
