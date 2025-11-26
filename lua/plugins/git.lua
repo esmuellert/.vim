@@ -107,22 +107,22 @@ return {
             vim.keymap.set(mode, l, r, opts)
           end
 
-          -- Navigation
-          map('n', ']c', function()
-            if vim.wo.diff then
-              vim.cmd.normal({ ']c', bang = true })
-            else
-              gitsigns.nav_hunk('next')
-            end
-          end)
+          -- Navigation disabled due to conflict with vscode-diffnvim
+          -- map('n', ']c', function()
+          --   if vim.wo.diff then
+          --     vim.cmd.normal({ ']c', bang = true })
+          --   else
+          --     gitsigns.nav_hunk('next')
+          --   end
+          -- end)
 
-          map('n', '[c', function()
-            if vim.wo.diff then
-              vim.cmd.normal({ '[c', bang = true })
-            else
-              gitsigns.nav_hunk('prev')
-            end
-          end)
+          -- map('n', '[c', function()
+          --   if vim.wo.diff then
+          --     vim.cmd.normal({ '[c', bang = true })
+          --   else
+          --     gitsigns.nav_hunk('prev')
+          --   end
+          -- end)
           map('n', '<leader>hk', gitsigns.preview_hunk_inline)
           map('n', '<leader>hkrs', gitsigns.reset_hunk)
         end,
