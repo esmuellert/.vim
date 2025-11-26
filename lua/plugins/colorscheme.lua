@@ -102,7 +102,10 @@ return {
         transparent = false,
         dimInactive = false,
         terminalColors = true,
-        theme = 'wave', -- wave, dragon, lotus
+        background = {
+          dark = 'wave',
+          light = 'lotus',
+        },
       })
     end,
   },
@@ -143,9 +146,6 @@ return {
     config = function()
       -- ⚙️ CHANGE THEME STYLE HERE: storm, moon, night, day
       local theme_style = 'moon'
-
-      -- Set background to dark BEFORE loading the theme
-      vim.o.background = 'dark'
 
       require('tokyonight').setup({
         style = theme_style,
