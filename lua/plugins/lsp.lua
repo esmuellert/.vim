@@ -286,15 +286,10 @@ return {
 
       -- Setup clangd immediately (not deferred)
       setup_clangd()
-      
-      -- Install and configure tsgo on first VimEnter
-      vim.api.nvim_create_autocmd('VimEnter', {
-        once = true,
-        callback = function()
-          install_tsgo()
-          setup_tsgo()
-        end,
-      })
+
+      -- Setup tsgo immediately (VimEnter already fired by the time this plugin loads)
+      install_tsgo()
+      setup_tsgo()
 
       -- Determine which servers to install based on architecture
       local utils = require('core.utils')
