@@ -81,7 +81,9 @@ local diffopt = {
   'vertical', -- Use vertical splits by default
   'algorithm:histogram', -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
   'indent-heuristic', -- Slide diffs along indentation for better alignment
-  'linematch:60', -- Match similar lines within diff blocks (max 60 lines)
+  -- 'linematch:60', -- Match similar lines within diff blocks (max 60 lines)
+  -- 'iwhite',
+  'inline:char'
 }
 
 -- Add inline word-level diffs for Neovim 0.12+
