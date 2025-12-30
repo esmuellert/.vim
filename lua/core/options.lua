@@ -79,7 +79,7 @@ local diffopt = {
   'filler', -- Show filler lines for deleted/added lines
   'closeoff', -- Turn off diff when closing window
   'vertical', -- Use vertical splits by default
-  'algorithm:histogram', -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
+  'algorithm:myers', -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
   'indent-heuristic', -- Slide diffs along indentation for better alignment
   -- 'linematch:60', -- Match similar lines within diff blocks (max 60 lines)
   -- 'iwhite',

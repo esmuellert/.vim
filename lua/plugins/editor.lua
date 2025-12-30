@@ -65,7 +65,7 @@ return {
     config = function()
       local colorscheme = vim.g.colors_name or ''
       
-      local config = require('vscode-diff.config')
+      local config = require('codediff.config')
       local base_config = {
         explorer = {
           view_mode = 'tree',  -- Use tree view by default

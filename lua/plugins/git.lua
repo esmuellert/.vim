@@ -140,6 +140,10 @@ return {
     config = function()
       local actions = require('diffview.actions')
 
+      -- Lines
+      vim.cmd('highlight DiffChange ctermfg=NONE ctermbg=NONE guifg=black guibg=Grey82')
+      -- To change the background of removed lines to red
+      vim.cmd('highlight DiffText guifg=DarkRed guibg=Yellow1')
       require('diffview').setup({
         -- Enhanced diff highlighting - makes additions/deletions more visible
         enhanced_diff_hl = true,
