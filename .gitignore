@@ -5,6 +5,7 @@
 !/.gitignore
 !/.luarc.json
 !/.tmux.conf
+!/home.nix
 !/vimrc
 !/nvim.lua
 !init.lua

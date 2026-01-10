@@ -122,7 +122,12 @@ local function setup_clangd()
     end,
   })
 
-  vim.notify('clangd configured successfully (version ' .. (version_major or 'unknown') .. ')', vim.log.levels.INFO)
+  -- Only show message in interactive mode (not when used as difftool/mergetool)
+  if vim.fn.argc() == 0 then
+    vim.schedule(function()
+      vim.notify('clangd configured successfully (version ' .. (version_major or 'unknown') .. ')', vim.log.levels.INFO)
+    end)
+  end
 end
 
 ------------------------------------------------------------------------
