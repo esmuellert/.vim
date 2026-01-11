@@ -37,12 +37,22 @@ let
     name = "ohmyzsh-custom";
     phases = [ "installPhase" ];
     installPhase = ''
-      mkdir -p $out/themes $out/plugins
+      mkdir -p $out/themes \
+               $out/plugins/zsh-autosuggestions \
+               $out/plugins/zsh-syntax-highlighting
+
       cp ${zsh-material-deep-ocean}/material_deep_ocean.zsh-theme $out/themes/
-      ln -s ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions $out/plugins/zsh-autosuggestions
-      ln -s ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting $out/plugins/zsh-syntax-highlighting
+
+      cat > $out/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh <<'EOF'
+source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+EOF
+
+      cat > $out/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh <<'EOF'
+source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+EOF
     '';
   };
+
 in
 {
   home.username = "yanuoma";
