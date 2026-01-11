@@ -11,66 +11,36 @@
 #   4. Apply: home-manager switch
 #
 # To update packages: nix-channel --update && home-manager switch
-# To update neovim nightly: update the hash, then home-manager switch
+# To update neovim nightly: home-manager switch (fetches latest from overlay)
 
 { config, pkgs, ... }:
 
 let
-  # Neovim nightly - prebuilt binary from GitHub releases
-  # Supports both x86_64 and aarch64 Linux
-  nvimArch = if pkgs.stdenv.hostPlatform.isAarch64 then "arm64" else "x86_64";
-  nvimHashes = {
-    arm64 = "sha256-ZNmPwvumv7hko9LwaqwCYpi2JttWkodcPQ8HzKXY0w4=";
-    x86_64 = "sha256-4yXwbAn7MMnJI/UPUF6fCeAAjRWp7JCa2hHugQhJv9s=";
+  # Neovim nightly overlay (auto-updates from nix-community)
+  neovim-nightly-overlay = import (builtins.fetchTarball {
+    url = "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
+  });
+
+  # Apply overlay to get neovim-nightly
+  pkgsWithNeovim = import <nixpkgs> {
+    overlays = [ neovim-nightly-overlay ];
   };
 
-  neovim-nightly = pkgs.stdenv.mkDerivation {
-    pname = "neovim-nightly";
-    version = "nightly";
-    src = pkgs.fetchurl {
-      url = "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${nvimArch}.tar.gz";
-      hash = nvimHashes.${nvimArch};
-    };
-    sourceRoot = ".";
-    installPhase = ''
-      mkdir -p $out
-      cp -r nvim-linux-${nvimArch}/* $out/
-    '';
-    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-    buildInputs = [ pkgs.stdenv.cc.cc.lib ];
+  # Custom theme (not in nixpkgs, fetch from GitHub)
+  zsh-material-deep-ocean = builtins.fetchTarball {
+    url = "https://github.com/esmuellert/material-deep-ocean-zsh/archive/main.tar.gz";
   };
 
-  # Custom Oh My Zsh theme and plugins
-  zsh-material-deep-ocean = pkgs.fetchFromGitHub {
-    owner = "esmuellert";
-    repo = "material-deep-ocean-zsh";
-    rev = "main";
-    sha256 = "sha256-lOsR+mAo7lKUUYGw1cM5goBVlc9PRvyHKV9oMpEmh0Y=";
-  };
-
-  zsh-autosuggestions = pkgs.fetchFromGitHub {
-    owner = "zsh-users";
-    repo = "zsh-autosuggestions";
-    rev = "master";
-    sha256 = "sha256-KmkXgK1J6iAyb1FtF/gOa0adUnh1pgFsgQOUnNngBaE=";
-  };
-
-  zsh-syntax-highlighting = pkgs.fetchFromGitHub {
-    owner = "zsh-users";
-    repo = "zsh-syntax-highlighting";
-    rev = "master";
-    sha256 = "sha256-KRsQEDRsJdF7LGOMTZuqfbW6xdV5S38wlgdcCM98Y/Q=";
-  };
-
-  # Build custom Oh My Zsh directory with theme and plugins
+  # Build custom Oh My Zsh directory with theme
+  # Plugins come from nixpkgs (zsh-autosuggestions, zsh-syntax-highlighting)
   ohmyzsh-custom = pkgs.stdenv.mkDerivation {
     name = "ohmyzsh-custom";
     phases = [ "installPhase" ];
     installPhase = ''
       mkdir -p $out/themes $out/plugins
       cp ${zsh-material-deep-ocean}/material_deep_ocean.zsh-theme $out/themes/
-      cp -r ${zsh-autosuggestions} $out/plugins/zsh-autosuggestions
-      cp -r ${zsh-syntax-highlighting} $out/plugins/zsh-syntax-highlighting
+      ln -s ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions $out/plugins/zsh-autosuggestions
+      ln -s ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting $out/plugins/zsh-syntax-highlighting
     '';
   };
 in
@@ -118,7 +88,7 @@ in
     zsh
 
     # === Neovim ===
-    neovim-nightly  # Built from neovim/neovim nightly tag
+    pkgsWithNeovim.neovim  # Nightly from nix-community overlay
 
     # === Additional Development Tools ===
     lazygit
@@ -129,6 +99,9 @@ in
 
     # === Node.js Version Manager ===
     fnm        # Fast Node Manager - manages Node versions
+
+    # === AI Coding Agent ===
+    opencode
   ];
 
   # =========================================
