@@ -60,7 +60,7 @@ return {
     },
     keys = {
       { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff Explorer' },
-      { '<leader>dh', '<cmd>CodeDiff file HEAD<CR>', desc = 'Diff current file with HEAD' },
+      { '<leader>dh', '<cmd>CodeDiff history<CR>', desc = 'Code Diff History' },
     },
     config = function()
       local colorscheme = vim.g.colors_name or ''
