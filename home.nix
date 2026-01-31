@@ -90,6 +90,7 @@ in
     ripgrep    # rg - required for telescope live_grep
     fd         # better file finder
     fzf        # fuzzy finder
+    bat        # cat with syntax highlighting
 
     # === Terminal Multiplexer ===
     tmux
@@ -160,9 +161,9 @@ in
       esac
 
       # GitHub token
-      if command -v gh &> /dev/null; then
-        export GITHUB_TOKEN=$(gh auth token 2>/dev/null)
-      fi
+      # if command -v gh &> /dev/null; then
+      #   export GITHUB_TOKEN=$(gh auth token 2>/dev/null)
+      # fi
 
       # cargo/rust
       export PATH="$HOME/.cargo/bin:$PATH"
