@@ -18,6 +18,9 @@
 #   5. Apply:
 #      home-manager switch
 #
+#   6. Set zsh as default shell (log out/in after):
+#      echo $(which zsh) | sudo tee -a /etc/shells && chsh -s $(which zsh)
+#
 # To update packages: nix-channel --update && home-manager switch
 # To update neovim nightly: home-manager switch (fetches latest from overlay)
 
@@ -203,4 +206,21 @@ in
   home.sessionPath = [
     "$HOME/.local/bin"
   ];
+
+  # =========================================
+  # Activation scripts (run on home-manager switch)
+  # =========================================
+  home.activation.fnmSetup = config.lib.dag.entryAfter ["writeBoundary"] ''
+    export PATH="$HOME/.nix-profile/bin:$PATH"
+    if command -v fnm &> /dev/null; then
+      if ! fnm list 2>/dev/null | grep -q .; then
+        echo "Installing Node.js LTS via fnm..."
+        fnm install --lts && fnm default lts-latest
+      else
+        echo "Node.js already installed via fnm, skipping LTS setup"
+      fi
+    else
+      echo "fnm not found, skipping Node.js setup"
+    fi
+  '';
 }
