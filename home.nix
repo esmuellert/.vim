@@ -213,7 +213,7 @@ in
   home.activation.fnmSetup = config.lib.dag.entryAfter ["writeBoundary"] ''
     export PATH="$HOME/.nix-profile/bin:$PATH"
     if command -v fnm &> /dev/null; then
-      if ! fnm list 2>/dev/null | grep -q .; then
+      if ! fnm list 2>/dev/null | grep -qE '^v[0-9]'; then
         echo "Installing Node.js LTS via fnm..."
         fnm install --lts && fnm default lts-latest
       else
