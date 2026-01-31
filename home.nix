@@ -1,14 +1,22 @@
 # Home Manager configuration for Neovim development environment
 # This file mirrors the dependencies from scripts/install-deps-linux.sh
 #
-# Usage:
-#   1. Install Nix: sh <(curl -L https://nixos.org/nix/install) --daemon
+# Usage (copy-paste each step):
+#
+#   1. Install Nix:
+#      sh <(curl -L https://nixos.org/nix/install) --daemon && source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+#
 #   2. Install Home Manager:
-#      nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-#      nix-channel --update
-#      nix-shell '<home-manager>' -A install
-#   3. Link or copy this file: ln -sf ~/.config/nvim/home.nix ~/.config/home-manager/home.nix
-#   4. Apply: home-manager switch
+#      nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager && nix-channel --update && nix-shell '<home-manager>' -A install
+#
+#   3. Clone this repo:
+#      git clone https://github.com/esmuellert/.vim.git ~/.config/nvim
+#
+#   4. Link config:
+#      ln -sf ~/.config/nvim/home.nix ~/.config/home-manager/home.nix
+#
+#   5. Apply:
+#      home-manager switch
 #
 # To update packages: nix-channel --update && home-manager switch
 # To update neovim nightly: home-manager switch (fetches latest from overlay)
@@ -55,8 +63,8 @@ EOF
 
 in
 {
-  home.username = "yanuoma";
-  home.homeDirectory = "/home/yanuoma";
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
 
   # Don't change this after initial setup
   home.stateVersion = "24.05";
