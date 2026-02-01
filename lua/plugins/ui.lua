@@ -121,7 +121,7 @@ return {
     ft = { 'markdown' },
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
     opts = {
-      -- Ignore vscode-diff virtual buffers to avoid treesitter yield errors on Neovim 0.12
+      -- Ignore codediff virtual buffers to avoid treesitter yield errors on Neovim 0.12
       ignore = function(buf)
         local name = vim.api.nvim_buf_get_name(buf)
         return name:match('^vscodediff://') ~= nil

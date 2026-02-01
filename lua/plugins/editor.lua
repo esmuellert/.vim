@@ -48,11 +48,11 @@ return {
   },
 
   ------------------------------------------------------------------------
-  --- 🔀 vscode-diff.nvim: VSCode-style inline diff rendering
+  --- 🔀 codediff.nvim: VSCode-style inline diff rendering
   ------------------------------------------------------------------------
   {
-    'esmuellert/vscode-diff.nvim',
-    enabled = enabled.vscode_diff,
+    'esmuellert/codediff.nvim',
+    enabled = enabled.codediff,
     pin = false,
     cmd = { 'CodeDiff' },
     dependencies = {
@@ -88,7 +88,7 @@ return {
       end
       
       -- Re-apply highlights with new config
-      local render = require('vscode-diff.render')
+      local render = require('codediff.render')
       render.setup_highlights()
     end,
   },

@@ -19,7 +19,7 @@ return {
   autopairs = true,
   illuminate = true,
   guess_indent = true,
-  vscode_diff = true,
+  codediff = true,
 
   -- UI plugins
   bufferline = true,

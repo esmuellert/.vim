@@ -107,7 +107,7 @@ return {
             vim.keymap.set(mode, l, r, opts)
           end
 
-          -- Navigation disabled due to conflict with vscode-diffnvim
+          -- Navigation disabled due to conflict with codediff.nvim
           -- map('n', ']c', function()
           --   if vim.wo.diff then
           --     vim.cmd.normal({ ']c', bang = true })
