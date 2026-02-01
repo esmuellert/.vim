@@ -86,10 +86,6 @@ return {
         -- Use default highlights
         config.setup(base_config)
       end
-      
-      -- Re-apply highlights with new config
-      local render = require('codediff.render')
-      render.setup_highlights()
     end,
   },
 }
