@@ -223,7 +223,7 @@ in
     fi
   '';
 
-  home.activation.tpmSetup = config.lib.dag.entryAfter ["writeBoundary"] ''
+  home.activation.tpmSetup = config.lib.dag.entryAfter ["linkGeneration"] ''
     TPM_DIR="$HOME/.tmux/plugins/tpm"
     export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins"
     
@@ -238,7 +238,7 @@ in
     if [ ! -d "$HOME/.tmux/plugins/tmux" ]; then
       if [ -f "$TPM_DIR/bin/install_plugins" ]; then
         echo "Installing tmux plugins..."
-        "$TPM_DIR/bin/install_plugins"
+        TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins" "$TPM_DIR/bin/install_plugins"
       fi
     else
       echo "Tmux plugins already installed, skipping"
