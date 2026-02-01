@@ -65,7 +65,7 @@ return {
     config = function()
       local colorscheme = vim.g.colors_name or ''
       
-      local config = require('codediff.config')
+      local codediff = require('codediff')
       local base_config = {
         explorer = {
           view_mode = 'tree',  -- Use tree view by default
@@ -74,7 +74,7 @@ return {
       
       if colorscheme == 'github_light' then
         -- VSCode GitHub Light theme colors
-        config.setup(vim.tbl_deep_extend('force', base_config, {
+        codediff.setup(vim.tbl_deep_extend('force', base_config, {
           highlights = {
             line_insert = '#d2ffd2',
             line_delete = '#ffd7d5',
@@ -84,7 +84,7 @@ return {
         }))
       else
         -- Use default highlights
-        config.setup(base_config)
+        codediff.setup(base_config)
       end
     end,
   },
