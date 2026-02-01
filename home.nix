@@ -225,6 +225,8 @@ in
 
   home.activation.tpmSetup = config.lib.dag.entryAfter ["writeBoundary"] ''
     TPM_DIR="$HOME/.tmux/plugins/tpm"
+    export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins"
+    
     if [ ! -d "$TPM_DIR" ]; then
       echo "Installing TPM (Tmux Plugin Manager)..."
       git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
