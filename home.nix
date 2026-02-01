@@ -6,8 +6,8 @@
 #   1. Install Nix:
 #      sh <(curl -L https://nixos.org/nix/install) --daemon && source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 #
-#   2. Install Home Manager:
-#      nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager && nix-channel --update && nix-shell '<home-manager>' -A install
+#   2. Install Home Manager and neovim-nightly channel:
+#      nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager && nix-channel --add https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz neovim-nightly && nix-channel --update && nix-shell '<home-manager>' -A install
 #
 #   3. Clone this repo:
 #      git clone https://github.com/esmuellert/.vim.git ~/.config/nvim
@@ -22,15 +22,13 @@
 #      echo $(which zsh) | sudo tee -a /etc/shells && chsh -s $(which zsh)
 #
 # To update packages: nix-channel --update && home-manager switch
-# To update neovim nightly: home-manager switch (fetches latest from overlay)
+# To update neovim nightly: nix-channel --update neovim-nightly && home-manager switch
 
 { config, pkgs, ... }:
 
 let
-  # Neovim nightly overlay (auto-updates from nix-community)
-  neovim-nightly-overlay = import (builtins.fetchTarball {
-    url = "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
-  });
+  # Neovim nightly overlay (from channel - update with: nix-channel --update neovim-nightly)
+  neovim-nightly-overlay = import <neovim-nightly>;
 
   # Apply overlay to get neovim-nightly
   pkgsWithNeovim = import <nixpkgs> {
@@ -102,6 +100,7 @@ in
     fd         # better file finder
     fzf        # fuzzy finder
     bat        # cat with syntax highlighting
+    gawk       # awk - needed for tmux plugin manager
 
     # === Terminal Multiplexer ===
     tmux
@@ -221,6 +220,26 @@ in
       fi
     else
       echo "fnm not found, skipping Node.js setup"
+    fi
+  '';
+
+  home.activation.tpmSetup = config.lib.dag.entryAfter ["writeBoundary"] ''
+    TPM_DIR="$HOME/.tmux/plugins/tpm"
+    if [ ! -d "$TPM_DIR" ]; then
+      echo "Installing TPM (Tmux Plugin Manager)..."
+      git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+    else
+      echo "TPM already installed, skipping"
+    fi
+    
+    # Install tmux plugins only if catppuccin (or another plugin) is missing
+    if [ ! -d "$HOME/.tmux/plugins/tmux" ]; then
+      if [ -f "$TPM_DIR/bin/install_plugins" ]; then
+        echo "Installing tmux plugins..."
+        "$TPM_DIR/bin/install_plugins"
+      fi
+    else
+      echo "Tmux plugins already installed, skipping"
     fi
   '';
 }
