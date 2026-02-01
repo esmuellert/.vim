@@ -225,23 +225,13 @@ in
 
   home.activation.tpmSetup = config.lib.dag.entryAfter ["linkGeneration"] ''
     TPM_DIR="$HOME/.tmux/plugins/tpm"
-    export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins"
     
     if [ ! -d "$TPM_DIR" ]; then
       echo "Installing TPM (Tmux Plugin Manager)..."
       git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+      echo "Run 'prefix + I' in tmux to install plugins"
     else
       echo "TPM already installed, skipping"
-    fi
-    
-    # Install tmux plugins only if catppuccin (or another plugin) is missing
-    if [ ! -d "$HOME/.tmux/plugins/tmux" ]; then
-      if [ -f "$TPM_DIR/bin/install_plugins" ]; then
-        echo "Installing tmux plugins..."
-        TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins" "$TPM_DIR/bin/install_plugins"
-      fi
-    else
-      echo "Tmux plugins already installed, skipping"
     fi
   '';
 }
