@@ -85,6 +85,7 @@ in
 
     # === Version Control ===
     git
+    gh             # GitHub CLI
 
     # === Download Tools ===
     curl
