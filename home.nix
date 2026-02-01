@@ -23,6 +23,10 @@
 #
 # To update packages: nix-channel --update && home-manager switch
 # To update neovim nightly: nix-channel --update neovim-nightly && home-manager switch
+#
+# Local packages (optional):
+#   Create ~/.config/home-manager/local.nix to add machine-specific packages:
+#   { pkgs, ... }: { home.packages = with pkgs; [ slack discord ]; }
 
 { config, pkgs, ... }:
 
@@ -62,8 +66,15 @@ EOF
     '';
   };
 
+  # Local config file for machine-specific packages (optional)
+  # Create ~/.config/home-manager/local.nix with: { pkgs, ... }: { home.packages = with pkgs; [ ... ]; }
+  localConfigPath = builtins.getEnv "HOME" + "/.config/home-manager/local.nix";
+  hasLocalConfig = builtins.pathExists localConfigPath;
+
 in
 {
+  imports = if hasLocalConfig then [ localConfigPath ] else [];
+
   home.username = builtins.getEnv "USER";
   home.homeDirectory = builtins.getEnv "HOME";
 
