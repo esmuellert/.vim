@@ -135,6 +135,9 @@ in
 
     # === AI Coding Agent ===
     opencode
+
+    # === File Manager ===
+    yazi
   ];
 
   # =========================================
