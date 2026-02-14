@@ -199,6 +199,30 @@ in
   # Plugins are managed by TPM (installed at ~/.tmux/plugins/tpm)
   home.file.".tmux.conf".source = ./.tmux.conf;
 
+  # Yazi file manager configuration
+  xdg.configFile."yazi/yazi.toml".text = ''
+[mgr]
+show_hidden = true
+sort_dir_first = true
+linemode = "size"
+
+[[plugin.prepend_fetchers]]
+id = "git"
+url = "*"
+run = "git"
+
+[[plugin.prepend_fetchers]]
+id = "git"
+url = "*/"
+run = "git"
+'';
+
+  xdg.configFile."yazi/init.lua".text = ''
+require("git"):setup {
+  order = 1500,
+}
+'';
+
   # fzf integration
   programs.fzf = {
     enable = true;
@@ -247,6 +271,13 @@ in
       echo "Run 'prefix + I' in tmux to install plugins"
     else
       echo "TPM already installed, skipping"
+    fi
+  '';
+
+  home.activation.yaziPlugins = config.lib.dag.entryAfter ["writeBoundary"] ''
+    export PATH="$HOME/.nix-profile/bin:$PATH"
+    if command -v ya &> /dev/null; then
+      ya pkg add yazi-rs/plugins:git 2>/dev/null || true
     fi
   '';
 }
