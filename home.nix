@@ -204,6 +204,8 @@ in
 [mgr]
 show_hidden = true
 sort_dir_first = true
+sort_by = "natural"
+sort_sensitive = false
 linemode = "size"
 
 [[plugin.prepend_fetchers]]
@@ -220,6 +222,10 @@ run = "git"
   xdg.configFile."yazi/init.lua".text = ''
 require("git"):setup {
   order = 1500,
+}
+
+require("full-border"):setup {
+  type = ui.Border.ROUNDED,
 }
 '';
 
@@ -278,6 +284,7 @@ require("git"):setup {
     export PATH="$HOME/.nix-profile/bin:$PATH"
     if command -v ya &> /dev/null; then
       ya pkg add yazi-rs/plugins:git 2>/dev/null || true
+      ya pkg add yazi-rs/plugins:full-border 2>/dev/null || true
     fi
   '';
 }
