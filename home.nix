@@ -150,6 +150,11 @@ in
     # Uncomment and customize:
     # userName = "Your Name";
     # userEmail = "your.email@example.com";
+    settings = {
+      credential."https://github.com" = {
+        helper = "!gh auth git-credential";
+      };
+    };
   };
 
   # Zsh configuration - using Oh My Zsh with material-deep-ocean theme
