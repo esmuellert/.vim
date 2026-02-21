@@ -60,8 +60,8 @@ return {
       -- Scope detection
       scope = { enabled = true },
 
-      -- Notifications disabled (noice.nvim handles this)
-      notifier = { enabled = false },
+      -- Notification rendering backend (noice routes to this)
+      notifier = { enabled = true },
 
       -- Quick file open before plugins load
       quickfile = { enabled = true },
