@@ -60,11 +60,8 @@ return {
       -- Scope detection
       scope = { enabled = true },
 
-      -- Notifications (replaces fidget.nvim + vim.notify)
-      notifier = {
-        enabled = true,
-        timeout = 3000,
-      },
+      -- Notifications disabled (noice.nvim handles this)
+      notifier = { enabled = false },
 
       -- Quick file open before plugins load
       quickfile = { enabled = true },
@@ -138,14 +135,8 @@ return {
         desc = "Prev Reference",
       },
 
-      -- Notifier history
-      {
-        "<leader>nh",
-        function()
-          Snacks.notifier.show_history()
-        end,
-        desc = "Notification History",
-      },
+      -- Notifier history (via noice)
+      { "<leader>nh", "<cmd>Noice history<cr>", desc = "Notification History" },
     },
   },
 }

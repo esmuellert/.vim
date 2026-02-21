@@ -16,7 +16,7 @@ local ROSLYN_BIN_PATH = ROSLYN_INSTALL_DIR
 ------------------------------------------------------------------------
 local function install_roslyn()
   local utils = require('core.utils')
-  local fidget = require('fidget')
+  
 
   -- Only on Windows
   if not utils.is_windows() then
@@ -25,7 +25,7 @@ local function install_roslyn()
 
   -- Check if already installed
   if vim.fn.filereadable(ROSLYN_BIN_PATH) == 0 then
-    fidget.notify('Installing Microsoft Roslyn Language Service...', vim.log.levels.INFO, { key = 'roslyn_install' })
+    vim.notify('Installing Microsoft Roslyn Language Service...', vim.log.levels.INFO)
     vim.fn.mkdir(ROSLYN_INSTALL_DIR, 'p')
 
     -- Create a dummy project file for NuGet restore
@@ -61,10 +61,9 @@ local function install_roslyn()
     }, function(result)
       vim.schedule(function()
         if result.code == 0 then
-          fidget.notify(
+          vim.notify(
             'Roslyn Language Service installed successfully!',
-            vim.log.levels.INFO,
-            { key = 'roslyn_install' }
+            vim.log.levels.INFO
           )
 
           -- Auto-start Roslyn for current buffer if it's a C# file
@@ -72,10 +71,9 @@ local function install_roslyn()
             vim.cmd('Roslyn start')
           end
         else
-          fidget.notify(
+          vim.notify(
             'Failed to install Roslyn Language Service',
-            vim.log.levels.ERROR,
-            { key = 'roslyn_install', annote = result.stderr or 'unknown' }
+            vim.log.levels.ERROR
           )
         end
       end)
@@ -87,7 +85,7 @@ end
 -- Helper: Check installed version and reinstall if mismatch
 ------------------------------------------------------------------------
 local function check_and_reinstall_if_needed()
-  local fidget = require('fidget')
+  
 
   if vim.fn.filereadable(ROSLYN_BIN_PATH) == 0 then
     -- Not installed, will be installed later
@@ -102,14 +100,13 @@ local function check_and_reinstall_if_needed()
     local installed_version = result.stdout:match('^([%d%.%-]+)')
 
     if installed_version and installed_version ~= ROSLYN_VERSION then
-      fidget.notify(
+      vim.notify(
         string.format(
           'Version mismatch detected\nInstalled: %s\nExpected: %s\nReinstalling...',
           installed_version,
           ROSLYN_VERSION
         ),
-        vim.log.levels.WARN,
-        { key = 'roslyn_version_check' }
+        vim.log.levels.WARN
       )
 
       -- Delete old installation
@@ -167,7 +164,7 @@ local roslyn_config_done = false -- Track if vim.lsp.config was called
 ------------------------------------------------------------------------
 local function setup_roslyn_lsp(workspace_root)
   local utils = require('core.utils')
-  local fidget = require('fidget')
+  
 
   if not utils.is_windows() then
     vim.notify('Roslyn Language Service only supported on Windows', vim.log.levels.WARN)
@@ -240,7 +237,7 @@ local function setup_roslyn_lsp(workspace_root)
       handlers = {
         -- Project initialization complete - refresh diagnostics
         ['workspace/projectInitializationComplete'] = function(_, _, ctx)
-          fidget.notify('Project initialization complete', vim.log.levels.INFO, { key = 'roslyn_init_complete' })
+          vim.notify('Project initialization complete', vim.log.levels.INFO)
 
           local client = vim.lsp.get_client_by_id(ctx.client_id)
           if client then
@@ -264,7 +261,7 @@ local function setup_roslyn_lsp(workspace_root)
         ['workspace/_roslyn_projectNeedsRestore'] = function(_, result, ctx)
           local client = vim.lsp.get_client_by_id(ctx.client_id)
           if client and result then
-            fidget.notify('Project needs restore', vim.log.levels.WARN, { key = 'roslyn_restore_needed' })
+            vim.notify('Project needs restore', vim.log.levels.WARN)
 
             -- Trigger restore using generic request (custom Roslyn method)
             ---@diagnostic disable-next-line: invisible, param-type-mismatch
@@ -274,7 +271,7 @@ local function setup_roslyn_lsp(workspace_root)
               end
               if response then
                 for _, v in ipairs(response) do
-                  fidget.notify(v.message, vim.log.levels.INFO, { key = 'roslyn_restore' })
+                  vim.notify(v.message, vim.log.levels.INFO)
                 end
               end
             end)
@@ -297,10 +294,9 @@ local function setup_roslyn_lsp(workspace_root)
           end
 
           if sln_file then
-            fidget.notify(
+            vim.notify(
               string.format('Loading: %s', vim.fn.fnamemodify(sln_file, ':t')),
-              vim.log.levels.INFO,
-              { key = 'roslyn_sln_load' }
+              vim.log.levels.INFO
             )
             -- Send solution/open notification to Roslyn
             client:notify('solution/open', {
@@ -315,16 +311,14 @@ local function setup_roslyn_lsp(workspace_root)
         -- Get version from initialize result
         if initialize_result and initialize_result.serverInfo then
           local version = initialize_result.serverInfo.version or ROSLYN_VERSION
-          fidget.notify(
+          vim.notify(
             'Roslyn Language Service v' .. version .. ' initialized',
-            vim.log.levels.INFO,
-            { key = 'roslyn_init' }
+            vim.log.levels.INFO
           )
         else
-          fidget.notify(
+          vim.notify(
             'Roslyn Language Service v' .. ROSLYN_VERSION .. ' initialized',
-            vim.log.levels.INFO,
-            { key = 'roslyn_init' }
+            vim.log.levels.INFO
           )
         end
       end,
@@ -348,10 +342,7 @@ local function setup_roslyn_lsp(workspace_root)
         end
 
         local buf_count = #vim.lsp.get_buffers_by_client_id(client.id)
-        fidget.notify('Attached to ' .. buf_count .. ' buffer' .. (buf_count > 1 and 's' or ''), vim.log.levels.INFO, {
-          key = 'roslyn_attach',
-          annote = 'Roslyn',
-        })
+        vim.notify('Attached to ' .. buf_count .. ' buffer' .. (buf_count > 1 and 's' or ''), vim.log.levels.INFO)
       end,
       on_exit = function()
         roslyn_client_id = nil

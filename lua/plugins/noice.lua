@@ -35,7 +35,7 @@ return {
         },
         lsp = {
           progress = {
-            enabled = false, -- let fidget.nvim handle LSP progress
+            enabled = true,
           },
           override = {
             ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
