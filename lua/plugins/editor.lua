@@ -61,6 +61,14 @@ return {
     keys = {
       { '<leader>df', '<cmd>CodeDiff<cr>', desc = 'Code Diff Explorer' },
       { '<leader>dh', '<cmd>CodeDiff history<CR>', desc = 'Code Diff History' },
+      {
+        '<leader>dm',
+        function()
+          local main = vim.fn.system('git rev-parse --verify --quiet main'):find('%S') and 'main' or 'master'
+          vim.cmd('CodeDiff ' .. main .. '...')
+        end,
+        desc = 'Code Diff vs main/master',
+      },
     },
     config = function()
       local colorscheme = vim.g.colors_name or ''
