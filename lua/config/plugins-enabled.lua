@@ -13,8 +13,6 @@ return {
   -- Editor plugins
   telescope = false,
   treesitter = true,
-  nvim_tree = false,
-  neo_tree = false,
   yazi = true,
   autopairs = true,
   illuminate = false,
@@ -31,10 +29,7 @@ return {
   -- LSP and completion
   lsp = true,
   mason = true,
-  cmp = false,
-  lspkind = false,
   blink_cmp = true,
-  fidget = false,
   roslyn = true,
 
   -- Diagnostics
@@ -45,7 +40,6 @@ return {
   xcodebuild = false,
   writing = true,
   zen_mode = false,
-  vim_pencil = false,
   todo_comments = true,
   session = true,
   kulala = true,
@@ -53,7 +47,6 @@ return {
 
   -- New plugins (toggle to try)
   fzf_lua = true,
-  snacks_picker = false,
   snacks = true,
   conform = true,
   noice = true,
