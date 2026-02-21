@@ -196,7 +196,7 @@ return {
   --- 🎨 nvim-colorizer.lua: A high-performance color highlighter for Neovim
   ------------------------------------------------------------------------
   {
-    'norcalli/nvim-colorizer.lua',
+    'NvChad/nvim-colorizer.lua',
     enabled = enabled.colorizer,
     config = function()
       require('colorizer').setup()

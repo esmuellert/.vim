@@ -452,18 +452,6 @@ return {
   },
 
   ------------------------------------------------------------------------
-  --- 🛞 fidget.nvim: Standalone UI for LSP progress notifications
-  ------------------------------------------------------------------------
-  {
-    'j-hui/fidget.nvim',
-    enabled = enabled.fidget,
-    event = 'LspAttach',
-    config = function()
-      require('fidget').setup({})
-    end,
-  },
-
-  ------------------------------------------------------------------------
   --- 🔑 Native LSP keymaps (replaces lspsaga)
   ------------------------------------------------------------------------
   {

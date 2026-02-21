@@ -60,7 +60,7 @@ return {
       -- Scope detection
       scope = { enabled = true },
 
-      -- Better notifications (replaces fidget for non-LSP messages)
+      -- Notifications (replaces fidget.nvim + vim.notify)
       notifier = {
         enabled = true,
         timeout = 3000,

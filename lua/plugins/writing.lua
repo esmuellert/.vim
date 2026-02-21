@@ -25,17 +25,6 @@ return {
     },
   },
 
-  -- Prose-friendly soft wrap & paragraph motions for text
-  {
-    'reedes/vim-pencil',
-    enabled = enabled.vim_pencil,
-    ft = { 'text' },
-    init = function()
-      vim.g['pencil#wrapModeDefault'] = 'soft' -- soft-wrap for prose
-      vim.g['pencil#conceallevel'] = 0
-    end,
-  },
-
   -- Sticky notes / inline review markers like TODO:, NOTE:, etc. (works in .txt)
   {
     'folke/todo-comments.nvim',

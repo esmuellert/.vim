@@ -34,7 +34,7 @@ return {
   cmp = false,
   lspkind = false,
   blink_cmp = true,
-  fidget = true,
+  fidget = false,
   roslyn = true,
 
   -- Diagnostics
@@ -45,7 +45,7 @@ return {
   xcodebuild = false,
   writing = true,
   zen_mode = false,
-  vim_pencil = true,
+  vim_pencil = false,
   todo_comments = true,
   session = true,
   kulala = true,
