@@ -1,6 +1,7 @@
 -- LSP configuration
 
 local enabled = require('config.plugins-enabled')
+local lsp_helpers = require('core.lsp-helpers')
 
 ------------------------------------------------------------------------
 -- clangd: C/C++ language server using vim.lsp.config (Neovim 0.11+)
@@ -78,11 +79,7 @@ local function setup_clangd()
   end
 
   -- Get capabilities from blink.cmp (or fallback to native)
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  local ok, blink = pcall(require, 'blink.cmp')
-  if ok then
-    capabilities = blink.get_lsp_capabilities(capabilities)
-  end
+  local capabilities = lsp_helpers.make_capabilities()
   capabilities.offsetEncoding = { 'utf-16' }
   capabilities.textDocument = capabilities.textDocument or {}
   capabilities.textDocument.completion = capabilities.textDocument.completion or {}
@@ -120,9 +117,7 @@ local function setup_clangd()
       local bufnr = args.buf
 
       -- Enable inlay hints if supported
-      if client.server_capabilities.inlayHintProvider then
-        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-      end
+      lsp_helpers.default_on_attach(client, bufnr)
 
       -- Clangd-specific keymaps
       vim.keymap.set(
@@ -185,15 +180,11 @@ local function setup_tsgo()
     return
   end
 
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  local ok, blink = pcall(require, 'blink.cmp')
-  if ok then
-    capabilities = blink.get_lsp_capabilities(capabilities)
-  end
+  local capabilities = lsp_helpers.make_capabilities()
 
   -- IMPORTANT: Must modify vim.lsp.config.tsgo.cmd BEFORE calling vim.lsp.enable()
   -- because vim.lsp.enable() reads the config at enable-time
-  vim.lsp.config.tsgo = vim.tbl_deep_extend('force', vim.lsp.config.tsgo or {}, {
+  vim.lsp.config('tsgo', {
     cmd = { tsgo_bin, '--lsp', '--stdio' },
     filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
     root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
@@ -211,9 +202,7 @@ local function setup_tsgo()
     },
     on_attach = function(client, bufnr)
       -- Enable inlay hints if supported (tsgo doesn't support yet as of 2025-11-05)
-      if client.server_capabilities.inlayHintProvider then
-        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-      end
+      lsp_helpers.default_on_attach(client, bufnr)
 
       -- Create custom command for TypeScript source-level actions
       vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptSourceAction', function()
@@ -321,17 +310,8 @@ return {
     },
     event = { 'BufReadPost', 'BufNewFile' },
     opts = function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      local ok, blink = pcall(require, 'blink.cmp')
-      if ok then
-        capabilities = blink.get_lsp_capabilities(capabilities)
-      end
+      local capabilities = lsp_helpers.make_capabilities()
       local lspconfig = require('lspconfig')
-      local default_on_attach = function(client, bufnr)
-        if client.server_capabilities.inlayHintProvider then
-          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-        end
-      end
 
       -- Setup mason first with custom registry for roslyn
       require('mason').setup({
@@ -348,10 +328,10 @@ return {
 
       -- Setup tsgo immediately (VimEnter already fired by the time this plugin loads)
       if enabled.tsgo ~= false then
+        setup_tsgo() -- Try immediately (works if already installed)
         install_tsgo(function()
-          setup_tsgo()
+          setup_tsgo() -- Re-run after install/upgrade completes
         end)
-        setup_tsgo() -- Also try immediately (works if already installed)
       end
 
       -- Determine which servers to install based on architecture
@@ -369,12 +349,12 @@ return {
           function(server)
             lspconfig[server].setup({
               capabilities = capabilities,
-              on_attach = default_on_attach,
+              on_attach = lsp_helpers.default_on_attach,
             })
           end,
           ['lua_ls'] = function(server)
             lspconfig[server].setup({
-              on_attach = default_on_attach,
+              on_attach = lsp_helpers.default_on_attach,
               capabilities = capabilities,
               settings = {
                 Lua = {
@@ -385,7 +365,7 @@ return {
                     globals = { 'vim' },
                   },
                   workspace = {
-                    library = vim.api.nvim_get_runtime_file('', true),
+                    library = { vim.env.VIMRUNTIME },
                     checkThirdParty = false,
                   },
                   telemetry = {
@@ -422,7 +402,9 @@ return {
           vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts('References'))
           vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts('Goto Implementation'))
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts('Hover Documentation'))
-          vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts('Rename Symbol'))
+          vim.keymap.set('n', '<leader>rn', function()
+            return ':IncRename ' .. vim.fn.expand('<cword>')
+          end, { buffer = bufnr, desc = 'Rename Symbol', expr = true })
           vim.keymap.set('n', '<leader>ac', vim.lsp.buf.code_action, opts('Code Action'))
           vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts('Type Definition'))
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto Declaration'))

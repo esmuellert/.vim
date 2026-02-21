@@ -196,11 +196,8 @@ local function setup_roslyn_lsp(workspace_root)
 
   -- Only call vim.lsp.config once to prevent duplicate instances
   if not roslyn_config_done then
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    local ok, blink = pcall(require, 'blink.cmp')
-    if ok then
-      capabilities = blink.get_lsp_capabilities(capabilities)
-    end
+    local lsp_helpers = require('core.lsp-helpers')
+    local capabilities = lsp_helpers.make_capabilities()
 
     -- Roslyn LSP requires specific command line args
     local log_dir = ROSLYN_INSTALL_DIR .. '/logs'
@@ -326,9 +323,7 @@ local function setup_roslyn_lsp(workspace_root)
         roslyn_client_id = client.id
 
         -- Enable inlay hints if supported
-        if client.server_capabilities.inlayHintProvider then
-          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-        end
+        require('core.lsp-helpers').default_on_attach(client, bufnr)
 
         -- Fix semantic token highlighting for C# fields
         vim.api.nvim_set_hl(0, '@lsp.type.field.cs', { link = '@field' })

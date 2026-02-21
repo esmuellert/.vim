@@ -23,6 +23,9 @@ local plugin_modules = {
   require('plugins.noice'),
   require('plugins.fzf-lua'),
   require('plugins.snacks'),
+  require('plugins.lazydev'),
+  require('plugins.inc-rename'),
+  require('plugins.inline-diagnostic'),
 }
 
 -- Load local-dev plugins if file exists

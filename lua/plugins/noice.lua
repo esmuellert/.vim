@@ -48,6 +48,7 @@ return {
           bottom_search = true,
           command_palette = true, -- cmdline and popupmenu together
           long_message_to_split = true,
+          inc_rename = true,
           lsp_doc_border = true,
         },
         routes = {
