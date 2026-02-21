@@ -28,13 +28,20 @@ local function setup_clangd()
   end
 
   if clangd_binary == '' then
-    vim.notify_once(
-      'clangd not found in PATH. Please install clangd:\n'
-        .. '  - Ubuntu/Debian: sudo apt install clangd-21\n'
-        .. '  - macOS: brew install llvm\n'
-        .. '  - Other: https://clangd.llvm.org/installation',
-      vim.log.levels.INFO
-    )
+    -- Defer warning until a C/C++ file is actually opened
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+      once = true,
+      callback = function()
+        vim.notify_once(
+          'clangd not found in PATH. Please install clangd:\n'
+            .. '  - Ubuntu/Debian: sudo apt install clangd-21\n'
+            .. '  - macOS: brew install llvm\n'
+            .. '  - Other: https://clangd.llvm.org/installation',
+          vim.log.levels.INFO
+        )
+      end,
+    })
     return
   end
 
