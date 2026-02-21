@@ -20,11 +20,15 @@ local plugin_modules = {
   require('plugins.writing'),
   require('plugins.session'),
   require('plugins.http-client'),
+  require('plugins.formatting'),
+  require('plugins.noice'),
+  require('plugins.fzf-lua'),
+  require('plugins.snacks'),
 }
 
 -- Load local-dev plugins if file exists
 local local_dev_path = vim.fn.stdpath('config') .. '/lua/plugins/local-dev.lua'
-if vim.loop.fs_stat(local_dev_path) then
+if vim.uv.fs_stat(local_dev_path) then
   table.insert(plugin_modules, require('plugins.local-dev'))
 end
 
@@ -40,7 +44,7 @@ end
 
 -- Load local plugin settings if they exist
 local local_plugin_path = vim.fn.stdpath('config') .. '/lua/plugin/local.lua'
-if vim.loop.fs_stat(local_plugin_path) then
+if vim.uv.fs_stat(local_plugin_path) then
   local local_plugins = require('plugin.local')
   if type(local_plugins) == 'table' then
     for _, plugin in ipairs(local_plugins) do

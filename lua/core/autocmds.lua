@@ -1,35 +1,7 @@
 -- Autocommands
 
 -- Note: File reload handling is now in file_reload.lua
--- The checktime autocmd was removed to prevent freeze during dotnet build
-
-------------------------------------------------------------------------
---- Performance: Disable features for problematic files
-------------------------------------------------------------------------
--- Automatically disable heavy features for minified/large files
-vim.api.nvim_create_autocmd('BufReadPost', {
-  callback = function(args)
-    local buf = args.buf
-    local filename = vim.api.nvim_buf_get_name(buf)
-
-    -- Detect minified files (very long lines)
-    local first_line = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ''
-    if #first_line > 1000 then
-      -- Disable expensive features for minified files
-      vim.bo[buf].syntax = '' -- Disable syntax
-      vim.notify('Large line detected - syntax disabled for performance', vim.log.levels.WARN)
-      return
-    end
-
-    -- Disable features for known large file types
-    if filename:match('%.min%.js$') or filename:match('%.min%.css$') then
-      vim.bo[buf].syntax = ''
-      vim.treesitter.stop(buf)
-      vim.notify('Minified file detected - highlighting disabled', vim.log.levels.INFO)
-    end
-  end,
-  desc = 'Disable features for problematic files to prevent freezing',
-})
+-- Note: Large/minified file handling is now in snacks.nvim (bigfile)
 
 ------------------------------------------------------------------------
 --- Diagnostic line highlighting setup
@@ -74,6 +46,7 @@ local function setup_diagnostic_line_highlights()
 end
 
 vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('DiagnosticLineHL', { clear = true }),
   callback = setup_diagnostic_line_highlights,
   desc = 'Setup diagnostic line highlighting for all colorschemes',
 })
@@ -129,22 +102,6 @@ local function auto_update_config_repo()
     return
   end
 
-  -- Fetch latest changes to compare ahead/behind state
-  local _, fetch_code = git_cmd({ 'fetch', '--quiet' })
-  if fetch_code ~= 0 then
-    return
-  end
-
-  local ahead_out, ahead_code = git_cmd({ 'rev-list', '--count', 'HEAD..' .. upstream })
-  if ahead_code ~= 0 then
-    return
-  end
-
-  local ahead_count = tonumber(vim.trim(ahead_out[1] or '0')) or 0
-  if ahead_count == 0 then
-    return
-  end
-
   local function notify(lines, level)
     local filtered = {}
     for _, line in ipairs(lines or {}) do
@@ -160,26 +117,46 @@ local function auto_update_config_repo()
     end)
   end
 
-  vim.fn.jobstart({ 'git', '-C', config_path, 'pull', '--ff-only' }, {
-    stdout_buffered = true,
-    stderr_buffered = true,
-    on_stdout = function(_, data)
-      notify(data, vim.log.levels.INFO)
-    end,
-    on_stderr = function(_, data)
-      notify(data, vim.log.levels.WARN)
-    end,
-    on_exit = function(_, code)
-      if code == 0 then
-        notify({ 'Config updated from ' .. upstream }, vim.log.levels.INFO)
-      else
-        notify({ 'git pull failed (exit ' .. code .. ')' }, vim.log.levels.ERROR)
-      end
-    end,
-  })
+  -- Fetch latest changes asynchronously to avoid blocking the UI
+  vim.system({ 'git', '-C', config_path, 'fetch', '--quiet' }, {}, function(fetch_result)
+    if fetch_result.code ~= 0 then
+      return
+    end
+
+    local ahead_out, ahead_code = git_cmd({ 'rev-list', '--count', 'HEAD..' .. upstream })
+    if ahead_code ~= 0 then
+      return
+    end
+
+    local ahead_count = tonumber(vim.trim(ahead_out[1] or '0')) or 0
+    if ahead_count == 0 then
+      return
+    end
+
+    vim.schedule(function()
+      vim.fn.jobstart({ 'git', '-C', config_path, 'pull', '--ff-only' }, {
+        stdout_buffered = true,
+        stderr_buffered = true,
+        on_stdout = function(_, data)
+          notify(data, vim.log.levels.INFO)
+        end,
+        on_stderr = function(_, data)
+          notify(data, vim.log.levels.WARN)
+        end,
+        on_exit = function(_, code)
+          if code == 0 then
+            notify({ 'Config updated from ' .. upstream }, vim.log.levels.INFO)
+          else
+            notify({ 'git pull failed (exit ' .. code .. ')' }, vim.log.levels.ERROR)
+          end
+        end,
+      })
+    end)
+  end)
 end
 
 vim.api.nvim_create_autocmd('VimEnter', {
+  group = vim.api.nvim_create_augroup('ConfigAutoUpdate', { clear = true }),
   once = true,
   callback = auto_update_config_repo,
   desc = 'Pull latest config when clean and behind upstream',

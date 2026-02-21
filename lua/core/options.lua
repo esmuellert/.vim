@@ -3,9 +3,6 @@
 -- Enable true color support
 vim.opt.termguicolors = true
 
--- Set spell check
-vim.cmd('setlocal spell spelllang=en_us')
-
 -- Set the sign column to always be visible
 vim.opt.signcolumn = 'yes'
 
@@ -20,7 +17,7 @@ vim.opt.ttyfast = true
 -- ============================================================================
 -- Increase redrawtime to prevent syntax highlighting timeouts
 -- Default is 2000ms which is too low for large files with treesitter
-vim.opt.redrawtime = 10000 -- 10 seconds (prevents timeout on large/complex files)
+vim.opt.redrawtime = 5000 -- 5 seconds (prevents timeout on large/complex files)
 
 -- Increase pattern matching memory for complex syntax
 vim.opt.maxmempattern = 5000 -- Default is 1000
@@ -92,6 +89,18 @@ if vim.fn.has('nvim-0.12') == 1 then
 end
 
 vim.opt.diffopt = diffopt
+
+-- QoL options
+vim.opt.undofile = true
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.splitkeep = 'screen'
+vim.opt.scrolloff = 8
+vim.opt.sidescrolloff = 8
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.showmode = false
+vim.opt.clipboard = 'unnamedplus'
 
 -- Auto-reload files when changed outside of Neovim
 vim.o.autoread = true

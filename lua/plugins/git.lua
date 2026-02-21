@@ -25,6 +25,7 @@ return {
     config = function()
       -- Automatically delete fugitive buffers when they become hidden
       vim.api.nvim_create_autocmd('BufReadPost', {
+        group = vim.api.nvim_create_augroup('FugitiveBufCleanup', { clear = true }),
         pattern = 'fugitive://*',
         callback = function()
           vim.bo.bufhidden = 'delete'
@@ -33,6 +34,7 @@ return {
 
       -- Set up nice statusline integration
       vim.api.nvim_create_autocmd('User', {
+        group = vim.api.nvim_create_augroup('FugitiveStatusline', { clear = true }),
         pattern = 'FugitiveChanged',
         callback = function()
           vim.cmd('redrawstatus')

@@ -3,17 +3,13 @@
 
 local enabled = require('config.plugins-enabled')
 
--- Export github colors for backward compatibility
-_G.github_colors = require('config.theme').github_colors
-
 return {
   ------------------------------------------------------------------------
   --- 🌿 lush.nvim: A Neovim plugin for building and customizing themes with ease
   ------------------------------------------------------------------------
   {
     'rktjmp/lush.nvim',
-    lazy = false,
-    priority = 900,
+    lazy = true,
   },
 
   ------------------------------------------------------------------------
@@ -22,8 +18,7 @@ return {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
-    lazy = false,
-    priority = 900,
+    lazy = true,
     config = function()
       require('catppuccin').setup({
         flavour = 'mocha', -- latte, frappe, macchiato, mocha
@@ -88,8 +83,7 @@ return {
   ------------------------------------------------------------------------
   {
     'rebelot/kanagawa.nvim',
-    lazy = false,
-    priority = 900,
+    lazy = true,
     config = function()
       require('kanagawa').setup({
         compile = false,
@@ -115,8 +109,7 @@ return {
   ------------------------------------------------------------------------
   {
     'EdenEast/nightfox.nvim',
-    lazy = false,
-    priority = 900,
+    lazy = true,
     config = function()
       require('nightfox').setup({
         options = {

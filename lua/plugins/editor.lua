@@ -4,18 +4,6 @@ local enabled = require('config.plugins-enabled')
 
 return {
   ------------------------------------------------------------------------
-  -- 💬 Comment.nvim: Efficient code commenting
-  ------------------------------------------------------------------------
-  {
-    'numToStr/Comment.nvim',
-    enabled = enabled.comment,
-    event = 'BufRead',
-    config = function()
-      require('Comment').setup()
-    end,
-  },
-
-  ------------------------------------------------------------------------
   --- 📦 nvim-autopairs: Automatically insert pairs of delimiters
   ------------------------------------------------------------------------
   {

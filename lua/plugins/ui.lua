@@ -81,6 +81,14 @@ return {
             style = 'underline',
           },
           offsets = {},
+          name_formatter = function(buf)
+            if buf.tabnr then
+              local tab_label = vim.t[buf.tabnr] and vim.t[buf.tabnr].codediff_tab_label
+              if tab_label then
+                return tab_label
+              end
+            end
+          end,
         },
         highlights = theme_config.get_bufferline_highlights(),
       })

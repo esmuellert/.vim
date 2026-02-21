@@ -9,7 +9,7 @@ return {
   {
     'folke/trouble.nvim',
     enabled = enabled.trouble,
-    cmd = { 'Trouble', 'TroubleToggle' },
+    cmd = { 'Trouble' },
     keys = {
       {
         '<leader>xx',

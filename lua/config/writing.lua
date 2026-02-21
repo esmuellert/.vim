@@ -28,6 +28,7 @@ end
 
 -- FileType=text: apply writing view + local keymaps
 vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('WritingMode', { clear = true }),
   pattern = 'text',
   callback = function(args)
     local bufnr = args.buf

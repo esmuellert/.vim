@@ -21,7 +21,7 @@ return {
           vim.schedule(function()
             local clients = vim.lsp.get_clients({ bufnr = ev.buf })
             for _, client in ipairs(clients) do
-              vim.lsp.stop_client(client.id, true)
+              client:stop(true)
               vim.notify(
                 string.format('Stopped LSP \'%s\' for HTTP file (using Kulala)', client.name),
                 vim.log.levels.INFO

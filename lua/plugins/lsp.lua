@@ -22,23 +22,25 @@ local function setup_clangd()
   end
 
   -- Find clangd binary using vim.fn.exepath (searches $PATH)
-  local clangd_binary = vim.fn.exepath('clangd') or vim.fn.exepath('clangd-21')
-  
-  if not clangd_binary or clangd_binary == '' then
-    vim.notify(
+  local clangd_binary = vim.fn.exepath('clangd')
+  if clangd_binary == '' then
+    clangd_binary = vim.fn.exepath('clangd-21')
+  end
+
+  if clangd_binary == '' then
+    vim.notify_once(
       'clangd not found in PATH. Please install clangd:\n'
         .. '  - Ubuntu/Debian: sudo apt install clangd-21\n'
         .. '  - macOS: brew install llvm\n'
         .. '  - Other: https://clangd.llvm.org/installation',
-      vim.log.levels.WARN
+      vim.log.levels.INFO
     )
     return
   end
 
   -- Get clangd version
-  local handle = io.popen(clangd_binary .. ' --version 2>&1')
-  local version_output = handle and handle:read('*a') or ''
-  if handle then handle:close() end
+  local result = vim.system({ clangd_binary, '--version' }, { text = true }):wait()
+  local version_output = result.stdout or ''
 
   -- Parse version
   local version_major = tonumber(version_output:match('clangd version (%d+)'))
@@ -68,8 +70,12 @@ local function setup_clangd()
     table.insert(clangd_cmd, '--limit-results=0')
   end
 
-  -- Get capabilities from nvim-cmp
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  -- Get capabilities from blink.cmp (or fallback to native)
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local ok, blink = pcall(require, 'blink.cmp')
+  if ok then
+    capabilities = blink.get_lsp_capabilities(capabilities)
+  end
   capabilities.offsetEncoding = { 'utf-16' }
   capabilities.textDocument = capabilities.textDocument or {}
   capabilities.textDocument.completion = capabilities.textDocument.completion or {}
@@ -97,6 +103,7 @@ local function setup_clangd()
 
   -- Setup clangd-specific keymaps and commands on attach
   vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('ClangdLspAttach', { clear = true }),
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
       if not client or client.name ~= 'clangd' then
@@ -122,19 +129,14 @@ local function setup_clangd()
     end,
   })
 
-  -- Only show message in interactive mode (not when used as difftool/mergetool)
-  if vim.fn.argc() == 0 then
-    vim.schedule(function()
-      vim.notify('clangd configured successfully (version ' .. (version_major or 'unknown') .. ')', vim.log.levels.INFO)
-    end)
-  end
 end
 
 ------------------------------------------------------------------------
 -- tsgo: TypeScript language server (native preview from @typescript/native-preview)
 ------------------------------------------------------------------------
 -- Helper function to install tsgo if not present (non-blocking)
-local function install_tsgo()
+local function install_tsgo(on_complete)
+  if vim.fn.executable('npm') ~= 1 then return end
   local utils = require('core.utils')
   local tsgo_install_dir = vim.fn.stdpath('data') .. '/tsgo'
   local tsgo_bin = tsgo_install_dir .. '/node_modules/.bin/tsgo'
@@ -143,25 +145,21 @@ local function install_tsgo()
     tsgo_bin = tsgo_bin .. '.cmd'
   end
 
-  -- Check if already installed
-  if vim.fn.filereadable(tsgo_bin) == 0 then
-    vim.notify('Installing tsgo in background...', vim.log.levels.INFO)
-    vim.fn.mkdir(tsgo_install_dir, 'p')
+  vim.fn.mkdir(tsgo_install_dir, 'p')
 
-    -- Install asynchronously using vim.system (native nvim async API)
-    vim.system({ 'npm', 'install', '@typescript/native-preview' }, {
-      text = true,
-      cwd = tsgo_install_dir,
-    }, function(result)
-      vim.schedule(function()
-        if result.code == 0 then
-          vim.notify('tsgo installed successfully! Restart Neovim to activate.', vim.log.levels.INFO)
-        else
-          vim.notify('Failed to install tsgo. Error: ' .. (result.stderr or 'unknown'), vim.log.levels.ERROR)
-        end
-      end)
+  -- Always run npm install @latest to auto-upgrade on startup
+  vim.system({ 'npm', 'install', '@typescript/native-preview@latest' }, {
+    text = true,
+    cwd = tsgo_install_dir,
+  }, function(result)
+    vim.schedule(function()
+      if result.code == 0 then
+        if on_complete then on_complete() end
+      else
+        vim.notify('Failed to install/update tsgo: ' .. (result.stderr or 'unknown'), vim.log.levels.ERROR)
+      end
     end)
-  end
+  end)
 end
 
 -- Helper function to configure tsgo LSP
@@ -180,7 +178,11 @@ local function setup_tsgo()
     return
   end
 
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local ok, blink = pcall(require, 'blink.cmp')
+  if ok then
+    capabilities = blink.get_lsp_capabilities(capabilities)
+  end
 
   -- IMPORTANT: Must modify vim.lsp.config.tsgo.cmd BEFORE calling vim.lsp.enable()
   -- because vim.lsp.enable() reads the config at enable-time
@@ -259,6 +261,46 @@ local function setup_tsgo()
   vim.lsp.enable('tsgo')
 end
 
+vim.api.nvim_create_user_command('Tsgo', function(opts)
+  local sub = opts.fargs[1]
+  if sub == 'update' then
+    local tsgo_install_dir = vim.fn.stdpath('data') .. '/tsgo'
+    vim.notify('Updating tsgo...', vim.log.levels.INFO)
+    vim.system({ 'npm', 'install', '@typescript/native-preview@latest' }, {
+      text = true,
+      cwd = tsgo_install_dir,
+    }, function(result)
+      vim.schedule(function()
+        if result.code == 0 then
+          vim.notify('tsgo updated! Restart Neovim to activate.', vim.log.levels.INFO)
+        else
+          vim.notify('tsgo update failed: ' .. (result.stderr or 'unknown'), vim.log.levels.ERROR)
+        end
+      end)
+    end)
+  elseif sub == 'status' then
+    local tsgo_install_dir = vim.fn.stdpath('data') .. '/tsgo'
+    local tsgo_bin = tsgo_install_dir .. '/node_modules/.bin/tsgo'
+    if vim.fn.filereadable(tsgo_bin) == 1 then
+      local clients = vim.lsp.get_clients({ name = 'tsgo' })
+      local status = #clients > 0 and 'running' or 'not running'
+      vim.notify('tsgo: installed, LSP ' .. status, vim.log.levels.INFO)
+    else
+      vim.notify('tsgo: not installed', vim.log.levels.INFO)
+    end
+  elseif sub == 'reinstall' then
+    local tsgo_install_dir = vim.fn.stdpath('data') .. '/tsgo'
+    vim.fn.delete(tsgo_install_dir, 'rf')
+    install_tsgo(function() setup_tsgo() end)
+  else
+    vim.notify('Tsgo: unknown subcommand. Available: update, status, reinstall', vim.log.levels.ERROR)
+  end
+end, {
+  nargs = 1,
+  complete = function() return { 'update', 'status', 'reinstall' } end,
+  desc = 'Manage tsgo TypeScript LSP',
+})
+
 return {
   ------------------------------------------------------------------------
   -- 🛠️ mason.nvim: Tool to manage LSPs, DAPs, linters, and formatters
@@ -269,11 +311,14 @@ return {
     dependencies = {
       'williamboman/mason.nvim',
       'neovim/nvim-lspconfig',
-      'hrsh7th/cmp-nvim-lsp',
     },
     event = { 'BufReadPost', 'BufNewFile' },
     opts = function()
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local ok, blink = pcall(require, 'blink.cmp')
+      if ok then
+        capabilities = blink.get_lsp_capabilities(capabilities)
+      end
       local lspconfig = require('lspconfig')
       local default_on_attach = function(client, bufnr)
         if client.server_capabilities.inlayHintProvider then
@@ -290,11 +335,17 @@ return {
       })
 
       -- Setup clangd immediately (not deferred)
-      setup_clangd()
+      if enabled.clangd ~= false then
+        setup_clangd()
+      end
 
       -- Setup tsgo immediately (VimEnter already fired by the time this plugin loads)
-      install_tsgo()
-      setup_tsgo()
+      if enabled.tsgo ~= false then
+        install_tsgo(function()
+          setup_tsgo()
+        end)
+        setup_tsgo() -- Also try immediately (works if already installed)
+      end
 
       -- Determine which servers to install based on architecture
       local utils = require('core.utils')
@@ -346,7 +397,11 @@ return {
 
       -- Configure SourceKit directly (builtin, not installed by Mason)
       -- Using new vim.lsp.config API for Neovim 0.11+
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local ok, blink = pcall(require, 'blink.cmp')
+      if ok then
+        capabilities = blink.get_lsp_capabilities(capabilities)
+      end
       local on_attach = function(client, bufnr)
         if client.server_capabilities.inlayHintProvider then
           vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
@@ -369,6 +424,7 @@ return {
 
         -- Register the on_attach handler
         vim.api.nvim_create_autocmd('LspAttach', {
+          group = vim.api.nvim_create_augroup('SourcekitLspAttach', { clear = true }),
           callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client and client.name == 'sourcekit' then
@@ -401,85 +457,37 @@ return {
   {
     'j-hui/fidget.nvim',
     enabled = enabled.fidget,
-    event = 'BufEnter',
+    event = 'LspAttach',
     config = function()
       require('fidget').setup({})
     end,
   },
 
   ------------------------------------------------------------------------
-  --- 🌀 lspsaga.nvim: Light-weight LSP UI
+  --- 🔑 Native LSP keymaps (replaces lspsaga)
   ------------------------------------------------------------------------
   {
-    'nvimdev/lspsaga.nvim',
-    enabled = enabled.lspsaga,
-    dependencies = {
-      'neovim/nvim-lspconfig',
-    },
-    opts = function()
-      return {
-        ui = {
-          code_action = '',
-        },
-      }
+    'neovim/nvim-lspconfig',
+    event = { 'BufReadPost', 'BufNewFile' },
+    config = function()
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('NativeLspKeymaps', { clear = true }),
+        callback = function(args)
+          local bufnr = args.buf
+          local opts = function(desc)
+            return { buffer = bufnr, desc = desc }
+          end
+          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('Goto Definition'))
+          vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts('References'))
+          vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts('Goto Implementation'))
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts('Hover Documentation'))
+          vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts('Rename Symbol'))
+          vim.keymap.set('n', '<leader>ac', vim.lsp.buf.code_action, opts('Code Action'))
+          vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts('Type Definition'))
+          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('Goto Declaration'))
+          vim.keymap.set('n', '<leader>sh', vim.lsp.buf.signature_help, opts('Signature Help'))
+        end,
+      })
     end,
-    keys = {
-      {
-        'gd',
-        '<cmd>Lspsaga goto_definition<CR>',
-        desc = 'Goto Definition',
-        mode = 'n',
-        noremap = true,
-        silent = true,
-      },
-      {
-        'gr',
-        '<cmd>Lspsaga finder<CR>',
-        desc = 'Lspsaga Finder',
-        mode = 'n',
-        noremap = true,
-        silent = true,
-      },
-      {
-        'gi',
-        '<cmd>Lspsaga finder imp<CR>',
-        desc = 'Lspsaga Finder Implementations',
-        mode = 'n',
-        noremap = true,
-        silent = true,
-      },
-      {
-        'K',
-        '<cmd>Lspsaga hover_doc<CR>',
-        desc = 'Hover Documentation',
-        mode = 'n',
-        noremap = true,
-        silent = true,
-      },
-      {
-        'rn',
-        '<cmd>Lspsaga rename<CR>',
-        desc = 'Rename Symbol',
-        mode = 'n',
-        noremap = true,
-        silent = true,
-      },
-      {
-        '<leader>ac',
-        '<cmd>Lspsaga code_action<CR>',
-        desc = 'Code Action',
-        mode = 'n',
-        noremap = true,
-        silent = true,
-      },
-      {
-        '<leader>fm',
-        vim.lsp.buf.format,
-        desc = 'Format Buffer',
-        mode = 'n',
-        noremap = true,
-        silent = true,
-      },
-    },
   },
 }

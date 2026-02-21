@@ -34,6 +34,7 @@ return {
 
       -- Auto-close nvim-tree when it's the last window
       vim.api.nvim_create_autocmd('BufEnter', {
+        group = vim.api.nvim_create_augroup('NvimTreeAutoClose', { clear = true }),
         nested = true,
         callback = function()
           if #vim.api.nvim_list_wins() == 1 and require('nvim-tree.utils').is_nvim_tree_buf() then

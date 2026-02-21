@@ -4,84 +4,53 @@ local enabled = require('config.plugins-enabled')
 
 return {
   ------------------------------------------------------------------------
-  --- 📦 nvim-cmp: Autocompletion plugin
+  --- 📦 blink.cmp: Fast completion engine powered by Rust
   ------------------------------------------------------------------------
   {
-    'hrsh7th/nvim-cmp',
-    enabled = enabled.cmp,
-    event = 'BufRead',
-    dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-      'onsails/lspkind.nvim',
+    'saghen/blink.cmp',
+    enabled = enabled.blink_cmp,
+    version = '1.*',
+    event = { 'InsertEnter', 'CmdlineEnter' },
+    opts = {
+      keymap = {
+        preset = 'default',
+        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<C-e>'] = { 'cancel', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+        ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+        ['<C-j>'] = { 'select_next', 'fallback' },
+        ['<C-k>'] = { 'select_prev', 'fallback' },
+        ['<Tab>'] = { 'select_next', 'fallback' },
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+      },
+      completion = {
+        accept = { auto_brackets = { enabled = true } },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+        list = {
+          selection = { preselect = true, auto_insert = false },
+        },
+        menu = {
+          draw = {
+            columns = { { 'kind_icon' }, { 'label', 'label_description', gap = 1 } },
+          },
+        },
+      },
+      sources = {
+        default = { 'lsp', 'path', 'buffer' },
+      },
+      cmdline = {
+        sources = { 'cmdline', 'path' },
+      },
+      appearance = {
+        nerd_font_variant = 'mono',
+      },
+      fuzzy = {
+        implementation = 'prefer_rust_with_warning',
+      },
     },
-    config = function()
-      local cmp = require('cmp')
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
-          end,
-        },
-        window = {
-          -- completion = cmp.config.window.bordered(),
-          -- documentation = cmp.config.window.bordered(),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-        }, {
-          { name = 'buffer' },
-        }),
-        formatting = {
-          format = require('lspkind').cmp_format({
-            mode = 'symbol_text',
-            maxwidth = {
-              menu = 50,
-              abbr = 50,
-            },
-            ellipsis_char = '...',
-            show_labelDetails = true,
-          }),
-        },
-      })
-
-      -- Use buffer source for `/` and `?`
-      cmp.setup.cmdline({ '/', '?' }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = 'buffer' },
-        },
-      })
-
-      -- Use cmdline & path source for ':'
-      cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = 'path' },
-        }, {
-          { name = 'cmdline' },
-        }),
-        matching = { disallow_symbol_nonprefix_matching = false },
-      })
-    end,
-  },
-
-  ------------------------------------------------------------------------
-  --- 📦 lspkind.nvim: VSCode-like pictograms for neovim lsp completion
-  ------------------------------------------------------------------------
-  {
-    'onsails/lspkind.nvim',
-    enabled = enabled.lspkind,
-    lazy = true,
   },
 }

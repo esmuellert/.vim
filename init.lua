@@ -14,9 +14,13 @@
 
 -- Source the legacy vimrc (wrapped in `if !has('nvim')` so only for vim)
 local vimrc_path = vim.fn.stdpath('config') .. '/vimrc'
-if vim.loop.fs_stat(vimrc_path) then
+if vim.uv.fs_stat(vimrc_path) then
   vim.cmd('source ' .. vimrc_path)
 end
+
+-- Set leader keys before loading anything else
+vim.g.mapleader = ' '
+vim.g.maplocalleader = '\\'
 
 -- Load core configuration
 require('core')
@@ -41,10 +45,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Set leader keys before loading plugins
-vim.g.mapleader = ' '
-vim.g.maplocalleader = '\\'
-
 -- Load plugins from lua/plugins/init.lua (which loads all plugin modules)
 require('lazy').setup('plugins', {
   -- Lazy.nvim configuration options
@@ -60,13 +60,16 @@ require('lazy').setup('plugins', {
     enabled = false, -- don't check for plugin updates automatically
   },
   change_detection = {
-    enabled = true,
+    enabled = false,
     notify = false, -- disable blocking notification
   },
   performance = {
     rtp = {
       disabled_plugins = {
         'gzip',
+        'matchit',
+        'matchparen',
+        'rplugin',
         'tarPlugin',
         'tohtml',
         'tutor',
@@ -84,12 +87,12 @@ require('core.colorscheme')
 
 -- Load writing configuration if it exists
 local writing_config_path = vim.fn.stdpath('config') .. '/lua/config/writing.lua'
-if vim.loop.fs_stat(writing_config_path) then
+if vim.uv.fs_stat(writing_config_path) then
   require('config.writing')
 end
 
 -- Load local user configuration if it exists (for machine-specific settings)
 local local_config_path = vim.fn.stdpath('config') .. '/lua/local.lua'
-if vim.loop.fs_stat(local_config_path) then
+if vim.uv.fs_stat(local_config_path) then
   require('local')
 end

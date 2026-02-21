@@ -108,8 +108,12 @@ set showcmd                " Show already typed keys when more are expected.
 set incsearch              " Highlight while searching with / or ?.
 set hlsearch               " Keep matches highlighted.
 
-set ttyfast                " Faster redrawing.
-set lazyredraw             " Only redraw when necessary.
+if !has('nvim')
+    set ttyfast                " Faster redrawing.
+endif
+if !has('nvim')
+    set lazyredraw             " Only redraw when necessary.
+endif
 
 set splitbelow             " Open new windows below the current window.
 set splitright             " Open new windows right of the current window.
@@ -117,7 +121,9 @@ set splitright             " Open new windows right of the current window.
 set cursorline             " Find the current line quickly.
 set wrapscan               " Searches wrap around end-of-file.
 set report      =0         " Always report changed lines.
-set synmaxcol   =200       " Only highlight the first 200 columns.
+if !has('nvim')
+    set synmaxcol   =200       " Only highlight the first 200 columns.
+endif
 
 set list                   " Show non-printable characters.
 if has('multi_byte') && &encoding ==# 'utf-8'
@@ -166,7 +172,9 @@ set undofile
 
 " My custom setting
 " Theme
-set termguicolors
+if !has('nvim')
+    set termguicolors
+endif
 set background=light
 if !has('nvim')
     colorscheme github
@@ -196,10 +204,12 @@ set belloff=all
 "augroup end
 
 " Automatically reload file
-augroup AutoRead
-    autocmd!
-    autocmd CursorHold * if getcmdwintype() == '' | checktime | endif
-augroup END
+if !has('nvim')
+    augroup AutoRead
+        autocmd!
+        autocmd CursorHold * if getcmdwintype() == '' | checktime | endif
+    augroup END
+endif
 
 
 " Automatically save the session into a 'tmp' folder inside the config path

@@ -136,10 +136,10 @@ local function find_workspace_root(filepath)
     path = vim.fn.fnamemodify(path, ':h')
 
     -- Check if this directory contains a .sln file
-    local handle = vim.loop.fs_scandir(path)
+    local handle = vim.uv.fs_scandir(path)
     if handle then
       while true do
-        local name, type = vim.loop.fs_scandir_next(handle)
+        local name, type = vim.uv.fs_scandir_next(handle)
         if not name then
           break
         end
@@ -199,7 +199,11 @@ local function setup_roslyn_lsp(workspace_root)
 
   -- Only call vim.lsp.config once to prevent duplicate instances
   if not roslyn_config_done then
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    local ok, blink = pcall(require, 'blink.cmp')
+    if ok then
+      capabilities = blink.get_lsp_capabilities(capabilities)
+    end
 
     -- Roslyn LSP requires specific command line args
     local log_dir = ROSLYN_INSTALL_DIR .. '/logs'
@@ -415,6 +419,7 @@ if enabled.lsp and enabled.roslyn then
 
   -- Auto-attach to C# files
   vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('RoslynAutoAttach', { clear = true }),
     pattern = 'cs',
     callback = function(args)
       local filepath = vim.api.nvim_buf_get_name(args.buf)
@@ -446,7 +451,7 @@ if enabled.lsp and enabled.roslyn then
 
       if #clients > 0 then
         local client = clients[1]
-        vim.lsp.stop_client(client.id, true)
+        client:stop(true)
         roslyn_client_id = nil
         vim.notify('Restarting Roslyn Language Service...', vim.log.levels.INFO)
         vim.defer_fn(function()
@@ -473,7 +478,7 @@ if enabled.lsp and enabled.roslyn then
 
       if #clients > 0 then
         local client = clients[1]
-        vim.lsp.stop_client(client.id, true)
+        client:stop(true)
         roslyn_client_id = nil
         vim.notify('Stopped Roslyn Language Service', vim.log.levels.INFO)
       else
