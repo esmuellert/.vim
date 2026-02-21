@@ -1,11 +1,11 @@
 -- snacks.nvim: Collection of QoL features by Folke
 -- Picker is DISABLED here — using fzf-lua instead
 
-local enabled = require('config.plugins-enabled')
+local enabled = require("config.plugins-enabled")
 
 return {
   {
-    'folke/snacks.nvim',
+    "folke/snacks.nvim",
     enabled = enabled.snacks,
     priority = 1000,
     lazy = false,
@@ -25,7 +25,13 @@ return {
       -- Replaces indent-blankline.nvim
       indent = {
         enabled = true,
-        animate = { enabled = false }, -- keep it snappy
+        animate = { enabled = false },
+        filter = function(buf)
+          return vim.g.snacks_indent ~= false
+            and vim.b[buf].snacks_indent ~= false
+            and vim.bo[buf].filetype ~= ""
+            and vim.bo[buf].filetype ~= "codediff-explorer"
+        end,
       },
 
       -- Replaces large file detection in autocmds.lua
@@ -72,26 +78,74 @@ return {
     },
     keys = {
       -- Terminal
-      { '<leader>t', function() Snacks.terminal.toggle() end, desc = 'Toggle Terminal' },
+      {
+        "<leader>t",
+        function()
+          Snacks.terminal.toggle()
+        end,
+        desc = "Toggle Terminal",
+      },
 
       -- LazyGit
-      { '<leader>g', function() Snacks.lazygit() end, desc = 'LazyGit' },
+      {
+        "<leader>g",
+        function()
+          Snacks.lazygit()
+        end,
+        desc = "LazyGit",
+      },
 
       -- Buffer delete
-      { '<leader>bd', function() Snacks.bufdelete() end, desc = 'Delete Buffer' },
+      {
+        "<leader>bd",
+        function()
+          Snacks.bufdelete()
+        end,
+        desc = "Delete Buffer",
+      },
 
       -- Zen mode
-      { '<leader>zw', function() Snacks.zen() end, desc = 'Zen Mode' },
+      {
+        "<leader>zw",
+        function()
+          Snacks.zen()
+        end,
+        desc = "Zen Mode",
+      },
 
       -- Dim toggle
-      { '<leader>zd', function() Snacks.dim() end, desc = 'Dim Mode' },
+      {
+        "<leader>zd",
+        function()
+          Snacks.dim()
+        end,
+        desc = "Dim Mode",
+      },
 
       -- Words navigation (like vim-illuminate but with jumping)
-      { ']]', function() Snacks.words.jump(1) end, desc = 'Next Reference' },
-      { '[[', function() Snacks.words.jump(-1) end, desc = 'Prev Reference' },
+      {
+        "]]",
+        function()
+          Snacks.words.jump(1)
+        end,
+        desc = "Next Reference",
+      },
+      {
+        "[[",
+        function()
+          Snacks.words.jump(-1)
+        end,
+        desc = "Prev Reference",
+      },
 
       -- Notifier history
-      { '<leader>nh', function() Snacks.notifier.show_history() end, desc = 'Notification History' },
+      {
+        "<leader>nh",
+        function()
+          Snacks.notifier.show_history()
+        end,
+        desc = "Notification History",
+      },
     },
   },
 }

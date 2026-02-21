@@ -1,6 +1,6 @@
 -- UI plugins: statusline, bufferline, indent guides
 
-local enabled = require('config.plugins-enabled')
+local enabled = require("config.plugins-enabled")
 
 return {
   ------------------------------------------------------------------------
@@ -8,54 +8,64 @@ return {
   ------------------------------------------------------------------------
   {
     enabled = enabled.lualine,
-    'nvim-lualine/lualine.nvim',
-    event = 'BufRead',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    "nvim-lualine/lualine.nvim",
+    event = "BufRead",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      local theme_config = require('config.theme')
+      local theme_config = require("config.theme")
 
       local function xcodebuild_device()
-        if vim.g.xcodebuild_platform == 'macOS' then
-          return ' macOS'
+        if vim.g.xcodebuild_platform == "macOS" then
+          return " macOS"
         end
 
-        local deviceIcon = ''
-        if vim.g.xcodebuild_platform and vim.g.xcodebuild_platform:match('watch') then
-          deviceIcon = '􀟤'
-        elseif vim.g.xcodebuild_platform and vim.g.xcodebuild_platform:match('tv') then
-          deviceIcon = '􀡴 '
-        elseif vim.g.xcodebuild_platform and vim.g.xcodebuild_platform:match('vision') then
-          deviceIcon = '􁎖 '
+        local deviceIcon = ""
+        if vim.g.xcodebuild_platform and vim.g.xcodebuild_platform:match("watch") then
+          deviceIcon = "􀟤"
+        elseif vim.g.xcodebuild_platform and vim.g.xcodebuild_platform:match("tv") then
+          deviceIcon = "􀡴 "
+        elseif vim.g.xcodebuild_platform and vim.g.xcodebuild_platform:match("vision") then
+          deviceIcon = "􁎖 "
         end
 
         if vim.g.xcodebuild_os then
-          return deviceIcon .. ' ' .. vim.g.xcodebuild_device_name .. ' (' .. vim.g.xcodebuild_os .. ')'
+          return deviceIcon .. " " .. vim.g.xcodebuild_device_name .. " (" .. vim.g.xcodebuild_os .. ")"
         end
 
         if vim.g.xcodebuild_device_name then
-          return deviceIcon .. ' ' .. vim.g.xcodebuild_device_name
+          return deviceIcon .. " " .. vim.g.xcodebuild_device_name
         end
 
-        return ''
+        return ""
       end
 
-      require('lualine').setup({
+      require("lualine").setup({
         options = {
           theme = theme_config.get_lualine_theme(),
-          component_separators = '',
-          section_separators = { left = '', right = '' },
+          component_separators = "",
+          section_separators = { left = "", right = "" },
+        },
+        tabline = {
+          lualine_a = {
+            {
+              "tabs",
+              mode = 2,
+              max_length = vim.o.columns,
+              use_mode_colors = true,
+            },
+          },
         },
         sections = {
-          lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
+          lualine_a = { { "mode", separator = { left = "" }, right_padding = 2 } },
           lualine_c = {
             {
-              'filename',
+              "filename",
               path = 1,
             },
           },
           lualine_z = {
             { xcodebuild_device },
-            { 'location', separator = { right = '' }, left_padding = 2 },
+            { "location", separator = { right = "" }, left_padding = 2 },
           },
         },
       })
@@ -67,28 +77,20 @@ return {
   ------------------------------------------------------------------------
   {
     enabled = enabled.bufferline,
-    'akinsho/bufferline.nvim',
-    event = 'BufRead',
-    version = '*',
-    dependencies = 'nvim-tree/nvim-web-devicons',
+    "akinsho/bufferline.nvim",
+    event = "BufRead",
+    version = "*",
+    dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
-      local theme_config = require('config.theme')
+      local theme_config = require("config.theme")
 
-      require('bufferline').setup({
+      require("bufferline").setup({
         options = {
-          mode = 'tabs',
+          mode = "tabs",
           indicator = {
-            style = 'underline',
+            style = "underline",
           },
           offsets = {},
-          name_formatter = function(buf)
-            if buf.tabnr then
-              local tab_label = vim.t[buf.tabnr] and vim.t[buf.tabnr].codediff_tab_label
-              if tab_label then
-                return tab_label
-              end
-            end
-          end,
         },
         highlights = theme_config.get_bufferline_highlights(),
       })
@@ -100,14 +102,14 @@ return {
   ------------------------------------------------------------------------
   {
     enabled = enabled.indent_blankline,
-    'lukas-reineke/indent-blankline.nvim',
-    event = 'BufRead',
-    main = 'ibl',
+    "lukas-reineke/indent-blankline.nvim",
+    event = "BufRead",
+    main = "ibl",
     config = function()
-      require('ibl').setup({
+      require("ibl").setup({
         indent = {
-          char = '│',
-          tab_char = { '│' },
+          char = "│",
+          tab_char = { "│" },
         },
       })
     end,
@@ -117,15 +119,15 @@ return {
   -- 📝 render-markdown.nvim: Render markdown in Neovim
   ------------------------------------------------------------------------
   {
-    'MeanderingProgrammer/render-markdown.nvim',
+    "MeanderingProgrammer/render-markdown.nvim",
     enabled = enabled.render_markdown,
-    ft = { 'markdown' },
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    ft = { "markdown" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
     opts = {
       -- Ignore codediff virtual buffers to avoid treesitter yield errors on Neovim 0.12
       ignore = function(buf)
         local name = vim.api.nvim_buf_get_name(buf)
-        return name:match('^vscodediff://') ~= nil
+        return name:match("^vscodediff://") ~= nil
       end,
     },
   },

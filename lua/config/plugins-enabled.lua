@@ -2,7 +2,7 @@
 -- Set any plugin to false to disable it completely
 -- This makes it easy to enable/disable plugins without commenting out code
 
-local utils = require('core.utils')
+local utils = require("core.utils")
 
 return {
   -- Git plugins
@@ -22,7 +22,7 @@ return {
   codediff = true,
 
   -- UI plugins
-  bufferline = true,
+  bufferline = false,
   lualine = true,
   indent_blankline = false,
   colorizer = false,
