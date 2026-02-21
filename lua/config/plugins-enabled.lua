@@ -37,7 +37,6 @@ return {
 
   -- Other plugins
   eslint = true,
-  xcodebuild = false,
   writing = true,
   zen_mode = false,
   todo_comments = true,

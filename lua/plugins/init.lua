@@ -16,7 +16,6 @@ local plugin_modules = {
   require('plugins.filetree'),
   require('plugins.which-key'),
   require('plugins.eslint'),
-  require('plugins.xcodebuild'),
   require('plugins.writing'),
   require('plugins.session'),
   require('plugins.http-client'),
