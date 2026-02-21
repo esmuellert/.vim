@@ -13,14 +13,10 @@ return {
     dependencies = {
       'MunifTanjim/nui.nvim',
     },
-    keys = {
-      { "<leader>nh", "<cmd>Noice fzf<cr>", desc = "Notification History" },
-    },
     config = function()
       require('noice').setup({
         cmdline = {
           enabled = true,
-          view = 'cmdline', -- classic bottom cmdline (not centered popup)
         },
         messages = {
           enabled = true,
@@ -50,7 +46,7 @@ return {
         },
         presets = {
           bottom_search = true,
-          command_palette = false, -- keep cmdline at bottom
+          command_palette = true, -- cmdline and popupmenu together
           long_message_to_split = true,
           lsp_doc_border = true,
         },

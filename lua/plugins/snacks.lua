@@ -61,7 +61,12 @@ return {
       scope = { enabled = true },
 
       -- Notification rendering backend (noice routes to this)
-      notifier = { enabled = true },
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+        style = "compact",
+        top_down = false,
+      },
 
       -- Quick file open before plugins load
       quickfile = { enabled = true },
@@ -134,6 +139,9 @@ return {
         end,
         desc = "Prev Reference",
       },
+
+      -- Notification history
+      { "<leader>nh", "<cmd>Noice fzf<cr>", desc = "Notification History" },
 
     },
   },
