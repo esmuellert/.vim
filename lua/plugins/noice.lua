@@ -13,6 +13,9 @@ return {
     dependencies = {
       'MunifTanjim/nui.nvim',
     },
+    keys = {
+      { "<leader>nh", "<cmd>Noice fzf<cr>", desc = "Notification History" },
+    },
     config = function()
       require('noice').setup({
         cmdline = {

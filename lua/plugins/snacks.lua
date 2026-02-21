@@ -135,8 +135,6 @@ return {
         desc = "Prev Reference",
       },
 
-      -- Notifier history (via noice)
-      { "<leader>nh", "<cmd>Noice history<cr>", desc = "Notification History" },
     },
   },
 }
