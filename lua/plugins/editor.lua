@@ -66,6 +66,11 @@ return {
         explorer = {
           view_mode = 'tree',  -- Use tree view by default
         },
+        keymaps = {
+          view = {
+            focus_explorer = '<leader>fe', -- Avoid conflict with yazi <leader>e
+          },
+        },
       }
       
       if colorscheme == 'github_light' then
