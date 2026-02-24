@@ -204,12 +204,10 @@ set belloff=all
 "augroup end
 
 " Automatically reload file
-if !has('nvim')
-    augroup AutoRead
-        autocmd!
-        autocmd CursorHold * if getcmdwintype() == '' | checktime | endif
-    augroup END
-endif
+augroup AutoRead
+    autocmd!
+    autocmd CursorHold * if getcmdwintype() == '' | checktime | endif
+augroup END
 
 
 " Automatically save the session into a 'tmp' folder inside the config path
