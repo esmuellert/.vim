@@ -55,7 +55,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 vim.defer_fn(setup_diagnostic_line_highlights, 200)
 
 ------------------------------------------------------------------------
---- Auto-update Neovim config when on main and clean
+--- Auto-update Neovim config when on main
 ------------------------------------------------------------------------
 local function auto_update_config_repo()
   local config_path = vim.fn.stdpath("config")
@@ -84,11 +84,6 @@ local function auto_update_config_repo()
 
   local branch = vim.trim(branch_out[1] or "")
   if branch ~= "main" then
-    return
-  end
-
-  local status_out, status_code = git_cmd({ "status", "--porcelain" })
-  if status_code ~= 0 or not is_empty(status_out) then
     return
   end
 
@@ -138,7 +133,7 @@ local function auto_update_config_repo()
         end
 
         vim.schedule(function()
-          vim.fn.jobstart({ "git", "-C", config_path, "pull", "--ff-only" }, {
+          vim.fn.jobstart({ "git", "-C", config_path, "pull", "--rebase", "--autostash" }, {
             stdout_buffered = true,
             stderr_buffered = true,
             on_stdout = function(_, data)
@@ -165,5 +160,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
   group = vim.api.nvim_create_augroup("ConfigAutoUpdate", { clear = true }),
   once = true,
   callback = auto_update_config_repo,
-  desc = "Pull latest config when clean and behind upstream",
+  desc = "Pull latest config when behind upstream",
 })
