@@ -154,6 +154,10 @@ in
       credential."https://github.com" = {
         helper = "!gh auth git-credential";
       };
+      diff.tool = "codediff";
+      difftool.codediff.cmd = ''nvim "$LOCAL" "$REMOTE" +"CodeDiff file $LOCAL $REMOTE"'';
+      merge.tool = "codediff";
+      mergetool.codediff.cmd = ''nvim "$MERGED" -c "CodeDiff merge \"$MERGED\""'';
     };
   };
 
