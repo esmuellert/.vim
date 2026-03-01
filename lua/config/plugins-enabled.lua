@@ -37,7 +37,7 @@ return {
 
   -- Other plugins
   eslint = true,
-  writing = true,
+  writing = false,
   zen_mode = false,
   todo_comments = true,
   session = true,

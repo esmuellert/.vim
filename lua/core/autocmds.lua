@@ -55,7 +55,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 vim.defer_fn(setup_diagnostic_line_highlights, 200)
 
 ------------------------------------------------------------------------
---- Auto-update Neovim config when on main
+--- Auto-update Neovim config when on main and clean
 ------------------------------------------------------------------------
 local function auto_update_config_repo()
   local config_path = vim.fn.stdpath("config")

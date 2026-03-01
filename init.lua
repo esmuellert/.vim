@@ -85,9 +85,9 @@ require('lazy').setup('plugins', {
 -- Load colorscheme (after plugins are loaded)
 require('core.colorscheme')
 
--- Load writing configuration if it exists
+-- Load writing configuration if enabled
 local writing_config_path = vim.fn.stdpath('config') .. '/lua/config/writing.lua'
-if vim.uv.fs_stat(writing_config_path) then
+if require('config.plugins-enabled').writing and vim.uv.fs_stat(writing_config_path) then
   require('config.writing')
 end
 
