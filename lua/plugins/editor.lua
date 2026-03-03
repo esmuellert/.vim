@@ -63,6 +63,9 @@ return {
       
       local codediff = require('codediff')
       local base_config = {
+        diff = {
+          compute_moves = true,
+        },
         explorer = {
           view_mode = 'tree',  -- Use tree view by default
         },
