@@ -175,7 +175,7 @@ set undofile
 if !has('nvim')
     set termguicolors
 endif
-set background=light
+" set background=light
 if !has('nvim')
     colorscheme github
 else
