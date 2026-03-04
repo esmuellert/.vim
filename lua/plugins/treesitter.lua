@@ -14,20 +14,7 @@ return {
     enabled = enabled.treesitter,
     lazy = false, -- Plugin should not be lazy-loaded per documentation
     branch = 'main',
-    build = {
-      ':TSUpdate',
-      -- HACK: nvim-treesitter#8369 - vim query references "tab" node not yet in parser v0.8.0
-      -- This runs after every :Lazy update to strip the invalid node from the query
-      function()
-        local query_file = vim.fn.stdpath('data') .. '/lazy/nvim-treesitter/runtime/queries/vim/highlights.scm'
-        local ok, content = pcall(vim.fn.readfile, query_file)
-        if not ok then return end
-        local filtered = vim.tbl_filter(function(line) return line ~= '  "tab"' end, content)
-        if #filtered < #content then
-          vim.fn.writefile(filtered, query_file)
-        end
-      end,
-    },
+    build = ':TSUpdate',
     config = function()
       -- Register C# language mapping for treesitter
       vim.treesitter.language.register('c_sharp', 'cs')
@@ -125,6 +112,17 @@ return {
         end,
         group = vim.api.nvim_create_augroup('TreesitterIndent', { clear = true }),
       })
+
+      -- HACK: nvim-treesitter#8369 - vim query references "tab" node not yet in parser
+      -- Apply fix at runtime instead of modifying plugin files (which blocks lazy.nvim updates)
+      local query_file = vim.fn.stdpath('data') .. '/lazy/nvim-treesitter/runtime/queries/vim/highlights.scm'
+      local ok, lines = pcall(vim.fn.readfile, query_file)
+      if ok then
+        local filtered = vim.tbl_filter(function(line) return line ~= '  "tab"' end, lines)
+        if #filtered < #lines then
+          pcall(vim.treesitter.query.set, 'vim', 'highlights', table.concat(filtered, '\n'))
+        end
+      end
     end,
   },
 }

@@ -23,6 +23,7 @@
 -- - nordfox
 -- - terafox
 -- - carbonfox
+-- - iceberg
 -- - github_light (if custom theme file exists)
 
 local colorscheme = 'tokyonight-moon'
