@@ -169,6 +169,8 @@ function M.get_lualine_theme()
     return 'terafox'
   elseif colorscheme:match('github') then
     return M.github_light_lualine
+  elseif colorscheme:match('iceberg') then
+    return 'iceberg'
   else
     return 'auto'
   end
