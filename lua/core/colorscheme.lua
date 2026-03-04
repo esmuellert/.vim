@@ -26,10 +26,10 @@
 -- - iceberg
 -- - github_light (if custom theme file exists)
 
-local colorscheme = 'tokyonight-moon'
+local colorscheme = "iceberg"
 
-local status_ok, _ = pcall(vim.cmd, 'colorscheme ' .. colorscheme)
+local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
 if not status_ok then
-  vim.notify('Colorscheme ' .. colorscheme .. ' not found!', vim.log.levels.ERROR)
+  vim.notify("Colorscheme " .. colorscheme .. " not found!", vim.log.levels.ERROR)
   return
 end
