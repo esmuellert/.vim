@@ -91,6 +91,18 @@ return {
         -- Use default highlights
         codediff.setup(base_config)
       end
+
+      -- Override NonText only in codediff-history buffers via winhl
+      vim.api.nvim_create_autocmd({ 'FileType', 'BufWinEnter' }, {
+        callback = function()
+          if vim.bo.filetype == 'codediff-history' then
+            local whl = vim.wo.winhighlight
+            if not whl:find('NonText') then
+              vim.wo.winhighlight = (whl ~= '' and whl .. ',' or '') .. 'NonText:Comment'
+            end
+          end
+        end,
+      })
     end,
   },
 }

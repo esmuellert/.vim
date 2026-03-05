@@ -11,7 +11,6 @@ local plugin_modules = {
   require('plugins.ui'),
   require('plugins.completion'),
   require('plugins.lsp'),
-  require('plugins.roslyn'),
   require('plugins.diagnostics'),
   require('plugins.filetree'),
   require('plugins.which-key'),
@@ -26,6 +25,7 @@ local plugin_modules = {
   require('plugins.lazydev'),
   require('plugins.inc-rename'),
   require('plugins.inline-diagnostic'),
+  require('plugins.octo'),
 }
 
 -- Load local-dev plugins if file exists

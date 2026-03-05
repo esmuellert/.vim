@@ -85,6 +85,11 @@ require('lazy').setup('plugins', {
 -- Load colorscheme (after plugins are loaded)
 require('core.colorscheme')
 
+-- Load LSP configurations (after plugins for blink.cmp capabilities)
+if require('config.plugins-enabled').lsp then
+  require('lsp')
+end
+
 -- Load writing configuration if enabled
 local writing_config_path = vim.fn.stdpath('config') .. '/lua/config/writing.lua'
 if require('config.plugins-enabled').writing and vim.uv.fs_stat(writing_config_path) then

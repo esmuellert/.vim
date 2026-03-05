@@ -26,11 +26,15 @@ return {
       indent = {
         enabled = true,
         animate = { enabled = false },
+        chunk = { enabled = false },
         filter = function(buf)
-          return vim.g.snacks_indent ~= false
-            and vim.b[buf].snacks_indent ~= false
-            and vim.bo[buf].buftype == ""
-            and vim.bo[buf].filetype ~= "codediff-explorer"
+          if vim.g.snacks_indent == false or vim.b[buf].snacks_indent == false then
+            return false
+          end
+          local bt = vim.bo[buf].buftype
+          local name = vim.api.nvim_buf_get_name(buf)
+          -- Allow normal files and codediff virtual buffers
+          return bt == "" or name:match("^codediff://")
         end,
       },
 

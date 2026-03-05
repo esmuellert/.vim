@@ -127,6 +127,11 @@ in
     lazygit
     stylua     # Lua formatter
 
+    # === LSP Servers ===
+    gopls                          # Go LSP
+    lua-language-server            # Lua LSP
+    vscode-langservers-extracted   # HTML, CSS, JSON LSP servers
+
     # === Tree-sitter (parsers are handled by nvim-treesitter plugin) ===
     tree-sitter
 

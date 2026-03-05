@@ -1,7 +1,11 @@
 -- Native Roslyn LSP configuration for C# development
 -- Per-project loading for optimal performance in large solutions
+-- Windows-only: self-installs via NuGet
 
 local enabled = require('config.plugins-enabled')
+if not enabled.roslyn then
+  return
+end
 
 ------------------------------------------------------------------------
 -- Configuration
@@ -517,6 +521,3 @@ if enabled.lsp and enabled.roslyn then
     desc = 'Manage Roslyn Language Service',
   })
 end
-
--- Return empty table since this is not a plugin spec anymore
-return {}

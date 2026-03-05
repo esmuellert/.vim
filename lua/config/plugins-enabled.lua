@@ -28,7 +28,6 @@ return {
 
   -- LSP and completion
   lsp = true,
-  mason = true,
   blink_cmp = true,
   roslyn = true,
 
@@ -49,4 +48,5 @@ return {
   snacks = true,
   conform = true,
   noice = true,
+  octo = true,
 }

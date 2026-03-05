@@ -38,6 +38,9 @@ return {
         'python',
         'bash',
         'http',
+        'go',
+        'gomod',
+        'gosum',
       }
       require('nvim-treesitter').install(parsers_to_install)
 
@@ -60,6 +63,8 @@ return {
           'bash',
           'sh',
           'http',
+          'go',
+          'gomod',
         },
         callback = function()
           local max_filesize = 100 * 1024 -- 100 KB
@@ -95,6 +100,8 @@ return {
           'bash',
           'sh',
           'http',
+          'go',
+          'gomod',
         },
         callback = function()
           vim.wo.foldmethod = 'expr'
