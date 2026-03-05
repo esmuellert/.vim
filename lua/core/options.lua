@@ -4,7 +4,7 @@
 vim.opt.termguicolors = true
 
 -- Set the sign column to always be visible
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = "yes"
 
 -- Enable responsive mouse interactions (needed for hover-driven UIs)
 vim.opt.mousemoveevent = true
@@ -38,7 +38,7 @@ vim.opt.synmaxcol = 500 -- Don't highlight lines longer than 500 chars (prevents
 -- Roslyn-specific override in plugins/roslyn.lua to only show Error and Warning
 vim.diagnostic.config({
   virtual_text = {
-    prefix = '',
+    prefix = "",
     severity = { min = vim.diagnostic.severity.INFO }, -- Show INFO and above globally
   },
   severity_sort = true,
@@ -48,16 +48,16 @@ vim.diagnostic.config({
   signs = {
     severity = { min = vim.diagnostic.severity.INFO }, -- Show INFO and above globally
     text = {
-      [vim.diagnostic.severity.ERROR] = '',
-      [vim.diagnostic.severity.WARN] = '',
-      [vim.diagnostic.severity.HINT] = '',
-      [vim.diagnostic.severity.INFO] = '',
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.HINT] = "",
+      [vim.diagnostic.severity.INFO] = "",
     },
     linehl = {
-      [vim.diagnostic.severity.ERROR] = 'DiagnosticLineError',
-      [vim.diagnostic.severity.WARN] = 'DiagnosticLineWarn',
-      [vim.diagnostic.severity.HINT] = 'DiagnosticLineHint',
-      [vim.diagnostic.severity.INFO] = 'DiagnosticLineInfo',
+      [vim.diagnostic.severity.ERROR] = "DiagnosticLineError",
+      [vim.diagnostic.severity.WARN] = "DiagnosticLineWarn",
+      [vim.diagnostic.severity.HINT] = "DiagnosticLineHint",
+      [vim.diagnostic.severity.INFO] = "DiagnosticLineInfo",
     },
   },
 })
@@ -65,27 +65,27 @@ vim.diagnostic.config({
 -- Diff mode improvements
 -- Add diagonal lines for deleted lines in diff mode (makes diffs clearer)
 vim.opt.fillchars:append({
-  diff = '╱', -- Diagonal lines for deleted sections
-  fold = ' ',
-  eob = ' ', -- Suppress ~ on empty lines
+  diff = "╱", -- Diagonal lines for deleted sections
+  fold = " ",
+  eob = " ", -- Suppress ~ on empty lines
 })
 
 -- Diff options - IMPORTANT: 'internal' is crucial for Windows to avoid E810 errors
 local diffopt = {
-  'internal', -- Use internal xdiff library (required for Windows)
-  'filler', -- Show filler lines for deleted/added lines
-  'closeoff', -- Turn off diff when closing window
-  'vertical', -- Use vertical splits by default
-  'algorithm:myers', -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
-  'indent-heuristic', -- Slide diffs along indentation for better alignment
+  "internal", -- Use internal xdiff library (required for Windows)
+  "filler", -- Show filler lines for deleted/added lines
+  "closeoff", -- Turn off diff when closing window
+  "vertical", -- Use vertical splits by default
+  "algorithm:myers", -- Algorithm: myers (default/fast), minimal (thorough/slow), patience (readable), histogram (balanced)
+  "indent-heuristic", -- Slide diffs along indentation for better alignment
   -- 'linematch:60', -- Match similar lines within diff blocks (max 60 lines)
   -- 'iwhite',
-  'inline:char'
+  "inline:char",
 }
 
 -- Add inline word-level diffs for Neovim 0.12+
-if vim.fn.has('nvim-0.12') == 1 then
-  table.insert(diffopt, 'inline:word')
+if vim.fn.has("nvim-0.12") == 1 then
+  table.insert(diffopt, "inline:word")
 end
 
 vim.opt.diffopt = diffopt
@@ -94,13 +94,13 @@ vim.opt.diffopt = diffopt
 vim.opt.undofile = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
-vim.opt.splitkeep = 'screen'
+vim.opt.splitkeep = "screen"
 vim.opt.scrolloff = 0
 vim.opt.sidescrolloff = 0
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.showmode = false
-vim.opt.clipboard = 'unnamedplus'
+vim.opt.clipboard = "unnamedplus"
 
 -- Auto-reload files when changed outside of Neovim
 vim.o.autoread = true

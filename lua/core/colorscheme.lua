@@ -33,3 +33,7 @@ if not status_ok then
   vim.notify("Colorscheme " .. colorscheme .. " not found!", vim.log.levels.ERROR)
   return
 end
+
+-- Invisible pane borders (must be set after colorscheme)
+vim.o.fillchars = vim.o.fillchars .. ",vert:│"
+vim.api.nvim_set_hl(0, "WinSeparator", { link = "NonText" })
