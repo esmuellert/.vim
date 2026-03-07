@@ -56,6 +56,10 @@ require('lazy').setup('plugins', {
     missing = true, -- install missing plugins on startup
     --[[  colorscheme = { "tokyonight-moon" }, ]]
   },
+  dev = {
+    path = '~',
+    fallback = true, -- fall back to git on machines without local source
+  },
   checker = {
     enabled = false, -- don't check for plugin updates automatically
   },

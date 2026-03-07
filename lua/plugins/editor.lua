@@ -41,6 +41,7 @@ return {
   {
     "esmuellert/codediff.nvim",
     enabled = enabled.codediff,
+    dev = true,
     pin = false,
     cmd = { "CodeDiff" },
     dependencies = {
