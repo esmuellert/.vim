@@ -132,7 +132,16 @@ vim.api.nvim_create_user_command('Tsgo', function(opts)
     if vim.fn.filereadable(tsgo_bin) == 1 then
       local clients = vim.lsp.get_clients({ name = 'tsgo' })
       local status = #clients > 0 and 'running' or 'not running'
-      vim.notify('tsgo: installed, LSP ' .. status, vim.log.levels.INFO)
+      local version = 'unknown version'
+      local pkg_path = tsgo_install_dir .. '/node_modules/@typescript/native-preview/package.json'
+      local f = io.open(pkg_path, 'r')
+      if f then
+        local content = f:read('*a')
+        f:close()
+        local v = content:match('"version"%s*:%s*"([^"]+)"')
+        if v then version = 'v' .. v end
+      end
+      vim.notify('tsgo: ' .. version .. ', LSP ' .. status, vim.log.levels.INFO)
     else
       vim.notify('tsgo: not installed', vim.log.levels.INFO)
     end
@@ -147,3 +156,8 @@ end, {
   complete = function() return { 'update', 'status', 'reinstall' } end,
   desc = 'Manage tsgo TypeScript LSP',
 })
+
+-- Lowercase alias: :tsgo → :Tsgo
+vim.cmd(
+  [[cnoreabbrev <expr> tsgo getcmdtype() ==# ':' && getcmdline() =~# '^tsgo' ? 'Tsgo' : 'tsgo']]
+)
