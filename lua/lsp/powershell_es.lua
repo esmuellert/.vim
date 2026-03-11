@@ -114,6 +114,7 @@ local function setup_pses()
     single_file_support = true,
     capabilities = capabilities,
     on_attach = function(client, bufnr)
+      client.server_capabilities.semanticTokensProvider = nil
       lsp_helpers.default_on_attach(client, bufnr)
     end,
     settings = {

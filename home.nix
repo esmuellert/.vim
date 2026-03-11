@@ -143,6 +143,9 @@ in
 
     # === File Manager ===
     yazi
+
+    # === System Monitor ===
+    btop
   ];
 
   # =========================================
