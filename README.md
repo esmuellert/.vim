@@ -63,7 +63,7 @@ Leader is `<Space>`.
 | `<leader>e` / `<leader>cw`         | Yazi at file / cwd                       |
 | `<leader>g` / `<leader>t`          | LazyGit / terminal (snacks)              |
 | `<leader>d` / `<leader>df`         | CodeDiff working tree (staged+unstaged)  |
-| `<leader>d1` `d2` `d3` / `<leader>dm` | CodeDiff vs HEAD~N / vs main·master   |
+| `<leader>d1`..`d9` / `<leader>dn` / `<leader>dm` | CodeDiff vs HEAD~1-9 / HEAD~N (prompt) / main·master |
 | `<leader>db` / `<leader>dc` / `<leader>dr` | CodeDiff vs branch / commit / ref (pick) |
 | `<leader>ds` / `<leader>dC`        | CodeDiff show commit / current-file commit (pick) |
 | `<leader>dh`                       | CodeDiff history                         |

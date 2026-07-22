@@ -88,6 +88,46 @@ local function codediff_ref()
   end)
 end
 
+-- Prompt for a number N and diff the working tree against HEAD~N.
+local function codediff_head_n()
+  vim.ui.input({ prompt = "CodeDiff HEAD~" }, function(input)
+    if not input or vim.trim(input) == "" then
+      return
+    end
+    local n = tonumber(input)
+    if n and n >= 0 and n == math.floor(n) then
+      vim.cmd("CodeDiff HEAD~" .. n)
+    else
+      vim.notify("CodeDiff: invalid number '" .. input .. "'", vim.log.levels.WARN)
+    end
+  end)
+end
+
+-- Keymap list; <leader>d1..d9 are generated below (not hardcoded).
+local keys = {
+  -- Working tree (staged + unstaged). <leader>d aliases <leader>df.
+  { "<leader>d", "<cmd>CodeDiff<cr>", desc = "CodeDiff: working tree" },
+  { "<leader>df", "<cmd>CodeDiff<cr>", desc = "CodeDiff: working tree" },
+  { "<leader>dh", "<cmd>CodeDiff history<cr>", desc = "CodeDiff: history" },
+  { "<leader>dm", codediff_main, desc = "CodeDiff: vs main/master" },
+  { "<leader>dn", codediff_head_n, desc = "CodeDiff: vs HEAD~N (prompt)" },
+  -- Pickers / prompt
+  { "<leader>db", codediff_branch, desc = "CodeDiff: vs branch (pick)" },
+  { "<leader>dc", codediff_commit, desc = "CodeDiff: vs commit (pick)" },
+  { "<leader>ds", codediff_show_commit, desc = "CodeDiff: show commit changes (pick)" },
+  { "<leader>dC", codediff_file_commit, desc = "CodeDiff: current file commit (pick)" },
+  { "<leader>dr", codediff_ref, desc = "CodeDiff: vs ref (prompt)" },
+}
+
+-- <leader>d1..d9 -> instant CodeDiff HEAD~1..9
+for d = 1, 9 do
+  table.insert(keys, {
+    "<leader>d" .. d,
+    "<cmd>CodeDiff HEAD~" .. d .. "<cr>",
+    desc = "CodeDiff: vs HEAD~" .. d,
+  })
+end
+
 return {
   {
     "esmuellert/codediff.nvim",
@@ -95,23 +135,7 @@ return {
     pin = false,
     cmd = { "CodeDiff" },
     dependencies = { "MunifTanjim/nui.nvim" },
-    keys = {
-      -- Working tree (staged + unstaged). <leader>d aliases <leader>df.
-      { "<leader>d", "<cmd>CodeDiff<cr>", desc = "CodeDiff: working tree" },
-      { "<leader>df", "<cmd>CodeDiff<cr>", desc = "CodeDiff: working tree" },
-      { "<leader>dh", "<cmd>CodeDiff history<cr>", desc = "CodeDiff: history" },
-      { "<leader>dm", codediff_main, desc = "CodeDiff: vs main/master" },
-      -- Recent commits
-      { "<leader>d1", "<cmd>CodeDiff HEAD~1<cr>", desc = "CodeDiff: vs HEAD~1" },
-      { "<leader>d2", "<cmd>CodeDiff HEAD~2<cr>", desc = "CodeDiff: vs HEAD~2" },
-      { "<leader>d3", "<cmd>CodeDiff HEAD~3<cr>", desc = "CodeDiff: vs HEAD~3" },
-      -- Pickers / prompt
-      { "<leader>db", codediff_branch, desc = "CodeDiff: vs branch (pick)" },
-      { "<leader>dc", codediff_commit, desc = "CodeDiff: vs commit (pick)" },
-      { "<leader>ds", codediff_show_commit, desc = "CodeDiff: show commit changes (pick)" },
-      { "<leader>dC", codediff_file_commit, desc = "CodeDiff: current file commit (pick)" },
-      { "<leader>dr", codediff_ref, desc = "CodeDiff: vs ref (prompt)" },
-    },
+    keys = keys,
     opts = {
       diff = {
         compute_moves = true,
