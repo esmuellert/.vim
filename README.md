@@ -31,7 +31,7 @@ Every file under `lua/plugins/` is a self-contained plugin spec, auto-imported b
 | ------------- | ---------------------------------------------------------- |
 | Finder        | fzf-lua                                                    |
 | File manager  | yazi.nvim                                                  |
-| Git           | gitsigns · vim-fugitive · diffview.nvim · codediff.nvim    |
+| Git           | gitsigns · diffview.nvim · codediff.nvim                   |
 | Treesitter    | nvim-treesitter                                            |
 | Completion    | blink.cmp (buffer / path / snippets)                       |
 | Formatting    | conform.nvim                                               |
