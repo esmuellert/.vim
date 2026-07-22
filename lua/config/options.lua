@@ -103,3 +103,39 @@ vim.opt.clipboard = "unnamedplus"
 
 -- Auto-reload files when changed outside of Neovim
 vim.o.autoread = true
+
+-- ============================================================================
+-- Editor UI & indentation (ported from the legacy vimrc, which nvim used to
+-- source; these are settings, not plugins, so they are kept)
+-- ============================================================================
+
+-- Line numbers
+vim.opt.number = true
+
+-- Highlight the current line
+vim.opt.cursorline = true
+
+-- Indentation: spaces, 4 wide (guess-indent.nvim adjusts per file)
+vim.opt.expandtab = true
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.shiftround = true
+
+-- Show non-printable characters
+vim.opt.list = true
+vim.opt.listchars = { tab = "▸ ", extends = "❯", precedes = "❮", nbsp = "±" }
+
+-- Misc
+vim.opt.showcmd = true
+vim.opt.report = 0
+
+-- Keep a backup copy on write (persistent undo is enabled above via undofile).
+-- Backups live in the state dir, not the config repo (legacy vimrc used tmp/).
+local backupdir = vim.fn.stdpath("state") .. "/backup"
+vim.fn.mkdir(backupdir, "p")
+vim.opt.backup = true
+vim.opt.backupdir = backupdir .. "//"
+vim.opt.backupext = "-vimbackup"
+vim.opt.backupskip = ""
+vim.opt.updatecount = 100

@@ -187,3 +187,28 @@ vim.api.nvim_create_autocmd("FileChangedShell", {
     end
   end,
 })
+
+------------------------------------------------------------------------
+--- Lua files use 2-space indentation (ported from legacy vimrc)
+------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("LuaIndent", { clear = true }),
+  pattern = "lua",
+  callback = function()
+    vim.bo.shiftwidth = 2
+    vim.bo.softtabstop = 2
+    vim.bo.tabstop = 2
+  end,
+})
+
+------------------------------------------------------------------------
+--- Trigger checktime so 'autoread' picks up external changes (vimrc AutoRead)
+------------------------------------------------------------------------
+vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", "FocusGained", "BufEnter" }, {
+  group = vim.api.nvim_create_augroup("AutoReadCheck", { clear = true }),
+  callback = function()
+    if vim.fn.getcmdwintype() == "" and vim.bo.buftype == "" then
+      vim.cmd("checktime")
+    end
+  end,
+})
