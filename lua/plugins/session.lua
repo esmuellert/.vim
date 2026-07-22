@@ -1,36 +1,33 @@
 -- Session management plugin
 
-local enabled = require('config.plugins-enabled')
-
 return {
   ------------------------------------------------------------------------
   -- 💾 persistence.nvim: Simple session management
   ------------------------------------------------------------------------
   {
-    'folke/persistence.nvim',
-    enabled = enabled.session,
-    event = 'VimEnter',
+    "folke/persistence.nvim",
+    event = "VimEnter",
     opts = {
-      dir = vim.fn.stdpath('state') .. '/sessions/', -- directory where session files are saved
+      dir = vim.fn.stdpath("state") .. "/sessions/", -- directory where session files are saved
       -- Remove 'blank' from sessionoptions to avoid saving special buffers like diffview
-      options = { 'buffers', 'curdir', 'tabpages', 'winsize', 'help', 'globals', 'skiprtp', 'folds' },
+      options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
       pre_save = nil,
       save_empty = false, -- don't save if there are no open file buffers
     },
     config = function(_, opts)
-      require('persistence').setup(opts)
+      require("persistence").setup(opts)
 
       -- Close diffview before saving session
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'PersistenceSavePre',
-        group = vim.api.nvim_create_augroup('persistence_diffview_cleanup', { clear = true }),
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "PersistenceSavePre",
+        group = vim.api.nvim_create_augroup("persistence_diffview_cleanup", { clear = true }),
         callback = function()
           -- Close diffview if it's open
           pcall(function()
-            local diffview_lib = require('diffview.lib')
+            local diffview_lib = require("diffview.lib")
             local views = diffview_lib.views
             if views and next(views) ~= nil then
-              vim.cmd('DiffviewClose')
+              vim.cmd("DiffviewClose")
               -- Give it a moment to close properly
               vim.wait(100)
             end
@@ -39,14 +36,14 @@ return {
       })
 
       -- Auto-restore session when opening nvim without arguments
-      vim.api.nvim_create_autocmd('VimEnter', {
-        group = vim.api.nvim_create_augroup('persistence_auto_restore', { clear = true }),
+      vim.api.nvim_create_autocmd("VimEnter", {
+        group = vim.api.nvim_create_augroup("persistence_auto_restore", { clear = true }),
         callback = function()
           -- Only load the session if nvim was started with no args
           if vim.fn.argc() == 0 then
             -- Schedule session loading after UI is rendered
             vim.schedule(function()
-              require('persistence').load()
+              require("persistence").load()
             end)
           end
         end,
@@ -55,25 +52,25 @@ return {
     end,
     keys = {
       {
-        '<leader>qs',
+        "<leader>qs",
         function()
-          require('persistence').load()
+          require("persistence").load()
         end,
-        desc = 'Restore Session',
+        desc = "Restore Session",
       },
       {
-        '<leader>ql',
+        "<leader>ql",
         function()
-          require('persistence').load({ last = true })
+          require("persistence").load({ last = true })
         end,
-        desc = 'Restore Last Session',
+        desc = "Restore Last Session",
       },
       {
-        '<leader>qd',
+        "<leader>qd",
         function()
-          require('persistence').stop()
+          require("persistence").stop()
         end,
-        desc = 'Don\'t Save Current Session',
+        desc = "Don't Save Current Session",
       },
     },
   },

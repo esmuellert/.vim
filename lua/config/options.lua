@@ -35,7 +35,6 @@ vim.opt.synmaxcol = 500 -- Don't highlight lines longer than 500 chars (prevents
 
 -- Diagnostic configuration
 -- Global: Show Error, Warning, and Info (but not Hint)
--- Roslyn-specific override in plugins/roslyn.lua to only show Error and Warning
 vim.diagnostic.config({
   virtual_text = {
     prefix = "",

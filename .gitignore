@@ -1,29 +1,23 @@
 # Ignore everything by default
 /*
 
-# Core configuration files
+# Tracked top-level files
 !/.gitignore
 !/.luarc.json
+!/.stylua.toml
 !/.tmux.conf
 !/home.nix
-!/vimrc
-!/nvim.lua
 !init.lua
-!init.lua.*
 !lazy-lock.json
-!nvim.deprecated.lua
 
-# Directories to include
+# Tracked directories
 !/lua/
-!/colors/
-!/after/
 !/scripts/
-!/deprecated/
 !/dev-docs/
 
-# Exclude specific files/directories
-/lua/plugin/
+# Machine-specific / local overrides (not tracked)
 /lua/local.lua
+/lua/plugin/
 /lua/plugins/local-dev.lua
 
 # Documentation and assets

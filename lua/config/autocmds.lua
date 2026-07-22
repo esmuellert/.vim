@@ -162,3 +162,28 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = auto_update_config_repo,
   desc = "Pull latest config when behind upstream",
 })
+
+------------------------------------------------------------------------
+--- Auto-reload files changed externally (skip if unsaved or build dirs)
+------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("FileChangedShell", {
+  group = vim.api.nvim_create_augroup("SimpleFileReload", { clear = true }),
+  desc = "Handle external file changes",
+  callback = function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local filename = vim.api.nvim_buf_get_name(bufnr)
+    if filename:match("[/\\]obj[/\\]") or filename:match("[/\\]bin[/\\]") then
+      return
+    end
+    if not vim.bo[bufnr].modified then
+      vim.cmd("checktime")
+    else
+      vim.schedule(function()
+        vim.notify(
+          string.format('File "%s" changed externally but you have unsaved changes', vim.fn.fnamemodify(filename, ":t")),
+          vim.log.levels.WARN
+        )
+      end)
+    end
+  end,
+})

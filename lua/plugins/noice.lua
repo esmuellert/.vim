@@ -1,45 +1,42 @@
 -- Noice: modern UI for messages, cmdline, and notifications
 
-local enabled = require('config.plugins-enabled')
-
 return {
   ------------------------------------------------------------------------
   --- 🔔 noice.nvim: Replaces the UI for messages, cmdline & popupmenu
   ------------------------------------------------------------------------
   {
-    'folke/noice.nvim',
-    enabled = enabled.noice,
-    event = 'VeryLazy',
+    "folke/noice.nvim",
+    event = "VeryLazy",
     dependencies = {
-      'MunifTanjim/nui.nvim',
+      "MunifTanjim/nui.nvim",
     },
     config = function()
-      require('noice').setup({
+      require("noice").setup({
         cmdline = {
           enabled = true,
         },
         messages = {
           enabled = true,
-          view = 'notify',
-          view_error = 'notify',
-          view_warn = 'notify',
+          view = "notify",
+          view_error = "notify",
+          view_warn = "notify",
         },
         popupmenu = {
           enabled = true,
-          backend = 'nui',
+          backend = "nui",
         },
         notify = {
           enabled = true,
-          view = 'notify',
+          view = "notify",
         },
         lsp = {
           progress = {
             enabled = true,
           },
           override = {
-            ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-            ['vim.lsp.util.stylize_markdown'] = true,
-            ['cmp.entry.get_documentation'] = true,
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true,
           },
           hover = { enabled = true },
           signature = { enabled = true },
@@ -55,33 +52,33 @@ return {
           -- Skip "written" messages (e.g. "2L, 30B written")
           {
             filter = {
-              event = 'msg_show',
-              kind = '',
-              find = 'written',
+              event = "msg_show",
+              kind = "",
+              find = "written",
             },
             opts = { skip = true },
           },
           -- Skip search count messages (e.g. "[1/5]")
           {
             filter = {
-              event = 'msg_show',
-              kind = 'search_count',
+              event = "msg_show",
+              kind = "search_count",
             },
             opts = { skip = true },
           },
           -- Skip "search hit BOTTOM" / "search hit TOP" messages
           {
             filter = {
-              event = 'msg_show',
-              find = 'search hit',
+              event = "msg_show",
+              find = "search hit",
             },
             opts = { skip = true },
           },
           -- Skip "No information available" from hover
           {
             filter = {
-              event = 'notify',
-              find = 'No information available',
+              event = "notify",
+              find = "No information available",
             },
             opts = { skip = true },
           },

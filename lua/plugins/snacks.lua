@@ -1,12 +1,9 @@
 -- snacks.nvim: Collection of QoL features by Folke
 -- Picker is DISABLED here — using fzf-lua instead
 
-local enabled = require("config.plugins-enabled")
-
 return {
   {
     "folke/snacks.nvim",
-    enabled = enabled.snacks,
     priority = 1000,
     lazy = false,
     ---@type snacks.Config
@@ -19,8 +16,8 @@ return {
       -- Replaces custom ToggleTerminal() in keymaps.lua
       terminal = { enabled = true },
 
-      -- Replaces vim-illuminate
-      words = { enabled = true },
+      -- LSP reference highlighting (disabled: no LSP configured yet)
+      words = { enabled = false },
 
       -- Replaces indent-blankline.nvim
       indent = {
@@ -146,7 +143,6 @@ return {
 
       -- Notification history
       { "<leader>nh", "<cmd>Noice fzf<cr>", desc = "Notification History" },
-
     },
   },
 }
