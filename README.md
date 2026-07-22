@@ -39,7 +39,14 @@ Every file under `lua/plugins/` is a self-contained plugin spec, auto-imported b
 | Editing       | nvim-autopairs · guess-indent · todo-comments             |
 | Content       | render-markdown · kulala.nvim (HTTP client)                |
 | Session       | persistence.nvim                                           |
-| Colorscheme   | iceberg                                                    |
+| Colorscheme   | iceberg (default) · catppuccin · tokyonight               |
+
+## Colorscheme
+
+`iceberg` is the default. `catppuccin` and `tokyonight` are also installed.
+Press `<leader>uc` for a live-preview picker (fzf-lua) — your choice is saved to
+`stdpath("state")/colorscheme` and restored on the next launch. To change the
+fallback default, edit `M.default` in `lua/config/theme.lua`.
 
 ## Managing plugins
 
@@ -69,6 +76,7 @@ Leader is `<Space>`.
 | `<leader>dh`                       | CodeDiff history                         |
 | `<leader>hk`                       | Preview git hunk                         |
 | `<leader>fm`                       | Format buffer (conform)                  |
+| `<leader>uc`                       | Pick colorscheme (live preview, persists) |
 | `<leader>qs` / `<leader>ql`        | Restore session / last session           |
 | `<leader>R…`                       | kulala HTTP client (in `.http` files)    |
 | `:Diff [ref]`                      | Diff current file against a git ref      |

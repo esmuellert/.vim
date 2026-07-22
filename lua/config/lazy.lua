@@ -46,8 +46,8 @@ require("lazy").setup({
   },
 })
 
--- Colorscheme (after plugins so the theme is installed)
-pcall(vim.cmd.colorscheme, "iceberg")
+-- Colorscheme (after plugins so the theme is installed); restores last pick
+require("config.theme").load()
 vim.o.fillchars = vim.o.fillchars .. ",vert:│"
 vim.api.nvim_set_hl(0, "WinSeparator", { link = "NonText" })
 

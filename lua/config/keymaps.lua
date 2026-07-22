@@ -78,3 +78,8 @@ vim.keymap.set("n", "<leader>L", "<cmd>Lazy<cr>", { desc = "Lazy Plugin Manager"
 
 -- Restart Neovim
 vim.keymap.set("n", "<leader>R", "<cmd>restart<cr>", { desc = "Restart Neovim" })
+
+-- Colorscheme picker (live preview; persists the choice)
+vim.keymap.set("n", "<leader>uc", function()
+  require("config.theme").pick()
+end, { desc = "Pick colorscheme" })
