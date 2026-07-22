@@ -139,6 +139,12 @@ return {
           status = {
             prompt = " ",
           },
+          -- Drop POSIX single quotes: cmd.exe passes them literally,
+          -- causing `fatal: unknown field name: 'committerdate'` on Windows.
+          branches = {
+            cmd = "git branch --all --color -vv "
+              .. "--sort=-committerdate --sort=refname:rstrip=-2 --sort=-HEAD",
+          },
         },
       })
     end,
