@@ -18,7 +18,6 @@ return {
       { "<leader>f", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
       { "<leader>b", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
       { "<leader>hp", "<cmd>FzfLua helptags<cr>", desc = "Help tags" },
-      { "<leader>d", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Diagnostics" },
       { "<leader>hl", "<cmd>FzfLua highlights<cr>", desc = "Highlights" },
       { "<leader>/", "<cmd>FzfLua blines<cr>", desc = "Fuzzy find in buffer" },
       { "<leader>r", "<cmd>FzfLua oldfiles<cr>", desc = "Recent files" },

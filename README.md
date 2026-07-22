@@ -62,7 +62,10 @@ Leader is `<Space>`.
 | `<leader>r`                        | Recent files                             |
 | `<leader>e` / `<leader>cw`         | Yazi at file / cwd                       |
 | `<leader>g` / `<leader>t`          | LazyGit / terminal (snacks)              |
-| `<leader>df` / `<leader>dh` / `<leader>dm` | CodeDiff explorer / history / vs main |
+| `<leader>d` / `<leader>df`         | CodeDiff working tree (staged+unstaged)  |
+| `<leader>d1` `d2` `d3` / `<leader>dm` | CodeDiff vs HEAD~N / vs main·master   |
+| `<leader>db` / `<leader>dc` / `<leader>dr` | CodeDiff vs branch / commit / ref (pick) |
+| `<leader>dh`                       | CodeDiff history                         |
 | `<leader>hk`                       | Preview git hunk                         |
 | `<leader>fm`                       | Format buffer (conform)                  |
 | `<leader>qs` / `<leader>ql`        | Restore session / last session           |
