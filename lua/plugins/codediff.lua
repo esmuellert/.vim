@@ -26,20 +26,53 @@ local function codediff_branch()
   })
 end
 
+-- Extract a short SHA from an fzf-lua git commit entry.
+local function commit_sha(selected)
+  if not selected or not selected[1] then
+    return nil
+  end
+  return require("fzf-lua.utils").strip_ansi_coloring(selected[1]):match("^%s*(%x%x%x%x+)")
+end
+
 -- Pick a commit with fzf-lua, then diff the working tree against it.
 local function codediff_commit()
-  local fzf = require("fzf-lua")
-  fzf.git_commits({
+  require("fzf-lua").git_commits({
     prompt = "CodeDiff commit❯ ",
     actions = {
       ["default"] = function(selected)
-        if not selected or not selected[1] then
-          return
-        end
-        local entry = require("fzf-lua.utils").strip_ansi_coloring(selected[1])
-        local sha = entry:match("^%s*(%x%x%x%x+)")
+        local sha = commit_sha(selected)
         if sha then
           vim.cmd("CodeDiff " .. sha)
+        end
+      end,
+    },
+  })
+end
+
+-- Pick a commit, then show that commit's own changes (parent vs commit).
+local function codediff_show_commit()
+  require("fzf-lua").git_commits({
+    prompt = "CodeDiff show commit❯ ",
+    actions = {
+      ["default"] = function(selected)
+        local sha = commit_sha(selected)
+        if sha then
+          vim.cmd("CodeDiff " .. sha .. "~ " .. sha)
+        end
+      end,
+    },
+  })
+end
+
+-- Pick a commit that touched the current file, then show that commit's changes.
+local function codediff_file_commit()
+  require("fzf-lua").git_bcommits({
+    prompt = "CodeDiff file commit❯ ",
+    actions = {
+      ["default"] = function(selected)
+        local sha = commit_sha(selected)
+        if sha then
+          vim.cmd("CodeDiff " .. sha .. "~ " .. sha)
         end
       end,
     },
@@ -75,6 +108,8 @@ return {
       -- Pickers / prompt
       { "<leader>db", codediff_branch, desc = "CodeDiff: vs branch (pick)" },
       { "<leader>dc", codediff_commit, desc = "CodeDiff: vs commit (pick)" },
+      { "<leader>ds", codediff_show_commit, desc = "CodeDiff: show commit changes (pick)" },
+      { "<leader>dC", codediff_file_commit, desc = "CodeDiff: current file commit (pick)" },
       { "<leader>dr", codediff_ref, desc = "CodeDiff: vs ref (prompt)" },
     },
     opts = {

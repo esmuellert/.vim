@@ -65,6 +65,7 @@ Leader is `<Space>`.
 | `<leader>d` / `<leader>df`         | CodeDiff working tree (staged+unstaged)  |
 | `<leader>d1` `d2` `d3` / `<leader>dm` | CodeDiff vs HEAD~N / vs main·master   |
 | `<leader>db` / `<leader>dc` / `<leader>dr` | CodeDiff vs branch / commit / ref (pick) |
+| `<leader>ds` / `<leader>dC`        | CodeDiff show commit / current-file commit (pick) |
 | `<leader>dh`                       | CodeDiff history                         |
 | `<leader>hk`                       | Preview git hunk                         |
 | `<leader>fm`                       | Format buffer (conform)                  |
