@@ -8,9 +8,9 @@ return {
     config = function()
       require("lualine").setup({
         options = {
-          theme = "iceberg",
+          theme = "auto",
           component_separators = "",
-          section_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
         },
         tabline = {
           lualine_a = {
@@ -23,7 +23,7 @@ return {
           },
         },
         sections = {
-          lualine_a = { { "mode", separator = { left = "" }, right_padding = 2 } },
+          lualine_a = { { "mode", separator = { left = "" }, right_padding = 2 } },
           lualine_c = {
             {
               "filename",
@@ -31,7 +31,7 @@ return {
             },
           },
           lualine_z = {
-            { "location", separator = { right = "" }, left_padding = 2 },
+            { "location", separator = { right = "" }, left_padding = 2 },
           },
         },
       })
